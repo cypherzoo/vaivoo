@@ -1,12 +1,115 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: crypto-hmac
 type: CryptographicPrimitive
 slug: hmac
 name: HMAC
-aliases: [Keyed-hash message authentication code]
-summary: A construction that combines a secret key with a hash function to produce a message authentication code.
+aliases: [Keyed-hash message authentication code, Keyed-Hashing for Message Authentication]
+summary: A way to combine a secret key with a cryptographic hash function to produce a message authentication code. Only someone holding the key can compute or check it.
 layer: [crypto]
 status: draft
 owner: Christian
-claims: []
+last_verified_at: null
+next_review_at: null
+body: |
+  HMAC lets two parties who share a secret key check that a message came from someone holding that key and was not changed on the way. Both sides compute a short tag from the key and the message, and the tags must match.
+
+  HMAC is built from an ordinary hash function such as SHA-1 or SHA-256, used without modification, and the hash can be swapped out if a better one comes along. In authentication, one-time password schemes such as HOTP and TOTP use HMAC to turn a shared key and a counter or time value into an unpredictable number.
+crypto: |
+  RFC 2104 defines HMAC(K, text) = H((K XOR opad) || H((K XOR ipad) || text)). H is an iterated hash with block length B bytes. The key is zero-padded to B bytes, and ipad and opad are the bytes 0x36 and 0x5C repeated B times. Keys longer than B are hashed first.
+
+  The recommended minimum key length is L bytes, where L is the hash output length. Shorter keys are strongly discouraged. Keys should be random and refreshed periodically (RFC 2104 Sections 2 and 3).
+
+  Security rests on properties of the hash's compression function, used in a keyed setting. RFC 2104 notes that the best known generic attack is a birthday attack needing about 2^64 MACs under the same key for a 128-bit hash, or 2^80 for a 160-bit hash. RFC 2104 calls this impractical (Section 6).
+
+  RFC 2104 allows truncated output but recommends keeping at least half the hash length and at least 80 bits (Section 5). HOTP and TOTP truncate much further, to about 31 bits and then to 6 to 8 decimal digits. RFC 4226 accepts that this makes brute force possible and relies on server-side throttling to compensate (RFC 4226 Section 7.3).
+claims:
+  - id: claim-hmac-publication-status
+    predicate: publication_status
+    value: supported
+    statement: HMAC is described in RFC 2104 (February 1997, by Krawczyk, Bellare and Canetti), an Informational RFC that does not specify an Internet standard.
+    scope: RFC 2104 document status.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc2104
+        title: "RFC 2104: HMAC: Keyed-Hashing for Message Authentication"
+        publisher: IETF
+        version: RFC 2104 (February 1997)
+        locator: Document header; Status of This Memo
+        note: "Header shows Category: Informational, February 1997; status memo says it does not specify an Internet standard of any kind."
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-hmac-construction
+    predicate: defines
+    value: supported
+    statement: "HMAC is computed as H(K XOR opad, H(K XOR ipad, text)), using any iterated cryptographic hash function H without modifying it. Variants are named after the hash, for example HMAC-SHA1."
+    scope: Construction definition.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc2104
+        title: "RFC 2104: HMAC: Keyed-Hashing for Message Authentication"
+        publisher: IETF
+        version: RFC 2104 (February 1997)
+        locator: Section 2 (Definition of HMAC)
+        note: Defines ipad (0x36) and opad (0x5C) repeated B times and the nested two-pass hash over the padded key and text.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc2104
+        title: "RFC 2104: HMAC: Keyed-Hashing for Message Authentication"
+        publisher: IETF
+        version: RFC 2104 (February 1997)
+        locator: Section 1 (Introduction)
+        note: HMAC works with any iterated hash, used unmodified and replaceable; instantiations are denoted HMAC-SHA1, HMAC-MD5 and so on.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-hmac-key-length
+    predicate: key_parameters
+    value: supported
+    statement: The minimum recommended key length is L bytes (the hash output length). Keys longer than the block length B are hashed first. Keys should be random or cryptographically pseudorandom and refreshed periodically.
+    scope: Key guidance in RFC 2104.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc2104
+        title: "RFC 2104: HMAC: Keyed-Hashing for Message Authentication"
+        publisher: IETF
+        version: RFC 2104 (February 1997)
+        locator: Section 2 (Definition of HMAC); Section 3 (Keys)
+        note: Keys under L bytes are strongly discouraged; longer keys add little strength; keys must be random and periodically refreshed.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-hmac-truncation-guidance
+    predicate: truncation_guidance
+    value: supported
+    statement: RFC 2104 allows HMAC output to be truncated to its t leftmost bits. It recommends that t be at least half the hash output length and at least 80 bits.
+    scope: General HMAC guidance; OTP schemes such as HOTP deliberately truncate further and compensate with throttling (see RFC 4226 entity).
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc2104
+        title: "RFC 2104: HMAC: Keyed-Hashing for Message Authentication"
+        publisher: IETF
+        version: RFC 2104 (February 1997)
+        locator: Section 5 (Truncated output)
+        note: Truncation to t leftmost bits is permitted; recommends t not less than half the hash length and not less than 80 bits; notation HMAC-H-t.
+        stance: supports
+        retrieved_at: "2026-10-03"

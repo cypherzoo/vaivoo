@@ -1,0 +1,281 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: idsys-eudi-wallet
+type: IdentitySystem
+slug: eudi-wallet
+name: European Digital Identity Wallet (EUDI Wallet)
+aliases: [EUDI Wallet, EU Digital Identity Wallet, EUDIW]
+summary: The EU-wide digital identity wallet set up by the amended eIDAS Regulation. Each Member State must provide at least one wallet for identifying, authenticating, sharing attributes and signing, with person identification data at level of assurance high.
+layer: [nordic-eu, core]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  The European Digital Identity Wallet is not a single app. It is a legal and technical framework under which each EU Member State provides at least one wallet, built to common specifications. The legal basis is Regulation (EU) No 910/2014 (eIDAS) as amended by Regulation (EU) 2024/1183 of 11 April 2024, which the Commission calls the European Digital Identity Regulation. The Commission has adopted implementing regulations covering, among other things, PID and attestations, integrity and core functions, notifications, certification, protocols and interfaces, and registration of relying parties. Some of these were amended again in 2026.
+
+  A user's wallet holds Person Identification Data (PID) from a PID Provider, plus electronic attestations of attributes (qualified or not) from other issuers. The user can present selected attributes to relying parties remotely or in person, create qualified electronic signatures, and authenticate with pseudonyms when the service does not need to know who they are. The PID is issued and managed at level of assurance high. Using a wallet is not mandatory for citizens.
+
+  Relying parties must register with a Registrar in their Member State. They receive access certificates and registration certificates, which the wallet uses to show the user who is asking and what that relying party is registered to request.
+
+  The common technical baseline is the Architecture and Reference Framework (ARF), published by the Commission. The ARF is informative: only the Regulation and its implementing and delegated acts are binding. The latest ARF release at retrieval was v3.0.0 (July 2026). This entry does not cover the Regulation as a separate legal entity. It also does not cover rollout in individual Member States or EEA incorporation, for which no primary source was retrieved.
+crypto: |
+  In ARF v3.0.0, the PID private keys must be managed in a Wallet Secure Cryptographic Device (WSCD). This is a tamper-resistant device assessed at assurance level high, reached through a Wallet Secure Cryptographic Application (WSCA). The WSCD can be remote (for example an HSM), local external (a smart card), local internal (SIM, eSIM or embedded secure element) or local native (provided by the device operating system). Ordinary keystores such as a TEE or secure enclave may hold non-critical keys, but not PID keys. User access to the WSCA/WSCD always needs two user authentication mechanisms.
+
+  Both mandatory credential formats, ISO/IEC 18013-5 mdoc and SD-JWT VC, achieve selective disclosure with salted hashes embedded in the issuer-signed credential. Device binding ties a presentation to a key held by the wallet. For payments and signing, transactional data is signed as part of the device-binding signature. Registration certificates are JWTs, while access certificates are X.509. The ARF pages reviewed do not fix specific signature algorithms or curves, so this entry treats them as not publicly specified here.
+relations:
+  - predicate: uses_protocol
+    object_id: standard-webauthn
+    claim_id: claim-eudi-wallet-pseudonyms
+    note: Optional. The ARF names WebAuthn and passkeys as one way to implement verifiable pseudonyms; other mechanisms are allowed.
+claims:
+  - id: claim-eudi-wallet-legal-basis
+    predicate: legal_basis
+    value: supported
+    statement: The EUDI Wallet framework is set up by Regulation (EU) No 910/2014 as amended by Regulation (EU) 2024/1183 of 11 April 2024. The details are filled in by Commission implementing regulations, including CIR (EU) 2024/2977, 2024/2979, 2024/2980, 2024/2981 and 2024/2982 of 28 November 2024 and CIR (EU) 2025/848 on relying-party registration.
+    scope: Core legal acts for the wallet. EUR-Lex metadata gives 2024-05-20 as the first entry into force of 2024/1183, but the body text could not be retrieved. Amending acts 2026/1730, 2026/1731 and 2026/1735 are noted but not analysed.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eur-lex.europa.eu/eli/reg/2024/1183/oj/eng
+        title: Regulation (EU) 2024/1183 of the European Parliament and of the Council of 11 April 2024 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
+        publisher: Publications Office of the EU (EUR-Lex)
+        locator: Page metadata (document title; eli:date_document; eli:first_date_entry_in_force)
+        note: Title confirms the act amends 910/2014 to establish the European Digital Identity Framework; document date 2024-04-11, first entry into force 2024-05-20. Body text not rendered.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://eudi.dev/latest/main/01-introduction/
+        title: 1 Introduction - Architecture and Reference Framework
+        publisher: European Commission (DG CNECT)
+        version: ARF v3.0.0 (2026-07-21)
+        locator: "Sections '1.2 Legal context' and '1.6 Change Log'"
+        note: Framework established by 910/2014 as amended by 2024/1183; lists CIRs 2024/2977, 2979, 2980, 2982 (28 Nov 2024) and 2025/848 (6 May 2025).
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EUDIGITALIDENTITYWALLET/pages/915931811/The+European+Digital+Identity+Regulation
+        title: The European Digital Identity Regulation - EU Digital Identity Wallet
+        publisher: European Commission
+        version: Last updated 2026-07-22
+        locator: "Section 'Overview of all the EUDI Wallets Implementing Acts'"
+        note: Lists adopted implementing acts by article basis (e.g. Article 5a(23) protocols, PID, integrity; 5b(11) RP registration; 5c(6) certification), some amended by 2026/1731.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eudi-wallet-member-state-obligation
+    predicate: member_state_provision_deadline
+    value: supported
+    statement: Each Member State must provide at least one European Digital Identity Wallet within 24 months after the relevant implementing acts enter into force. The Commission summarises this as "by 2026".
+    scope: Obligation as paraphrased by the ARF and the Commission. The exact calendar deadline was not derived from the Regulation text, which could not be retrieved.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eudi.dev/latest/main/03-roles-within-the-eudi-wallet-ecosystem/
+        title: 3 Roles within the EUDI Wallet ecosystem - Architecture and Reference Framework
+        publisher: European Commission (DG CNECT)
+        version: ARF v3.0.0 (2026-07-21)
+        locator: "Section '3.2 Users of Wallet Units', last paragraph"
+        note: Each Member State will provide at least one wallet within 24 months after entry into force of the Implementing Acts referred to in the Regulation.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EUDIGITALIDENTITYWALLET/pages/694487738/EU+Digital+Identity+Wallet+Home
+        title: EU Digital Identity Wallet Home
+        publisher: European Commission
+        version: Last updated 2026-01-21
+        locator: "Paragraph under 'Your personal data tells your life's story'"
+        note: Framework entered into force May 2024; each Member State will offer at least one wallet, built to common specifications, by 2026.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eudi-wallet-loa-high
+    predicate: assurance_level
+    value: supported
+    statement: Article 5a(5)(d) requires the wallet, provided under an eID scheme, to meet the requirements for level of assurance high. In the ARF, LoA applies to the PID, and PID private keys must be held in a WSCA/WSCD that meets LoA high.
+    scope: Legal requirement as cited by the ARF. LoA applies to the PID only; other attestations have attestation-specific "levels of security".
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eudi.dev/latest/main/02-eudi-wallet-functionalities/
+        title: 2 EUDI Wallet functionalities - Architecture and Reference Framework
+        publisher: European Commission (DG CNECT)
+        version: ARF v3.0.0 (2026-07-21)
+        locator: "Section '2.2 Identification and authentication'"
+        note: Cites Article 5a(5)(d) requiring LoA high; Wallet Unit operated under an eID scheme at LoA high; LoA concept applies only to PID.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://eudi.dev/latest/main/04-high-level-architecture/
+        title: 4 High-level architecture - Architecture and Reference Framework
+        publisher: European Commission (DG CNECT)
+        version: ARF v3.0.0
+        locator: "Section '4.3.2 Components of a Wallet Unit' (WSCD and Keystore bullets) and '4.5.1 Introduction'"
+        note: WSCD assessed at assurance level high per CIR 2024/2981 Annex IV; keystores cannot hold PID keys; two user-authentication mechanisms required.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eudi-wallet-voluntary
+    predicate: voluntary_use
+    value: supported
+    statement: Citizens do not have to use a wallet under the Regulation. Very large online platforms must accept the wallet for user authentication only when the user voluntarily asks to use it (Article 5f(3)).
+    scope: As stated in the ARF, citing the Regulation. Acceptance obligations on other relying parties are not covered here.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eudi.dev/latest/main/03-roles-within-the-eudi-wallet-ecosystem/
+        title: 3 Roles within the EUDI Wallet ecosystem - Architecture and Reference Framework
+        publisher: European Commission (DG CNECT)
+        version: ARF v3.0.0 (2026-07-21)
+        locator: "Sections '3.2 Users of Wallet Units' and '3.11.1 Relying Parties'"
+        note: Use of a Wallet Unit by citizens is not mandatory; Article 5f(3) requires very large platforms to accept it only upon voluntary user request.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eudi-wallet-free-of-charge
+    predicate: free_of_charge
+    value: conditional
+    statement: Qualified electronic signatures through the wallet are free by default for natural persons (Article 5a(5)(g)), and Member States may limit this to non-professional use. The Commission says the wallet will be entirely free of charge to users.
+    scope: QES free-of-charge is cited to a specific article by the ARF. The general free-of-charge statement comes from a Commission video transcript, not from legal text retrieved here.
+    assumptions:
+      - Free-of-charge use of the wallet itself is taken from Commission communication; the exact legal provision was not read in the Regulation text.
+      - QES free-of-charge may be limited to non-professional purposes by Member States.
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eudi.dev/latest/main/02-eudi-wallet-functionalities/
+        title: 2 EUDI Wallet functionalities - Architecture and Reference Framework
+        publisher: European Commission (DG CNECT)
+        version: ARF v3.0.0 (2026-07-21)
+        locator: "Section '2.4 Qualified electronic signatures'"
+        note: QES provided by default and free of charge to natural persons (Article 5a(5)(g)); Member States may limit free use to non-professional purposes.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EUDIGITALIDENTITYWALLET/pages/694487738/EU+Digital+Identity+Wallet+Home
+        title: EU Digital Identity Wallet Home
+        publisher: European Commission
+        version: Last updated 2026-01-21
+        locator: "Video transcript, segment 5:03-5:35"
+        note: Voice-over says the wallet is expected to be available, entirely free of charge to users.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eudi-wallet-credential-formats
+    predicate: credential_formats
+    value: supported
+    statement: Wallet Units must support the ISO/IEC 18013-5 (generalised in ISO/IEC 23220-2) mdoc format and SD-JWT VC. Support for the W3C Verifiable Credentials Data Model v2.0 is optional and only for non-qualified EAAs.
+    scope: ARF v3.0.0 (informative). Binding requirements sit in the implementing acts.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eudi.dev/latest/main/05-data-model-and-data-exchange-protocols/
+        title: 5 Data model and data exchange protocols - Architecture and Reference Framework
+        publisher: European Commission (DG CNECT)
+        version: ARF v3.0.0 (2026-07-21)
+        locator: "Section '5.4.1 Overview' (table and following paragraphs)"
+        note: ISO 18013-5/23220-2 (CBOR) and SD-JWT VC mandatory, both with salted-hash selective disclosure; W3C VCDM v2.0 optional, non-qualified EAAs only.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eudi-wallet-protocols
+    predicate: exchange_protocols
+    value: supported
+    statement: PIDs and attestations are issued with OpenID4VCI, profiled by HAIP. Remote presentation uses OpenID4VP (with HAIP) or ISO/IEC 18013-7, over redirects with custom URI schemes or the W3C Digital Credentials API. Proximity presentation uses ISO/IEC 18013-5.
+    scope: ARF v3.0.0. PID Providers may agree other issuance protocols bilaterally with the Wallet Provider if these meet the implementing acts.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eudi.dev/latest/main/05-data-model-and-data-exchange-protocols/
+        title: 5 Data model and data exchange protocols - Architecture and Reference Framework
+        publisher: European Commission (DG CNECT)
+        version: ARF v3.0.0 (2026-07-21)
+        locator: "Sections '5.7.1 Introduction' and '5.8 Protocols and transmission mechanisms for attestation issuance'"
+        note: ISO 18013-5 for proximity; OpenID4VP or ISO 18013-7 remote via custom URI or Digital Credentials API; OpenID4VCI with HAIP for issuance.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eudi-wallet-pseudonyms
+    predicate: selective_disclosure_and_pseudonyms
+    value: supported
+    statement: Wallets support selective disclosure of attributes with user approval. Under Article 5a(4)(b) they must generate pseudonyms and store them encrypted locally. CIR 2024/2979 Article 14(2) requires a pseudonym specific to each relying party on request. The ARF names WebAuthn passkeys as one implementation option.
+    scope: Pseudonymous authentication (ARF use case A) is required; use cases B to D still need further specification.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eudi.dev/latest/main/02-eudi-wallet-functionalities/
+        title: 2 EUDI Wallet functionalities - Architecture and Reference Framework
+        publisher: European Commission (DG CNECT)
+        version: ARF v3.0.0 (2026-07-21)
+        locator: "Sections '2.2 Identification and authentication', '2.5.1 Overview' and '2.5.6 Use case support'"
+        note: Selective disclosure with user approval; Article 5a(4)(b) pseudonyms; Article 5b(9) relying parties may not refuse pseudonyms; CIR 2024/2979 Art 14(2) relying-party-specific pseudonyms.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://eudi.dev/latest/main/04-high-level-architecture/
+        title: 4 High-level architecture - Architecture and Reference Framework
+        publisher: European Commission (DG CNECT)
+        version: ARF v3.0.0
+        locator: "Section '4.7.2.1 Introduction to Passkeys'"
+        note: One option for verifiable pseudonyms is for Wallet Units to act as a WebAuthn authenticator (passkeys).
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eudi-wallet-rp-registration
+    predicate: relying_party_registration
+    value: supported
+    statement: Relying parties register with a Registrar in the Member State where they are established, receive an EU-wide unique identifier, and get access certificates (X.509) and registration certificates (JWT). Wallets use these to identify the relying party to the user.
+    scope: Per ARF v3.0.0 and CIR 2025/848. The ARF notes that the wallet's duty to validate registration certificates starts 24 months after an amendment to CIR 2024/2982 enters into force.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eudi.dev/latest/main/03-roles-within-the-eudi-wallet-ecosystem/
+        title: 3 Roles within the EUDI Wallet ecosystem - Architecture and Reference Framework
+        publisher: European Commission (DG CNECT)
+        version: ARF v3.0.0 (2026-07-21)
+        locator: "Sections '3.11.1 Relying Parties' and '3.19 Providers of registration certificates'"
+        note: Relying parties register at a national Registrar, get EU-wide unique identifier, access and registration certificates; registration certificate is a JWT bound to X.509 access certificates.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eudi-wallet-rollout-status
+    predicate: availability_status
+    value: unknown
+    statement: No primary source retrieved shows which Member States have made a certified EUDI Wallet available to the public as of the retrieval date.
+    scope: Current rollout. The Commission pages reviewed describe the target ("by 2026"), not a per-country status.
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EUDIGITALIDENTITYWALLET/pages/694487738/EU+Digital+Identity+Wallet+Home
+        title: EU Digital Identity Wallet Home
+        publisher: European Commission
+        version: Last updated 2026-01-21
+        locator: "Paragraph under 'Your personal data tells your life's story'"
+        note: States the target that each Member State offers a wallet by 2026; gives no per-country availability status.
+        stance: contextualizes
+        retrieved_at: 2026-10-03

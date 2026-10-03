@@ -1,0 +1,212 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: crypto-ecdsa-p256
+type: CryptographicPrimitive
+slug: ecdsa-p256
+name: ECDSA with P-256
+aliases: ["ES256 (COSE/JOSE)", "ESP256 (COSE)", "ECDSA P-256", "secp256r1", "prime256v1", "NIST P-256"]
+summary: A digital signature scheme that uses elliptic curves (ECDSA) on the NIST curve P-256. It is approved in FIPS 186-5, gives about 128-bit classical security, and is the most common passkey signature algorithm (COSE ES256).
+layer: [crypto]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  ECDSA with P-256 lets a device prove it holds a private key by signing data. Anyone with the matching public key can check the signature. In WebAuthn and passkeys, the authenticator signs the server's challenge with this kind of key, and the server checks the signature with the public key it stored at registration.
+
+  P-256 is one specific elliptic curve published by NIST. The same curve also goes by secp256r1 (SECG) and prime256v1 (ANSI X9.62). In COSE, the format that WebAuthn uses, this combination has long been labelled ES256 (algorithm -7).
+
+  ECDSA has a well-known weakness: each signature needs a fresh secret random number. If that number is repeated or predictable, the private key can leak. Like all elliptic-curve schemes, ECDSA could be broken by a large enough quantum computer. NIST has proposed a schedule for moving away from it.
+crypto: |
+  Curve: P-256 is a short Weierstrass curve over the prime field GF(p) with p = 2^256 − 2^224 + 2^192 + 2^96 − 1 and cofactor h = 1 (SP 800-186 Section 3.2.1.3). FIPS 186-5 Table 1 maps a 256–383-bit group order n to a security strength of about len(n)/2, and at least 128 bits. SP 800-186 Table 1 lists P-256 at 128 bits.
+
+  Signature: (r, s), two integers modulo n. COSE encodes them as fixed-length big-endian byte strings concatenated, I2OSP(r, 32) || I2OSP(s, 32), so 64 bytes for P-256 (RFC 9053 Section 2.1). Other containers such as X.509 use different encodings. RFC 9053 suggests pairing SHA-256 with P-256.
+
+  Nonce: FIPS 186-5 Section 6.3 requires a new secret per-message number k for every signature, protected like the private key. It can be generated randomly (Section 6.3.1) or deterministically from the message and private key (deterministic ECDSA, RFC 6979, Section 6.3.2). RFC 9053 notes that biased k can be attacked and that colliding k values leak keys, and recommends deterministic ECDSA. FIPS 186-5 warns that deterministic schemes still need protection against side-channel and fault attacks.
+
+  Quantum: NIST IR 8547 (initial public draft) states that ECDSA is vulnerable to Shor's algorithm on a cryptographically relevant quantum computer.
+relations:
+  - predicate: alternative_to
+    object_id: crypto-ed25519
+    claim_id: claim-ecdsa-p256-fips-approval
+    note: Both are FIPS 186-5 approved elliptic-curve signature schemes at about 128-bit security.
+claims:
+  - id: claim-ecdsa-p256-fips-approval
+    predicate: approval_status
+    value: supported
+    statement: FIPS 186-5 (February 2023) approves ECDSA, including the deterministic variant from RFC 6979. NIST SP 800-186 lists P-256 as a recommended curve allowed for ECDSA.
+    scope: NIST approval for US federal use; says nothing about other national schemes.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+        title: "FIPS 186-5: Digital Signature Standard (DSS)"
+        publisher: NIST
+        version: FIPS 186-5 (February 3, 2023)
+        locator: Section 1 (Introduction), item (2)
+        note: Three techniques are approved; ECDSA is specified in the standard and deterministic ECDSA per RFC 6979 is also approved; curves come from SP 800-186.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://doi.org/10.6028/NIST.SP.800-186
+        title: "SP 800-186: Recommendations for Discrete Logarithm-based Cryptography: Elliptic Curve Domain Parameters"
+        publisher: NIST
+        version: SP 800-186 (February 2023)
+        locator: Section 3.1, Table 2 (Allowed Usage of the Specified Curves); Section 3.2.1.3 (P-256)
+        note: P-224, P-256, P-384 and P-521 are allowed for ECDSA and EC key establishment; P-256 is a Weierstrass curve over a prime field.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ecdsa-p256-security-strength
+    predicate: security_strength
+    value: supported
+    statement: ECDSA on P-256 provides about 128 bits of classical security strength, provided the hash function used is at least as strong.
+    scope: Classical (non-quantum) attacks on the curve and signature process.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+        title: "FIPS 186-5: Digital Signature Standard (DSS)"
+        publisher: NIST
+        version: FIPS 186-5 (February 3, 2023)
+        locator: Section 6.1.1, Table 1 (ECDSA Security Parameters); Section 6.4
+        note: Bit length of n 256–383 gives about len(n)/2, at least 128 bits; overall strength is capped by the weaker of n and the hash.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://doi.org/10.6028/NIST.SP.800-186
+        title: "SP 800-186: Recommendations for Discrete Logarithm-based Cryptography: Elliptic Curve Domain Parameters"
+        publisher: NIST
+        version: SP 800-186 (February 2023)
+        locator: Section 3.1, Table 1 (Approximate Security Strength of the Recommended Curves)
+        note: Lists P-256 alongside Curve25519 and Edwards25519 in the 128-bit security strength row.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ecdsa-p256-nonce-secrecy
+    predicate: nonce_requirement
+    value: supported
+    statement: Every ECDSA signature needs a fresh, secret per-message number k. Weak or repeated k values can expose the private key. Deterministic ECDSA (RFC 6979) derives k from the message and private key to avoid relying on a random number generator.
+    scope: Signature generation; applies to all ECDSA curves, including P-256.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+        title: "FIPS 186-5: Digital Signature Standard (DSS)"
+        publisher: NIST
+        version: FIPS 186-5 (February 3, 2023)
+        locator: Section 6.3 (ECDSA Per-Message Secret Number Generation); Section 6.3.2
+        note: A new secret k shall be generated for each signature and protected; deterministic ECDSA guards against insufficient randomness in k that would reveal a private key.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc9053
+        title: "RFC 9053: CBOR Object Signing and Encryption (COSE): Initial Algorithms"
+        publisher: IETF
+        version: RFC 9053 (August 2022)
+        locator: Section 2.1 (ECDSA); Section 2.1.1
+        note: Implementations SHOULD use deterministic ECDSA; biased k can be attacked and k collisions leak keys; combining randomness with determinism addresses fault attacks.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ecdsa-p256-cose-identifiers
+    predicate: algorithm_identifiers
+    value: supported
+    statement: In COSE, ECDSA with SHA-256 is ES256 (-7). RFC 9864 (October 2025) adds the fully specified ESP256 (-9) for ECDSA on P-256 with SHA-256 and marks the COSE ES256 registration as Deprecated.
+    scope: COSE algorithm identifiers as stated in the RFCs; the live IANA registry page was not retrieved.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc9053
+        title: "RFC 9053: CBOR Object Signing and Encryption (COSE): Initial Algorithms"
+        publisher: IETF
+        version: RFC 9053 (August 2022)
+        locator: Section 2.1, Table 1 (ECDSA Algorithm Values); Section 7.1 curve table
+        note: ES256 has value -7 (ECDSA w/ SHA-256); curve P-256 is crv 1, "also known as secp256r1".
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc9864
+        title: "RFC 9864: Fully-Specified Algorithms for JOSE and COSE"
+        publisher: IETF
+        version: RFC 9864 (October 2025, Standards Track)
+        locator: Section 2.1, Table 1; Section 4.2.1; Section 4.2.2
+        note: Registers ESP256 = -9 (P-256 with SHA-256, Recommended Yes); updates ES256 (-7) to Recommended "Deprecated" because the COSE identifier does not fix the curve.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc4492
+        title: "RFC 4492: Elliptic Curve Cryptography (ECC) Cipher Suites for TLS"
+        publisher: IETF
+        version: RFC 4492 (May 2006)
+        locator: Appendix A (Equivalent Curves, Informative)
+        note: Lists secp256r1 (SECG), prime256v1 (ANSI X9.62) and NIST P-256 as names for the same curve.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+  - id: claim-ecdsa-p256-quantum-vulnerable
+    predicate: quantum_vulnerability
+    value: supported
+    statement: ECDSA, including on P-256, is vulnerable to Shor's algorithm on a cryptographically relevant quantum computer. NIST notes that authentication stays secure as long as the algorithm is unbroken at the moment of authentication.
+    scope: Future large-scale quantum adversary; no claim on when such a computer will exist.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024); still listed as draft on CSRC at retrieval
+        locator: Section 2.1.1 (Digital Signature Algorithms)
+        note: ECDSA, RSA and EdDSA in FIPS 186 and the SP 800-186 curves are vulnerable to Shor's algorithm on a cryptographically relevant quantum computer.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024)
+        locator: Section 3.1.2 (User and Machine Authentication)
+        note: No harvest-now-decrypt-later threat for authentication; quantum-vulnerable algorithms may be used until capable quantum computers exist, then must be disabled.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+  - id: claim-ecdsa-p256-nist-transition-timeline
+    predicate: deprecation_timeline
+    value: conditional
+    statement: Under NIST's proposed transition plan, ECDSA at 128-bit security or higher, which includes P-256, would be disallowed after 2035. Only 112-bit ECDSA has an earlier "deprecated after 2030" step.
+    scope: NIST-approved (US federal) use; the source is a draft, not final guidance.
+    assumptions:
+      - NIST IR 8547 is finalized with the dates in the November 2024 initial public draft (as of 2026-10-03 the CSRC page still lists only the draft).
+      - Applies to NIST approval status; other jurisdictions and sectors may set different dates.
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024)
+        locator: Section 4.1.1 (Digital Signatures), Table 2 (Quantum-vulnerable digital signature algorithms)
+        note: "ECDSA: 112-bit deprecated after 2030, disallowed after 2035; at least 128-bit disallowed after 2035."
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://csrc.nist.gov/pubs/ir/8547/ipd
+        title: "NIST IR 8547 (Initial Public Draft) landing page"
+        publisher: NIST
+        version: Page as retrieved 2026-10-03
+        locator: Header and Document History
+        note: Labelled Initial Public Draft, published November 12, 2024, comments closed January 10, 2025; history lists only the draft.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"

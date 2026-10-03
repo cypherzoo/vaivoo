@@ -1,0 +1,240 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: protocol-openid-connect
+type: Protocol
+slug: openid-connect
+name: OpenID Connect
+aliases: ["OIDC", "OpenID Connect Core 1.0", "OpenID Connect 1.0"]
+summary: "An identity layer on top of OAuth 2.0. A website or app (the Relying Party) sends the user to an OpenID Provider, which authenticates the user and returns a signed ID Token saying who the user is and how and when they were authenticated."
+layer: [core, crypto]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  OAuth 2.0 lets an app obtain limited access to resources, but on its own it does not tell the app who the user is. OpenID Connect adds that. The app asks for the "openid" scope, the user is sent to the OpenID Provider (OP), and the OP returns an ID Token: a signed JSON Web Token naming the issuer, the user (subject), the intended audience and validity times.
+
+  OpenID Connect does not say how the OP authenticates the user. The OP can use a password, a passkey, a national eID or anything else; OpenID Connect only carries the result. The optional acr and amr claims tell the Relying Party which assurance class or methods were used, if the parties agree on their meaning.
+
+  Core defines three flows: Authorization Code, Implicit and Hybrid. In the Authorization Code Flow the browser carries only an authorization code, and the Relying Party's server exchanges it directly with the OP's Token Endpoint for the tokens. A nonce sent in the request and echoed in the ID Token ties the token to the user's session and helps detect replay.
+
+  The security of a sign-in therefore depends on two things: how strongly the OP authenticated the user, and whether the Relying Party validates the ID Token correctly (issuer, audience, signature, expiry, nonce).
+crypto: |
+  ID Tokens are JSON Web Tokens signed with JSON Web Signature (JWS), and may additionally be encrypted with JWE (sign first, then encrypt). The default signing algorithm is RS256, an RSA signature with SHA-256; OPs must list RS256 among their supported ID Token signing algorithms in Discovery metadata. MAC-based algorithms such as HS256 use the client secret as the key.
+
+  The Relying Party validates the signature with the OP's published keys, normally obtained through Discovery, rather than keys embedded in the token header. The unsigned "none" algorithm is permitted only in the narrow case where no ID Token is returned from the Authorization Endpoint (such as the Authorization Code Flow) and the client registered for it.
+
+  The nonce is a random value the Relying Party generates and binds to the user's session; it must have enough entropy that attackers cannot guess it.
+relations: []
+claims:
+  - id: claim-oidc-definition
+    predicate: defines
+    value: supported
+    statement: "OpenID Connect 1.0 is an identity layer on top of OAuth 2.0. It lets clients verify the user's identity based on authentication performed by an Authorization Server (OpenID Provider) and obtain basic profile information."
+    scope: Purpose and relationship to OAuth 2.0 as stated in OpenID Connect Core 1.0.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://openid.net/specs/openid-connect-core-1_0.html
+        title: OpenID Connect Core 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "Abstract; §1 Introduction (#Introduction)"
+        note: Defines OIDC as a simple identity layer on OAuth 2.0; OAuth alone cannot convey End-User authentication; requested via the openid scope.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-oidc-authentication-method-out-of-scope
+    predicate: specifies_authentication_method
+    value: not_supported
+    statement: "OpenID Connect does not specify how the End-User is authenticated. The OpenID Provider authenticates the user by methods outside the specification and OpenID Connect conveys the result in an ID Token, so it is a federation protocol rather than an authenticator."
+    scope: "Core 1.0. The \"federation protocol, not an authenticator\" framing is an editorial interpretation of the cited text."
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://openid.net/specs/openid-connect-core-1_0.html
+        title: OpenID Connect Core 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "§3.1.2.3 Authorization Server Authenticates End-User (#Authenticates)"
+        note: Methods the Authorization Server uses to authenticate the End-User, such as password or session cookies, are beyond the scope of the specification.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://openid.net/specs/openid-connect-core-1_0.html
+        title: OpenID Connect Core 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "§3 Authentication"
+        note: OIDC returns the result of the authentication performed by the server to the client, in an ID Token, so the client can rely on it.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-oidc-id-token-signed
+    predicate: id_token_signing_required
+    value: conditional
+    statement: "ID Tokens must be signed with JWS (optionally signed then encrypted). The unsigned \"none\" algorithm is allowed only when no ID Token is returned from the Authorization Endpoint and the client explicitly requested it at registration. In the Authorization Code Flow, TLS server validation may replace the signature check for tokens received directly from the Token Endpoint."
+    scope: ID Token integrity under Core 1.0; required claims iss, sub, aud, exp and iat are listed in §2.
+    assumptions:
+      - The client has not registered for alg "none".
+      - The Relying Party performs ID Token validation as in §3.1.3.7 (issuer, audience, signature or TLS-validated issuer, expiry).
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://openid.net/specs/openid-connect-core-1_0.html
+        title: OpenID Connect Core 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "§2 ID Token (#IDToken), paragraph after the claim list"
+        note: ID Tokens must be signed using JWS, optionally then encrypted with JWE; none is forbidden except in a narrow registered Code Flow case.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://openid.net/specs/openid-connect-core-1_0.html
+        title: OpenID Connect Core 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "§3.1.3.7 ID Token Validation (#IDTokenValidation), steps 2, 3, 6 and 9"
+        note: Issuer must match exactly, aud must contain client_id, signature validated with issuer keys (TLS may substitute in Code Flow), current time before exp.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-oidc-default-alg-rs256
+    predicate: default_signature_algorithm
+    value: supported
+    statement: "RS256 is the default ID Token signing algorithm, and OpenID Providers must include RS256 in their advertised ID Token signing algorithms."
+    scope: Default and mandatory-to-advertise algorithm; other JWS algorithms may be negotiated.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://openid.net/specs/openid-connect-core-1_0.html
+        title: OpenID Connect Core 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "§3.1.3.7 ID Token Validation (#IDTokenValidation), step 7"
+        note: The alg value should be the default RS256 or the algorithm the client registered via id_token_signed_response_alg.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://openid.net/specs/openid-connect-discovery-1_0.html
+        title: OpenID Connect Discovery 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "§3 OpenID Provider Metadata, parameter id_token_signing_alg_values_supported"
+        note: REQUIRED metadata listing supported ID Token JWS algorithms; RS256 must be included.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-oidc-nonce-replay
+    predicate: replay_mitigation
+    value: supported
+    statement: "The nonce binds a client session to an ID Token and mitigates replay: the OP must echo the request nonce in the ID Token, and the client must check it matches. It is required in the Implicit Flow."
+    scope: Token replay and injection at the Relying Party; the precise replay-detection method is client-specific.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://openid.net/specs/openid-connect-core-1_0.html
+        title: OpenID Connect Core 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "§2 ID Token (#IDToken), claim nonce; §3.1.3.7 ID Token Validation, step 11"
+        note: Nonce associates a client session with an ID Token to mitigate replay; servers must include it if sent; clients must verify it matches.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://openid.net/specs/openid-connect-core-1_0.html
+        title: OpenID Connect Core 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "§3.2.2.1 Authentication Request (Implicit Flow) (#ImplicitAuthRequest), parameter nonce"
+        note: In the Implicit Flow nonce is REQUIRED and must have sufficient entropy to prevent guessing.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-oidc-acr-amr
+    predicate: conveys_authentication_context
+    value: supported
+    statement: "The optional acr claim names the authentication context class satisfied, and the optional amr claim lists the authentication methods used. Their meaning must be agreed between the parties, and acr processing is out of scope of Core."
+    scope: What the ID Token can express; it does not guarantee the OP's assertion is accurate or that the RP checks it.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://openid.net/specs/openid-connect-core-1_0.html
+        title: OpenID Connect Core 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "§2 ID Token (#IDToken), claims acr and amr"
+        note: acr identifies the context class satisfied; amr lists method identifiers, ideally from the IANA AMR registry; parties must agree on meanings.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://openid.net/specs/openid-connect-core-1_0.html
+        title: OpenID Connect Core 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "§3.1.3.7 ID Token Validation (#IDTokenValidation), step 12"
+        note: If acr was requested the client should check the value is appropriate; acr meaning and processing are out of scope.
+        stance: contextualizes
+        retrieved_at: 2026-10-03
+  - id: claim-oidc-phishing-resistance
+    predicate: phishing_resistance
+    value: not_applicable
+    statement: "Phishing resistance is not a property of OpenID Connect itself. NIST defines it for the authentication protocol between claimant and verifier, and OIDC leaves that step to the OpenID Provider; whether a sign-in is phishing-resistant depends on the authenticator the OP uses."
+    scope: Protocol level. Federation-specific threats (e.g. token injection, redirect misuse) are a separate topic and not assessed here.
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticators"
+        publisher: NIST
+        version: "SP 800-63B-4 (HTML edition dated 26 Aug 2025)"
+        locator: "Sec. 3.2.5 Phishing Resistance (#verifimpers), opening paragraphs"
+        note: Phishing resistance is the authentication protocol's ability to prevent disclosing secrets or valid outputs to an impostor verifier; requires cryptographic authentication.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://openid.net/specs/openid-connect-core-1_0.html
+        title: OpenID Connect Core 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "§3.1.2.3 Authorization Server Authenticates End-User (#Authenticates)"
+        note: End-User authentication methods are beyond the scope of the specification.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-oidc-publication-status
+    predicate: publication_status
+    value: supported
+    statement: "OpenID Connect Core 1.0 is a Final specification; the current text incorporates errata set 2 and is dated December 15, 2023. Earlier versions are errata set 1 (November 2014) and the original final (February 2014)."
+    scope: Document status as shown on the OpenID Foundation page at retrieval time.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://openid.net/specs/openid-connect-core-1_0.html
+        title: OpenID Connect Core 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "Document front matter (title and date); §1 Introduction, list of previous versions"
+        note: Page title marks it Final incorporating errata set 2, dated December 15, 2023; lists errata set 1 (Nov 2014) and final (Feb 2014).
+        stance: supports
+        retrieved_at: 2026-10-03

@@ -1,14 +1,128 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: standard-rfc-6238-totp
 type: Standard
 slug: rfc-6238-totp
 name: RFC 6238 (TOTP)
-aliases: [TOTP specification]
-summary: IETF specification defining the Time-Based One-Time Password algorithm.
+aliases: [TOTP specification, "RFC 6238"]
+summary: "Informational IETF RFC (May 2011) that defines the Time-Based One-Time Password algorithm, a time-based variant of HOTP (RFC 4226)."
 layer: [core, crypto]
 status: draft
 owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  RFC 6238 takes the HOTP algorithm from RFC 4226 and replaces its event counter with a count of elapsed time steps. The result is the time-based one-time password (TOTP) algorithm that most authenticator apps implement.
+
+  The document defines the algorithm, its default parameters (30-second time step, Unix-epoch start time), guidance on how wide a validation window a verifier should accept, and how to handle clock drift. It also includes a reference implementation and test vectors. How keys are provisioned is out of scope; the RFC points to a separate key-container specification for that.
+
+  It is an Informational RFC, not an Internet Standards Track specification.
 relations:
-  - { predicate: uses_primitive, object_id: crypto-hmac }
-claims: []
+  - { predicate: depends_on, object_id: standard-rfc-4226-hotp, claim_id: claim-rfc6238-defines-totp }
+  - { predicate: uses_primitive, object_id: crypto-hmac, claim_id: claim-rfc6238-defines-totp }
+claims:
+  - id: claim-rfc6238-publication-status
+    predicate: publication_status
+    value: supported
+    statement: RFC 6238 was published in May 2011 through the IETF stream with Informational status. It is not an Internet Standards Track specification.
+    scope: Document status as shown on the RFC itself.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc6238
+        title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 6238 (May 2011)
+        locator: Document header; Status of This Memo
+        note: "Header shows Category: Informational, May 2011; status memo says it is not Standards Track and is published for informational purposes with IESG approval."
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-rfc6238-defines-totp
+    predicate: defines
+    value: supported
+    statement: "RFC 6238 defines TOTP = HOTP(K, T), where T = floor((current Unix time - T0) / X), and requires HOTP (RFC 4226) as the core building block. Implementations must handle values of T larger than 32 bits for dates beyond 2038."
+    scope: Algorithm definition.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc6238
+        title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 6238 (May 2011)
+        locator: Section 4.2 (Description); Section 3 (Algorithm Requirements), R3
+        note: Defines TOTP as HOTP(K, T) with T counted in time steps from T0; requires support for T beyond 32 bits after 2038; R3 mandates HOTP as building block.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-rfc6238-key-parameters
+    predicate: key_parameters
+    value: supported
+    statement: "Default parameters are time step X = 30 seconds and T0 = 0 (the Unix epoch). The hash may be HMAC-SHA-1, HMAC-SHA-256 or HMAC-SHA-512. Verifiers are advised to allow at most one time step for network delay."
+    scope: Defaults and recommendations; deployments may differ.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc6238
+        title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 6238 (May 2011)
+        locator: Section 4.1 (Notations)
+        note: X is the time step with default 30 seconds; T0 is the start time with default 0 (Unix epoch).
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc6238
+        title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 6238 (May 2011)
+        locator: Section 1.2 (Background)
+        note: Implementations MAY use HMAC-SHA-256 or HMAC-SHA-512 instead of HMAC-SHA-1.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc6238
+        title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 6238 (May 2011)
+        locator: Section 5.2 (Validation and Time-Step Size)
+        note: Recommends at most one time step of allowed network delay and a default 30-second time step.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-rfc6238-key-requirements
+    predicate: key_requirements
+    value: supported
+    statement: Each prover MUST have a unique key. Keys SHOULD be randomly generated or derived with a key derivation algorithm, SHOULD be the length of the HMAC output, and SHOULD be stored securely (encrypted) in the validation system.
+    scope: Key management guidance in RFC 6238.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc6238
+        title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 6238 (May 2011)
+        locator: "Section 3 (Algorithm Requirements), R5-R7"
+        note: Requires a unique key per prover; keys should be random or derived, and protected against unauthorized access.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc6238
+        title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 6238 (May 2011)
+        locator: Section 5.1 (General)
+        note: Keys should match HMAC output length; recommends encrypted key storage in the validation system; communications should use a secure channel such as TLS.
+        stance: supports
+        retrieved_at: "2026-10-03"

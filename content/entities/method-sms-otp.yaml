@@ -1,0 +1,186 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: method-sms-otp
+type: Method
+slug: sms-otp
+name: SMS one-time code
+aliases: [SMS OTP, Text-message code, SMS verification code, PSTN out-of-band authentication]
+summary: "The service sends a short random code to the user's registered phone number by text message, and the user types it in. NIST treats this as a restricted out-of-band authenticator. It is not phishing-resistant and depends on control of the phone number."
+layer: [core]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  At sign-in, the service generates a random code, normally six digits, and sends it as a text message to the phone number on the account. The user reads the code and types it into the sign-in page. The code is valid for a short time and only once.
+
+  NIST classifies this as an out-of-band authenticator: proof that the user controls a device reachable on a separate channel ("something you have"). Because it uses the public telephone network, NIST marks it as a restricted authenticator. Organizations that accept it must assess the risks, warn users about them, offer at least one unrestricted alternative and plan for migration.
+
+  The code goes wherever the phone network delivers the number. If an attacker gets the number moved to their own SIM or ported to another provider, they receive the codes. NIST tells verifiers to check signals such as SIM changes and number porting before sending a code.
+
+  Because the user types the code by hand, a fake site can ask for it and relay it to the real service in real time. SMS codes are therefore not phishing-resistant and cannot be used at AAL3.
+crypto: |
+  There is little cryptography in the method itself. The verifier must generate a random secret of at least six decimal digits with an approved random bit generator. The check is a simple comparison within a 10-minute window, accepted only once. Since a six-digit code is far below 64 bits, rate limiting is mandatory, and sending a new code must not reset the failure count.
+
+  NIST requires approved encryption on the out-of-band channel except when the secret goes over the public switched telephone network. SMS delivery therefore falls under that exemption. The device is identified to the mobile network by its SIM card or equivalent secret, not by a key the verifier controls, so the verifier has no cryptographic proof of which device received the code.
+
+  Nothing in the code is bound to the verifier's name or to the TLS session, so the code works for whoever submits it first.
+relations:
+  - { predicate: alternative_to, object_id: method-totp-authentication, claim_id: claim-sms-otp-mfa-qualification, note: "Both are manually entered physical-authenticator outputs that NIST allows with a password at AAL2; neither is phishing-resistant." }
+  - { predicate: alternative_to, object_id: profile-security-key-second-factor, claim_id: claim-sms-otp-phishing-resistance, note: "Alternative second factor; the security key adds verifier name binding." }
+claims:
+  - id: claim-sms-otp-restricted
+    predicate: nist_classification
+    value: supported
+    statement: "NIST SP 800-63B-4 treats SMS codes as out-of-band authentication over the PSTN, which it designates a restricted authenticator: the only one at publication. A CSP that accepts it must offer at least one unrestricted alternative at the required AAL, warn users about the risks, address them in its risk assessment and keep a migration plan."
+    scope: NIST SP 800-63B-4; NIST notes it may change the restricted status as the threat landscape evolves.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.1.3.3 Authentication Using the Public Switched Telephone Network (#pstnOOB)"
+        note: Use of the PSTN for out-of-band verification is restricted and SHALL satisfy Sec. 3.2.9; verifiers SHALL ensure alternative authenticator types are available.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.2.9 Restricted Authenticators (#restricted)"
+        note: PSTN out-of-band is the one restricted authenticator; CSPs SHALL offer an unrestricted alternative, give meaningful notice, assess risks and plan migration.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.1.3.1 Out-of-Band Authenticators (#ooba)"
+        note: Secondary channel SHALL use approved encryption unless sent via the PSTN; a SIM-authenticated device may receive secrets via SMS or voice.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+  - id: claim-sms-otp-sim-swap-porting-risk
+    predicate: vulnerable_under
+    value: supported
+    statement: "SMS codes are exposed to attacks that move the phone number to another device or provider, such as SIM changes and number porting. NIST tells verifiers to consider such risk indicators before sending a code over the PSTN, and treats changing the registered number as binding a new authenticator."
+    scope: Interpretation of NIST's risk-indicator and binding requirements; attack prevalence is not assessed.
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.1.3.3 Authentication Using the Public Switched Telephone Network (#pstnOOB)"
+        note: Verifiers SHOULD consider device swap, SIM change, number porting and other abnormal behaviour before sending a PSTN secret; number changes follow Sec. 4.1.2 binding rules.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-sms-otp-phishing-resistance
+    predicate: phishing_resistance
+    value: not_supported
+    statement: SMS codes are not phishing-resistant. The user types the code by hand, and it is not bound to the session or the verifier's name, so a fake site can relay it to the real service while it is still valid.
+    scope: SMS out-of-band authentication; surrounding controls not assessed.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.1.3 Out-of-Band Devices (#out-of-band), introductory text"
+        note: States directly that out-of-band authentication is not phishing-resistant.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.2.5 Phishing Resistance (#verifimpers)"
+        note: Manually entered outputs, explicitly including out-of-band, SHALL NOT be considered phishing-resistant; an impostor verifier could relay the output.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-sms-otp-mfa-qualification
+    predicate: mfa_qualification
+    value: conditional
+    statement: "An SMS code on its own is a single 'something you have' factor. It contributes to AAL2 only when combined with a password or biometric comparison. A phone that requires an activation factor before the code can be read or entered could count as a multi-factor out-of-band authenticator, but a plain SMS flow does not ensure that."
+    scope: NIST SP 800-63B-4 AAL1/AAL2 classification; other frameworks not assessed.
+    assumptions:
+      - "Single-factor case: the SMS code is combined with a separately verified password or biometric comparison in the same authentication."
+      - "The restricted-authenticator obligations of Sec. 3.2.9 are met by the CSP."
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/aal/
+        title: "NIST SP 800-63B-4: Authentication Assurance Levels"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 2 'Authentication Assurance Level 2' > 'Permitted Authenticator Types' (#aal2types)"
+        note: Two single-factor authenticators must include a physical authenticator, such as an out-of-band device, plus a password or biometric comparison.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.1.3 Out-of-Band Devices (#out-of-band); Sec. 3.1.3.4 Multi-Factor Out-of-Band Authenticators (#mfooba)"
+        note: Out-of-band is "something you have"; multi-factor variants need an activation factor on each use.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-sms-otp-aal3-eligible
+    predicate: aal3_eligible
+    value: not_supported
+    statement: SMS codes cannot be used for NIST AAL3. AAL3 permits only cryptographic authenticators with a non-exportable private key that provide phishing resistance.
+    scope: NIST SP 800-63B-4 AAL3.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/aal/
+        title: "NIST SP 800-63B-4: Authentication Assurance Levels"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 2 'Authentication Assurance Level 3' > 'Permitted Authenticator Types' (#aal3types) and Sec. 2.3.2 (#aal3req)"
+        note: AAL3 allows only MF cryptographic, or SF cryptographic plus password or biometric; requires non-exportable key and phishing resistance.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-sms-otp-code-requirements
+    predicate: verifier_requirements
+    value: supported
+    statement: "NIST requires the code to be at least six random decimal digits from an approved random bit generator, valid for at most 10 minutes and accepted only once. Codes under 64 bits require rate limiting, and sending a new code must not reset the failure count."
+    scope: NIST SP 800-63B-4 out-of-band verifier requirements.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.1.3.2 Out-of-Band Verifiers (#out-of-band-verifiers)"
+        note: Invalid unless completed within 10 minutes; accepted once; at least six digits from approved RBG; rate limiting if under 64 bits; new secret does not reset count.
+        stance: supports
+        retrieved_at: "2026-10-03"

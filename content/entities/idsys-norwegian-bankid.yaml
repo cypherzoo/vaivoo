@@ -1,0 +1,351 @@
+# DRAFT. Claims are proposed, not approved — do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: idsys-norwegian-bankid
+type: IdentitySystem
+slug: norwegian-bankid
+name: Norwegian BankID
+aliases: [BankID (Norway), BankID Norge]
+summary: Norway's bank-issued electronic ID, used to log in and sign electronically at banks, public services (via ID-porten) and private businesses.
+layer: [nordic-eu, core]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  Norwegian BankID is a personal electronic ID for logging in and signing online. The Norwegian banks developed it together and launched it in 2004. The banks issue it to their private customers. The operator, Stø AS, maintains and develops the service and sells it to businesses through resellers. The company took the name Stø AS in May 2025. Norwegian BankID is not the same scheme as Swedish BankID.
+
+  People use it to log in to online banking and private services, and to log in to Norwegian public services through ID-porten, the government's shared login service. They can also use it to sign documents electronically, for example loan applications.
+
+  To get Norwegian BankID, you go to your bank and show your passport. You must be at least 12 years old. To log in, you enter your national identity number, a one-time code and a personal password. The code comes from the BankID app or from a code device. The operator says the "BankID on mobile" variant is being phased out and can no longer be created. In the BankID app, users can also turn on a faster mode that uses face recognition, fingerprint or a PIN. The operator rates this biometric mode at a lower assurance level than the standard login.
+
+  Businesses that rely on Norwegian BankID connect to it through OpenID Connect. They can choose between a "BankID High" login and a "BankID with biometrics" login, which have different levels of assurance.
+crypto: |
+  Signing is based on PKI. The operator's developer documentation describes X.509 certificates issued by its signing service. The current qualified certificates for natural persons are short-lived (15 minutes in the published example). They carry an elliptic-curve P-256 public key, and the issuing CA signs them with ECDSA with SHA-384. They also include ETSI qualified-certificate statements, including one saying the key is held on a qualified signature-creation device. The documentation does not say where that device is or who operates it.
+
+  The "BankID with biometrics" login is built on WebAuthn. The operator's documentation says it uses a hardware-bound private key held in tamper-resistant hardware on the user's phone.
+
+  For the standard "BankID High" login (one-time code from the app or a code device, plus a password), the sources reviewed here do not publicly state where the user's private keys are held or what algorithms are used. This entry treats both as not publicly specified.
+relations:
+  - predicate: uses_protocol
+    object_id: standard-webauthn
+    claim_id: claim-norwegian-bankid-biometric-webauthn
+    note: Applies only to the "BankID with biometrics" variant (LoA 3), not to BankID High.
+claims:
+  - id: claim-norwegian-bankid-operator
+    predicate: operated_by
+    value: supported
+    statement: Norwegian BankID is maintained and developed by Stø AS, which sells it to Norwegian businesses through resellers; the company was renamed Stø AS in May 2025.
+    scope: Operator of the scheme as of the retrieval date.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://bankid.no/en/about-us
+        title: About us - BankID
+        publisher: Stø AS (bankid.no)
+        locator: "Sections '4.6 million Norwegians have BankID' and 'Our story. So far.'"
+        note: States Stø AS maintains and develops the service and sells via resellers; company renamed Stø AS from May 2025.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-norwegian-bankid-issued-by-banks
+    predicate: identity_proofing_by_issuing_bank
+    value: supported
+    statement: Norwegian BankID is issued to private customers by Norwegian banks; to obtain it the user visits their bank and presents a passport, from age 12.
+    scope: Initial issuance to private individuals.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://bankid.no/en/how-to-get-bankid
+        title: How to get BankID - BankID
+        publisher: Stø AS (bankid.no)
+        locator: "Section 'Contact your bank to get BankID'"
+        note: Says users visit their bank, present a passport and get help setting up BankID; available from age 12.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://bankid.no/en/about-us
+        title: About us - BankID
+        publisher: Stø AS (bankid.no)
+        locator: "Section '4.6 million Norwegians have BankID'"
+        note: Says Norwegian banks developed BankID together and the banks issue it to private customers.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-norwegian-bankid-id-porten
+    predicate: accepted_by_public_login_service
+    value: supported
+    statement: Norwegian BankID is one of the electronic IDs residents can use to log in to Norwegian public services through ID-porten, operated by the Norwegian Digitalisation Agency (Digdir).
+    scope: Login to public-sector services via ID-porten.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.digdir.no/felleslosninger/id-porten/864
+        title: ID-porten (Nasjonale fellesløsninger)
+        publisher: Digitaliseringsdirektoratet (Digdir)
+        locator: "Page intro under heading 'Nasjonale fellesløsninger ID-porten'"
+        note: (Norwegian) ID-porten lets users log in to public services with well-known eIDs; BankID is named among them. Digdir is listed as administrator.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-norwegian-bankid-assurance-level
+    predicate: assurance_level
+    value: conditional
+    statement: The operator presents the "BankID High" login as the highest level of assurance, returning acr "urn:bankid:bid;LOA=4"; the "BankID with biometrics" login returns LOA=3.
+    scope: Operator's own classification in its OIDC service. The EU notification at level High is covered in claim-norwegian-bankid-eidas-notification; the Norwegian self-declaration register (Nkom) entry was not retrieved.
+    assumptions:
+      - The relying party requests the BankID High identity provider (acr_values urn:bankid:bid); the biometric variant is LOA=3.
+      - LOA=4 is the operator's own label, which maps to the top of the three eIDAS/Norwegian levels (lavt, betydelig, høyt); a regulator's confirmation is still needed.
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://developer.bankid.no/bankid-oidc-provider/core-concepts/identity-providers/
+        title: Identity Providers - BankID documentation
+        publisher: Stø AS (developer.bankid.no)
+        version: Page last updated 2026-05-20
+        locator: "Section 'Supported acr values' (table)"
+        note: BankID High uses acr urn:bankid:bid with LOA=4; BankID Biometric uses urn:bankid:bis with LOA=3; links eIDAS levels of assurance.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://bankid.no/en
+        title: BankID
+        publisher: Stø AS (bankid.no)
+        locator: Page meta description (home page)
+        note: Describes BankID as personal identification at the highest level of assurance.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.digdir.no/digital-identitet/regler-og-krav-bruk-av-eid/4702
+        title: Regler og krav for bruk av eID
+        publisher: Digitaliseringsdirektoratet (Digdir)
+        version: Last changed 2025-08-20
+        locator: "Sections 'Selvdeklarasjonsforskriften' and 'Identifikasjonsnivåforskriften'"
+        note: (Norwegian) Norway uses self-declaration of eID schemes under the trust services act; eID providers pick a level (low, substantial, high) to self-declare. Does not name Norwegian BankID.
+        stance: contextualizes
+        retrieved_at: 2026-10-03
+  - id: claim-norwegian-bankid-eidas-notification
+    predicate: eidas_notified
+    value: supported
+    statement: The European Commission's overview of eID schemes under eIDAS lists Norway's BankID scheme as notified at level of assurance High, with notification dated 24 October 2022.
+    scope: eIDAS (Regulation (EU) No 910/2014) cross-border notification status as shown in the Commission overview at retrieval time.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/48762251/Overview+of+pre-notified+and+notified+eID+schemes+under+eIDAS
+        title: Overview of pre-notified and notified eID schemes under eIDAS
+        publisher: European Commission (eID User Community)
+        version: Page last updated 2026-02-02
+        locator: "Table row 'Norway - BankID' (country Norway, scheme Norwegian eID scheme, LoA High, status NOTIFIED, 24 Oct 2022)"
+        note: Lists Norway - BankID as NOTIFIED at level High dated 24 Oct 2022; the row's Official Journal link points to a 2020 notice, which looks inconsistent.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://developer.bankid.no/bankid-esign-provider/pki/certificate-profiles/
+        title: Certificate Profiles - BankID documentation
+        publisher: Stø AS (developer.bankid.no)
+        version: Page last updated 2026-01-28
+        locator: "Section 'Qualified Certificate for Natural Person', rows under 'eID Means Reference'"
+        note: Certificate field records the eID scheme as 'BANKID' and links to the Commission's notified-schemes overview.
+        stance: contextualizes
+        retrieved_at: 2026-10-03
+  - id: claim-norwegian-bankid-oidc
+    predicate: supports_openid_connect
+    value: supported
+    statement: Relying parties integrate Norwegian BankID for authentication and signing through OpenID Connect.
+    scope: Relying-party integration via the operator's OIDC service.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://developer.bankid.no/bankid-oidc-provider/introduction/
+        title: Introduction - BankID documentation (BankID OpenID Connect)
+        publisher: Stø AS (developer.bankid.no)
+        version: Page last updated 2025-11-17
+        locator: "Section 'How do I get started with BankID?'"
+        note: States BankID is integrated over the OpenID Connect standard for strong authentication and digital signing, with several levels of assurance.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-norwegian-bankid-authenticator-forms
+    predicate: authenticator_forms
+    value: supported
+    statement: Users log in with their national identity number, a one-time code from the BankID app or a code device, and a personal password; the "BankID on mobile" variant is being phased out, and the app can also enable faster login with face recognition, fingerprint or PIN.
+    scope: User-facing variants as described by the operator on the retrieval date; which code devices are available depends on the user's bank.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://bankid.no/en/what-is-bankid
+        title: What is bankid - BankID
+        publisher: Stø AS (bankid.no)
+        locator: "Intro paragraphs under 'What is BankID?' and last paragraph of 'What can I use BankID for?'"
+        note: Login uses national ID number, a code from app or code unit, and a password; all banks offer the app, but code units vary by bank.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://bankid.no/en/how-to-get-bankid
+        title: How to get BankID - BankID
+        publisher: Stø AS (bankid.no)
+        locator: "Section 'Faster, Easier, Safer with the App'"
+        note: Lists variants (code device, app, BankID on mobile); BankID on mobile is being phased out; app supports face, fingerprint or PIN.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://developer.bankid.no/bankid-oidc-provider/core-concepts/identity-providers/
+        title: Identity Providers - BankID documentation
+        publisher: Stø AS (developer.bankid.no)
+        version: Page last updated 2026-05-20
+        locator: "Section 'Supported amr values'"
+        note: amr values distinguish code device (bid-otp), BankID app (bid-app) and typed password (bid-pwd); documentation warns these are indications, not a security mechanism.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-norwegian-bankid-biometric-webauthn
+    predicate: biometric_variant_uses_webauthn
+    value: supported
+    statement: The "BankID with biometrics" login uses WebAuthn with the device's face recognition, fingerprint or PIN, and the operator classifies it at LoA 3, below BankID High (LoA 4).
+    scope: The "BankID with biometrics" variant only.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://developer.bankid.no/bankid-with-biometrics/introduction/
+        title: Introduction - BankID documentation (BankID with biometrics)
+        publisher: Stø AS (developer.bankid.no)
+        version: Page last updated 2026-06-09
+        locator: "Section 'What is BankID with biometrics?'"
+        note: Describes a WebAuthn-based login using device biometrics or PIN, classified LoA=3 versus LoA=4 for BankID High.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-norwegian-bankid-signing
+    predicate: electronic_signature
+    value: supported
+    statement: Norwegian BankID can be used to sign documents electronically; the operator's signing service offers qualified electronic signatures with qualified certificates and advanced electronic signatures, currently with BankID High as the supported identity provider.
+    scope: Signing services offered by the operator; legal effect in a specific transaction is not assessed.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://developer.bankid.no/bankid-esign-provider/introduction/
+        title: Introduction - BankID documentation (BankID Signing)
+        publisher: Stø AS (developer.bankid.no)
+        version: Page last updated 2026-02-26
+        locator: "Sections 'What is BankID Signing?' and 'Supported Identity Providers'"
+        note: Lists QES with qualified certificates, AES, and qualified timestamps; BankID High is listed as the supported identity provider.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://bankid.no/en/what-is-bankid
+        title: What is bankid - BankID
+        publisher: Stø AS (bankid.no)
+        locator: "Section 'What can I use BankID for?'"
+        note: Consumer page says users can sign documents electronically, e.g. loan applications and bids on homes.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-norwegian-bankid-signing-certificates
+    predicate: uses_pki_certificates
+    value: supported
+    statement: The operator's signing service issues short-lived X.509 qualified certificates for natural persons, with ECDSA P-256 subject keys, an issuer signature using ECDSA with SHA-384, and ETSI QC statements including QcSSCD (key on a qualified signature-creation device).
+    scope: Certificate profiles of the current signing service (CSC and WYSIWYS), as published in the operator's documentation; the example shown is from pre-production.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://developer.bankid.no/bankid-esign-provider/pki/certificate-profiles/
+        title: Certificate Profiles - BankID documentation
+        publisher: Stø AS (developer.bankid.no)
+        version: Page last updated 2026-01-28
+        locator: "Section 'Qualified Certificate for Natural Person' (rows BASIC INFO, PUBLIC KEY, QC STATEMENTS (ETSI), STATEMENTS (ETSI))"
+        note: Lists 15-minute validity, P-256 key, ecdsa-with-SHA384, QcCompliance and QcSSCD statements, and a short-lived-certificate statement.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-norwegian-bankid-key-storage-biometric
+    predicate: key_storage_location
+    value: supported
+    statement: In the "BankID with biometrics" variant, authentication uses a hardware-bound private key held in tamper-resistant hardware on the user's phone, such as a secure enclave.
+    scope: The "BankID with biometrics" variant only; signalled by the amr value bis-hwk.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://developer.bankid.no/bankid-with-biometrics/advanced-topics/understanding-authentication-methods/
+        title: Understanding authentication methods (amr) - BankID documentation
+        publisher: Stø AS (developer.bankid.no)
+        version: Page last updated 2026-02-27
+        locator: "Sections 'Understanding the prefixes' and 'Core values' (bis-hwk row)"
+        note: bis-hwk means a hardware-bound key stored in tamper-resistant hardware, e.g. the phone's secure enclave, was used.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-norwegian-bankid-key-storage-high
+    predicate: key_storage_location
+    value: unknown
+    statement: Where the user's keys are held for the standard BankID High login (code device or app OTP plus password) is not stated in the operator pages reviewed.
+    scope: BankID High login; not publicly specified in the sources reviewed.
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://developer.bankid.no/bankid-with-biometrics/advanced-topics/understanding-authentication-methods/
+        title: Understanding authentication methods (amr) - BankID documentation
+        publisher: Stø AS (developer.bankid.no)
+        version: Page last updated 2026-02-27
+        locator: "Section 'Understanding the prefixes' (bid- prefix description)"
+        note: Describes classic BankID as code device or app OTP plus password, without stating key location.
+        stance: contextualizes
+        retrieved_at: 2026-10-03
+  - id: claim-norwegian-bankid-phishing-resistance
+    predicate: phishing_resistance
+    value: unknown
+    statement: No primary source reviewed states whether Norwegian BankID logins (BankID High or the biometric variant) are phishing-resistant.
+    scope: All variants. The biometric variant uses WebAuthn, but the operator does not make a phishing-resistance claim in the pages reviewed.
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://developer.bankid.no/bankid-with-biometrics/introduction/
+        title: Introduction - BankID documentation (BankID with biometrics)
+        publisher: Stø AS (developer.bankid.no)
+        version: Page last updated 2026-06-09
+        locator: "Section 'What is BankID with biometrics?'"
+        note: Says the biometric variant uses WebAuthn but makes no explicit phishing-resistance claim.
+        stance: contextualizes
+        retrieved_at: 2026-10-03
+      - url: https://bankid.no/en
+        title: BankID
+        publisher: Stø AS (bankid.no)
+        locator: "Section 'Avoid Fraud'"
+        note: Warns users that callers asking for BankID codes or passwords are scammers, so social-engineering risk to codes is acknowledged.
+        stance: contextualizes
+        retrieved_at: 2026-10-03

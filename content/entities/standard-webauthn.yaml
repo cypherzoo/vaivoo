@@ -1,0 +1,154 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: standard-webauthn
+type: Standard
+slug: webauthn
+name: Web Authentication (WebAuthn)
+aliases: ["WebAuthn", "W3C Web Authentication", "WebAuthn Level 3"]
+summary: "W3C specification that defines a browser API and authenticator model for creating and using public-key credentials scoped to a website (Relying Party). Level 3 was published as a W3C Recommendation on 25 August 2026."
+layer: [core, crypto]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  WebAuthn defines how a website asks the browser to create a new key pair for the user (registration) and later to prove possession of that key (authentication). The browser talks to an authenticator: a component built into the device, or a separate one such as a security key or phone.
+
+  Each credential is scoped to one Relying Party, identified by its RP ID (a domain). The browser fills in the website's origin, and the authenticator records a hash of the RP ID. The site's server checks both, so a look-alike domain cannot obtain a usable response for the real site.
+
+  The specification also defines flags that tell the server whether the user was present, whether the user was verified locally (for example by PIN or biometric), and whether the credential may be, or currently is, backed up to other devices. Optional attestation lets an authenticator vouch for its make and model.
+
+  Level 3 is the third version of the specification. It follows Level 1 (2019) and Level 2 (2021).
+crypto: |
+  At registration the authenticator generates a new asymmetric key pair for the RP ID and returns the public key in COSE_Key format. The private key is not sent to the server.
+
+  At authentication the authenticator signs the concatenation of its authenticator data (which starts with the SHA-256 hash of the RP ID and carries the UP/UV/BE/BS flags) and a SHA-256 hash of the client data JSON (which contains the server's random challenge and the calling origin). The server verifies this signature with the stored public key.
+
+  Algorithms are named by COSE algorithm identifiers from the IANA registry. The specification gives -7 (ES256) and -257 (RS256) as examples, and requires user agents to be able to export public keys for -7 (ES256, P-256), -257 (RS256) and -8 (EdDSA, Ed25519).
+relations: []
+claims:
+  - id: claim-webauthn-l3-publication-status
+    predicate: publication_status
+    value: supported
+    statement: "Web Authentication Level 3 is a W3C Recommendation dated 25 August 2026, published by the Web Authentication Working Group. It succeeds Level 2 (2021) and Level 1 (2019)."
+    scope: Document status as shown on the W3C TR page at retrieval time.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.w3.org/TR/webauthn-3/
+        title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
+        publisher: W3C
+        version: "W3C Recommendation, 25 August 2026 (https://www.w3.org/TR/2026/REC-webauthn-3-20260825/)"
+        locator: Document front matter ("This version", "Previous Versions"); Status of this document
+        note: Front matter labels the document a W3C Recommendation dated 25 August 2026 and lists Level 2 and Level 1 as previous versions.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-webauthn-scoped-public-key-credentials
+    predicate: defines
+    value: supported
+    statement: WebAuthn defines an API for web applications to create and use public-key credentials, each scoped to a single Relying Party identified by its RP ID.
+    scope: Purpose and core model of the specification.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.w3.org/TR/webauthn-3/
+        title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
+        publisher: W3C
+        version: "W3C Recommendation, 25 August 2026"
+        locator: Abstract
+        note: Describes an API for strong, attested, scoped, public-key credentials, each scoped to a given Relying Party.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.w3.org/TR/webauthn-3/
+        title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
+        publisher: W3C
+        version: "W3C Recommendation, 25 August 2026"
+        locator: "§4 Terminology, definition \"Relying Party Identifier (RP ID)\""
+        note: An RP ID is a domain string; a public key credential can only authenticate to the same RP ID it was registered with.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-webauthn-rp-verifies-origin-and-rpid
+    predicate: requires_origin_and_rp_id_check
+    value: supported
+    statement: "In both the registration and authentication ceremonies, the Relying Party must verify that the client data origin is one it expects and that the rpIdHash in the authenticator data equals the SHA-256 hash of its expected RP ID."
+    scope: Relying Party verification procedure as specified; says nothing about whether a given deployment implements it correctly.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.w3.org/TR/webauthn-3/
+        title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
+        publisher: W3C
+        version: "W3C Recommendation, 25 August 2026"
+        locator: "§7.1 Registering a New Credential; §7.2 Verifying an Authentication Assertion (steps on C.origin and rpIdHash)"
+        note: Both ceremonies tell the RP to verify C.origin against expected origins and rpIdHash against the SHA-256 of the expected RP ID.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.w3.org/TR/webauthn-3/
+        title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
+        publisher: W3C
+        version: "W3C Recommendation, 25 August 2026"
+        locator: "§13.4.1 Security Benefits for WebAuthn Relying Parties"
+        note: Lists resistance of authentication ceremonies to man-in-the-middle attacks, conditional on the RP following §7 operations.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-webauthn-cose-algorithms
+    predicate: algorithm_identifiers
+    value: supported
+    statement: "WebAuthn identifies credential algorithms by COSE algorithm identifiers; user agents must be able to return the public key for -7 (ES256 on P-256), -257 (RS256) and -8 (EdDSA with Ed25519)."
+    scope: Algorithm identification and minimum user-agent public-key export support; does not list every algorithm an authenticator may use.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.w3.org/TR/webauthn-3/
+        title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
+        publisher: W3C
+        version: "W3C Recommendation, 25 August 2026"
+        locator: "§5.8.5 Cryptographic Algorithm Identifier (typedef COSEAlgorithmIdentifier)"
+        note: Identifiers should come from the IANA COSE Algorithms registry, e.g. -7 for ES256 and -257 for RS256; adds curve constraints for ES256 and EdDSA keys.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.w3.org/TR/webauthn-3/
+        title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
+        publisher: W3C
+        version: "W3C Recommendation, 25 August 2026"
+        locator: "§5.2.1.1 Easily accessing credential data (getPublicKey())"
+        note: User agents must return a non-null getPublicKey() for -7 (ES256, P-256), -257 (RS256) and -8 (EdDSA, Ed25519).
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-webauthn-nist-verifier-name-binding
+    predicate: phishing_resistance_mechanism
+    value: supported
+    statement: NIST SP 800-63B-4 cites WebAuthn as an example of a standard that provides phishing resistance through verifier name binding.
+    scope: NIST's classification of the protocol; deployment correctness is assessed separately.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticators"
+        publisher: NIST
+        version: "SP 800-63B-4 (HTML edition dated 26 Aug 2025)"
+        locator: "Sec. 3.2.5 Phishing Resistance, subsection \"Verifier Name Binding\" (#verifier-name-binding)"
+        note: Names WebAuthn as a verifier-name-binding example; the authenticator secret is chosen based on the verifier's authenticated domain name.
+        stance: supports
+        retrieved_at: 2026-10-03
