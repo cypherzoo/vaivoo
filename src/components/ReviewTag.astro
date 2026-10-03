@@ -1,0 +1,6 @@
+---
+import { REVIEW } from '../lib/content.mjs';
+const { level, short = false, count } = Astro.props;
+const r = REVIEW[level] ?? REVIEW.draft;
+---
+<span class={`rv ${r.cls}`} title={r.label}>{count !== undefined && <b>{count}</b>} {short ? r.short : r.label}</span>
