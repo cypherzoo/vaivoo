@@ -1,0 +1,10 @@
+---
+import ReviewTag from './ReviewTag.astro';
+const { summary, what = 'claims on this page' } = Astro.props;
+const order = ['external', 'internal', 'draft', 'disputed'];
+---
+<div class="rv-summary">
+  <span class="meta">Review status of the {summary.total} {what}:</span>
+  {order.filter(l => summary.counts[l] > 0).map(l => <ReviewTag level={l} count={summary.counts[l]} short />)}
+  {summary.approved === 0 && <p class="meta">Nothing here has been reviewed by a person yet. Every claim links to its sources; check them before relying on it. <a href="/methodology/#review">How review works</a></p>}
+</div>
