@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import ReviewTag from '../components/ReviewTag.astro';
 ---
 <Base title="Methodology" description="How Vaivoo turns sources into reviewed, scoped claims: values, evidence, review tiers, AI use and updates.">
   <h1>Methodology</h1>
@@ -27,13 +28,20 @@ import Base from '../layouts/Base.astro';
   </ol>
   <p>We do not use marketing material, affiliate content or anonymous blog posts as evidence. Where sources disagree, both are recorded and the claim says so.</p>
 
-  <h2>Review</h2>
-  <p>A claim is shown on the public site only after it is approved. Until then it appears as "not yet verified", and its proposed value is not published or exported.</p>
-  <ul>
-    <li><strong>Tier B</strong>: definitions and plain facts (for example, which RFC defines an algorithm). One reviewer.</li>
-    <li><strong>Tier C</strong>: security properties, assurance levels, attack resistance and legal or regulatory status. Two independent reviewers, one of whom is a technical specialist outside Vaivoo.</li>
+  <h2 id="review">Review</h2>
+  <p>Vaivoo publishes its work in the open, including claims that have not been reviewed yet. Every claim carries a tag that says exactly how far it has been checked:</p>
+  <ul class="rv-legend">
+    <li><ReviewTag level="external" /> Approved by an independent specialist outside Vaivoo. For security, assurance and regulatory claims (Tier C) this means two people: the editor and an external technical reviewer.</li>
+    <li><ReviewTag level="internal" /> Approved by the Vaivoo editor against the cited sources, and waiting for external review.</li>
+    <li><ReviewTag level="draft" /> Researched and sourced, but not yet reviewed by a person. Treat it as a starting point and check the sources.</li>
+    <li><ReviewTag level="disputed" /> Someone has reported a problem, and the claim is being re-checked.</li>
   </ul>
-  <p>Every change goes through a reviewed pull request in a public repository, so the full history of each claim is visible.</p>
+  <p>Review tiers decide who must approve a claim before it can turn green:</p>
+  <ul>
+    <li><strong>Tier B</strong>: definitions and plain facts (for example, which RFC defines an algorithm). One external reviewer.</li>
+    <li><strong>Tier C</strong>: security properties, assurance levels, attack resistance and legal or regulatory status. The editor plus an independent technical reviewer.</li>
+  </ul>
+  <p>Pages where nothing has been reviewed by a person yet are kept out of search engines. Every change goes through a pull request in a public repository, so the full history of each claim is visible.</p>
 
   <h2>Comparisons</h2>
   <p>Comparisons set concrete deployment setups side by side, for example "password plus TOTP" against "synced passkey with user verification". They do not compare brand names or abstract categories, and there is no overall score. A cell is only filled if a claim exists for it; otherwise it shows a dash.</p>

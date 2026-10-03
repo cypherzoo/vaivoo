@@ -1,13 +1,25 @@
 ---
 import Base from '../layouts/Base.astro';
-import { allEntities, LABELS } from '../lib/content.mjs';
+import ReviewTag from '../components/ReviewTag.astro';
+import { allEntities, publicClaims, reviewSummary, LABELS } from '../lib/content.mjs';
 const items = allEntities();
 const counts = items.reduce((m, e) => (m[e.section] = (m[e.section] || 0) + 1, m), {});
+const all = reviewSummary(items.flatMap(publicClaims));
+const order = ['methods', 'profiles', 'attacks', 'credentials', 'protocols', 'standards', 'crypto', 'identity-systems', 'regulations'];
+const sections = [...order.filter(s => counts[s]), ...Object.keys(counts).filter(s => !order.includes(s))];
 ---
 <Base>
   <h1>Authentication, explained with evidence</h1>
   <p>How people and machines prove who they are online — the methods, standards and cryptography behind them, and the Nordic and EU identity systems built on top. Every security claim is scoped, sourced and dated.</p>
-  {items.length === 0
-    ? <p class="meta">The first reviewed entries are being prepared. Read the <a href="/methodology/">methodology</a> to see how they are checked.</p>
-    : <ul>{Object.entries(counts).map(([s, n]) => <li><a href={`/${s}/`}>{LABELS[s]}</a> <span class="meta">({n} published)</span></li>)}</ul>}
+  <p>Start with the <a href="/guides/">guides</a>, or <a href="/compare/">compare setups side by side</a>.</p>
+  <h2>Reference</h2>
+  <ul>{sections.map(s => <li><a href={`/${s}/`}>{LABELS[s]}</a> <span class="meta">({counts[s]})</span></li>)}</ul>
+  <h2>Review status</h2>
+  <p>Every claim shows how far it has been checked:</p>
+  <ul class="rv-legend">
+    <li><ReviewTag level="external" /> <span class="meta">approved by an independent specialist outside Vaivoo</span></li>
+    <li><ReviewTag level="internal" /> <span class="meta">approved by the Vaivoo editor, awaiting external review</span></li>
+    <li><ReviewTag level="draft" /> <span class="meta">researched and sourced, not yet reviewed by a person</span></li>
+  </ul>
+  <p class="meta">Right now: {all.counts.external} externally reviewed · {all.counts.internal} internally reviewed · {all.counts.draft} drafts, across {items.length} entries. <a href="/methodology/#review">How review works</a></p>
 </Base>
