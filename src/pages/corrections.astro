@@ -1,9 +1,30 @@
 ---
 import Base from '../layouts/Base.astro';
 ---
-<Base title="Corrections">
+<Base title="Corrections" description="How to report an error on Vaivoo, how corrections are handled, and the public correction log.">
   <h1>Corrections</h1>
-  <p>Found an error? Email <a href="mailto:corrections@vaivoo.com">corrections@vaivoo.com</a> with the page, the claim, and a source. Material corrections are logged here with date and what changed.</p>
+  <p>Accuracy is the point of Vaivoo. If you think a claim is wrong, out of date or missing context, please tell us.</p>
+
+  <h2>How to report an error</h2>
+  <p>Email <a href="mailto:corrections@vaivoo.com">corrections@vaivoo.com</a> with:</p>
+  <ul>
+    <li>the page address, and the claim if you can (each claim has its own link);</li>
+    <li>what you think is wrong;</li>
+    <li>a source, ideally a primary one such as a standard, regulation or official register, with the section.</li>
+  </ul>
+  <p>You can also open an issue or pull request in the public repository.</p>
+
+  <h2>What happens next</h2>
+  <ol>
+    <li>We aim to acknowledge reports within five working days.</li>
+    <li>The claim is checked against the cited sources and yours. If the report is credible, the claim is marked as disputed while it is reviewed.</li>
+    <li>Corrections go through the same review as new claims. Security, assurance and regulatory claims need two reviewers.</li>
+    <li>The corrected claim is published, and material corrections are listed below.</li>
+  </ol>
+
+  <h2>What counts as material</h2>
+  <p>A correction is material if it changes a claim's value (for example from "supported" to "conditional"), its scope or conditions, or the meaning of a guide or comparison. Typos, broken links and wording changes that do not alter meaning are fixed without a log entry, but remain visible in the public version history.</p>
+
   <h2>Correction log</h2>
   <p class="meta">No corrections yet.</p>
 </Base>
