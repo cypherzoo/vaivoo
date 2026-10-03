@@ -1,19 +1,24 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ReviewSummary from '../../components/ReviewSummary.astro';
+import { claimById, reviewSummary } from '../../lib/content.mjs';
 export function getStaticPaths() {
-  const preview = process.env.PREVIEW_DRAFTS === '1';
   return Object.values(import.meta.glob('../../../content/guides/*.md', { eager: true }))
-    .filter(m => m.frontmatter.status === 'published' || (preview && m.frontmatter.status !== 'archived'))
+    .filter(m => m.frontmatter.status !== 'archived')
     .map(m => ({ params: { slug: m.frontmatter.slug }, props: { mod: m } }));
 }
 const { mod } = Astro.props;
 const f = mod.frontmatter;
 const Content = mod.Content;
+const ids = [...new Set([...mod.rawContent().matchAll(/#(claim-[a-z0-9-]+)\)/g)].map(m => m[1]))];
+const cited = ids.map(claimById).filter(Boolean).map(x => x.claim);
+const summary = reviewSummary(cited);
 ---
-<Base title={f.title} description={f.summary}>
-  <p class="meta">Guide {f.status !== 'published' && <span class="pill">{f.status}</span>} · Last reviewed: {f.last_reviewed_at ?? 'not yet reviewed'}</p>
+<Base title={f.title} description={f.summary} noindex={summary.approved === 0}>
+  <p class="meta"><a href="/guides/">Guide</a> {f.status !== 'published' && <span class="pill">{f.status}</span>} · Last reviewed: {f.last_reviewed_at ?? 'not yet reviewed'}</p>
   <h1>{f.title}</h1>
   <p><strong>{f.summary}</strong></p>
+  <ReviewSummary summary={summary} what="claims this guide cites" />
   <article class="guide"><Content /></article>
-  <p class="meta">Every factual statement links to a sourced claim (↗). Claims marked "not yet verified" on their entity page have not been approved by a reviewer. <a href="/corrections/">Report a correction</a></p>
+  <p class="meta">Every factual statement links to a sourced claim (↗). Each claim's review status is shown on its entity page. <a href="/corrections/">Report a correction</a></p>
 </Base>
