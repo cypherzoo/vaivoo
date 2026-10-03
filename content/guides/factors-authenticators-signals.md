@@ -2,10 +2,10 @@
 title: "Factors, authenticators and signals: three different things"
 slug: factors-authenticators-signals
 summary: "A factor is a category of evidence, an authenticator is the thing you use, and a signal is context the service observes. Mixing them up leads to wrong conclusions about how strong a sign-in is."
-status: draft
+status: published
 order: 1
 owner: Chris War
-last_reviewed_at: null
+last_reviewed_at: "2026-10-03"
 ---
 
 Security discussions often say "factor" when they mean the app, the phone or the code. This guide separates three ideas that are easy to blur: **factors**, **authenticators** and **signals**, and adds a fourth that is often confused with them: **protocols**.
