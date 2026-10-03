@@ -9,7 +9,7 @@ aliases: [BankID (Norway), BankID Norge]
 summary: Norway's bank-issued electronic ID, used to log in and sign electronically at banks, public services (via ID-porten) and private businesses.
 layer: [nordic-eu, core]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

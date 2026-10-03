@@ -9,7 +9,7 @@ aliases: [TOTP specification, "RFC 6238"]
 summary: "Informational IETF RFC (May 2011) that defines the Time-Based One-Time Password algorithm, a time-based variant of HOTP (RFC 4226)."
 layer: [core, crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

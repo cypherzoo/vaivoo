@@ -9,7 +9,7 @@ aliases: ["device-bound passkey (UV required)", "single-device WebAuthn credenti
 summary: "A deployment in which the website accepts passkeys that stay on one authenticator (a security key or a non-syncing device authenticator), and requires the authenticator to verify the user locally (PIN or biometric) on every sign-in."
 layer: [core, crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 configuration:

@@ -4,7 +4,7 @@ slug: password-sms-vs-totp-vs-synced-passkey
 title: Password + SMS code vs password + TOTP vs synced passkey
 summary: Three common ways to sign in to a consumer account, compared on phishing resistance, factor count, NIST assurance level, replay, server-side secrets and recovery.
 status: draft
-owner: Christian
+owner: Chris War
 intro: |
   The first two columns add a one-time code to a password. The rows describe the code step; the password step itself is not phishing-resistant in either case (see Password authentication). The third column replaces the password with a synced passkey that requires local user verification.
 

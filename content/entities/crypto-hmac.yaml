@@ -9,7 +9,7 @@ aliases: [Keyed-hash message authentication code, Keyed-Hashing for Message Auth
 summary: A way to combine a secret key with a cryptographic hash function to produce a message authentication code. Only someone holding the key can compute or check it.
 layer: [crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

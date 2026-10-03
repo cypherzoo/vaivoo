@@ -9,7 +9,7 @@ aliases: [SIM swap, SIM swapping, SIM hijacking, Port-out fraud, Phone number ta
 summary: "The attacker gets the victim's phone number moved to a SIM card or provider they control, usually by deceiving or bribing mobile operator staff. From then on, SMS and voice codes go to the attacker. Authenticators that do not depend on the phone number are not affected."
 layer: [core]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

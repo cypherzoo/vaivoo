@@ -4,7 +4,7 @@ slug: factors-authenticators-signals
 summary: "A factor is a category of evidence, an authenticator is the thing you use, and a signal is context the service observes. Mixing them up leads to wrong conclusions about how strong a sign-in is."
 status: draft
 order: 1
-owner: Christian
+owner: Chris War
 last_reviewed_at: null
 ---
 

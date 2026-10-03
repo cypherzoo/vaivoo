@@ -4,7 +4,7 @@ slug: synced-vs-device-bound-passkey-vs-security-key
 title: Synced passkey vs device-bound passkey vs password + security key
 summary: Three WebAuthn setups compared on user verification, key exportability, NIST assurance level, attestation and recovery.
 status: draft
-owner: Christian
+owner: Chris War
 intro: |
   All three use WebAuthn, so the signature is bound to the website's domain. They differ in where the private key lives, whether the user is verified on the authenticator, and how far they can go in NIST's assurance levels.
 columns:

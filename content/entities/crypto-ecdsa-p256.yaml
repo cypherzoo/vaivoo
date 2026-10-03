@@ -9,7 +9,7 @@ aliases: ["ES256 (COSE/JOSE)", "ESP256 (COSE)", "ECDSA P-256", "secp256r1", "pri
 summary: A digital signature scheme that uses elliptic curves (ECDSA) on the NIST curve P-256. It is approved in FIPS 186-5, gives about 128-bit classical security, and is the most common passkey signature algorithm (COSE ES256).
 layer: [crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

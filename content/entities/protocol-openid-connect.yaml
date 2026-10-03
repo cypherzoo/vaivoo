@@ -9,7 +9,7 @@ aliases: ["OIDC", "OpenID Connect Core 1.0", "OpenID Connect 1.0"]
 summary: "An identity layer on top of OAuth 2.0. A website or app (the Relying Party) sends the user to an OpenID Provider, which authenticates the user and returns a signed ID Token saying who the user is and how and when they were authenticated."
 layer: [core, crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

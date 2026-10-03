@@ -9,7 +9,7 @@ aliases: ["Ed25519", "EdDSA with Ed25519", "Edwards25519 signatures"]
 summary: The Edwards-curve Digital Signature Algorithm (EdDSA) on the edwards25519 curve. It is defined in RFC 8032 and approved in FIPS 186-5, gives about 128-bit classical security, and signs deterministically with 32-byte public keys and 64-byte signatures.
 layer: [crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

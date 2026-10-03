@@ -9,7 +9,7 @@ aliases: ["OAuth 2.0 Authorization Framework", "RFC 6749", "OAuth2"]
 summary: "An IETF authorization framework (RFC 6749, 2012) that lets an application obtain limited access to an HTTP service on a user's behalf, using access tokens instead of the user's password. It is not an authentication protocol; current security practice is set by RFC 9700 (January 2025)."
 layer: [core]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

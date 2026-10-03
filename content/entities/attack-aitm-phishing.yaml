@@ -9,7 +9,7 @@ aliases: [AiTM phishing, Real-time phishing relay, Reverse-proxy phishing, Verif
 summary: "A fake sign-in page sits between the user and the real service and passes everything through in real time. It defeats passwords, one-time codes, SMS codes and push approvals, and can capture the session cookie. Authenticators that bind their output to the real site's name, such as WebAuthn, resist it."
 layer: [core]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

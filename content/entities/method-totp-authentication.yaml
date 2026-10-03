@@ -9,7 +9,7 @@ aliases: [Time-based one-time password, TOTP, authenticator-app codes]
 summary: "Signing in with a short code computed from a shared secret and the current time. It proves the user holds the secret, but the code is not bound to the website."
 layer: [core, crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

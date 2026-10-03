@@ -9,7 +9,7 @@ aliases: [EUDI Wallet, EU Digital Identity Wallet, EUDIW]
 summary: The EU-wide digital identity wallet set up by the amended eIDAS Regulation. Each Member State must provide at least one wallet for identifying, authenticating, sharing attributes and signing, with person identification data at level of assurance high.
 layer: [nordic-eu, core]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

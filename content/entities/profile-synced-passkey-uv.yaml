@@ -9,7 +9,7 @@ aliases: ["synced passkey (UV required)", "multi-device WebAuthn credential with
 summary: "A deployment in which the website accepts passkeys that a passkey provider copies across the user's devices, and requires the authenticator to verify the user locally (biometric, PIN or pattern) on every sign-in."
 layer: [core, crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 configuration:

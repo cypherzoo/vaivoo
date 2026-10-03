@@ -9,7 +9,7 @@ aliases: [Session hijacking, Session cookie theft, Pass-the-cookie, Token theft,
 summary: "Instead of beating the sign-in, the attacker steals the session cookie or token issued after it, using malware on the device or a phishing relay, and reuses it. Strong authentication does not protect a session secret that is a plain bearer token once it has been issued. Binding the secret to the device, short lifetimes and session monitoring reduce the risk."
 layer: [core]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

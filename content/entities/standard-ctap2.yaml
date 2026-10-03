@@ -9,7 +9,7 @@ aliases: ["CTAP", "CTAP2", "CTAP 2.3", "FIDO2 CTAP", "FIDO Client to Authenticat
 summary: "FIDO Alliance specification for how a computer or phone (the client platform) talks to an external authenticator such as a security key or another phone, over USB, NFC, Bluetooth or the hybrid transport. It is the device-side half of FIDO2; WebAuthn is the web-side half. The latest Proposed Standard is version 2.3 (26 February 2026)."
 layer: [core, crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

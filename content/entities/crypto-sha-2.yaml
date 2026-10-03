@@ -9,7 +9,7 @@ aliases: ["SHA-2", "SHA-256", "SHA-384", "SHA-512", "SHA-224", "SHA-512/256", "S
 summary: The family of cryptographic hash functions specified in NIST FIPS 180-4 (SHA-224, SHA-256, SHA-384, SHA-512, SHA-512/224, SHA-512/256). SHA-2 sits underneath most authentication cryptography, from HMAC-based one-time passwords to RSA and ECDSA signatures, and NIST does not expect quantum computers to force a move away from SHA-256 and larger.
 layer: [crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

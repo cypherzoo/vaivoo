@@ -9,7 +9,7 @@ aliases: ["ML-DSA", "Module-Lattice-Based Digital Signature Algorithm", "ML-DSA-
 summary: NIST's module-lattice-based post-quantum digital signature standard (FIPS 204, August 2024), derived from CRYSTALS-Dilithium. It comes in three parameter sets and is believed to resist attacks by large-scale quantum computers, at the cost of much larger keys and signatures than elliptic-curve schemes.
 layer: [crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

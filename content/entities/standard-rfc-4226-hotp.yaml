@@ -9,7 +9,7 @@ aliases: [HOTP specification, "RFC 4226", HMAC-based one-time password]
 summary: "Informational IETF RFC (December 2005) that defines HOTP, an event-counter one-time password algorithm built on HMAC-SHA-1 with dynamic truncation."
 layer: [core, crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

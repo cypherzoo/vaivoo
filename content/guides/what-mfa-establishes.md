@@ -4,7 +4,7 @@ slug: what-mfa-establishes
 summary: "Multi-factor authentication raises the bar, but it does not by itself stop phishing, replay or account-recovery attacks. Which combination you use, and how it is configured, matters more than the label."
 status: draft
 order: 2
-owner: Christian
+owner: Chris War
 last_reviewed_at: null
 ---
 
