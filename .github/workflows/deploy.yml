@@ -1,0 +1,34 @@
+# FALLBACK ONLY. Primary deploy = SiteGround Node.js Project linked to this repo (auto-deploys on push to main).
+# Run manually only if the native deploy is unavailable.
+name: Deploy to SiteGround (manual fallback via SSH)
+on:
+  workflow_dispatch:
+concurrency: deploy-production
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production        # add a required reviewer here for an extra release gate
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run build
+      - name: Configure SSH
+        env:
+          SSH_KEY: ${{ secrets.SG_SSH_KEY }}
+          SSH_HOST: ${{ secrets.SG_HOST }}
+          SSH_PORT: ${{ secrets.SG_PORT }}
+          KNOWN_HOSTS: ${{ secrets.SG_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          echo "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+      - name: Rsync to public_html
+        env:
+          SSH_HOST: ${{ secrets.SG_HOST }}
+          SSH_PORT: ${{ secrets.SG_PORT }}
+          SSH_USER: ${{ secrets.SG_USER }}
+          REMOTE_DIR: ${{ secrets.SG_REMOTE_DIR }}   # e.g. www/vaivoo.com/public_html
+        run: |
+          rsync -az --delete --exclude='.well-known/' -e "ssh -p $SSH_PORT -i ~/.ssh/id_ed25519" dist/ "$SSH_USER@$SSH_HOST:$REMOTE_DIR/"
