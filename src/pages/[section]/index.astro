@@ -1,14 +1,16 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { allEntities, SECTIONS, LABELS } from '../../lib/content.mjs';
+import ReviewTag from '../../components/ReviewTag.astro';
+import { allEntities, publicClaims, reviewSummary, SECTIONS, LABELS } from '../../lib/content.mjs';
 export function getStaticPaths() {
   return Object.values(SECTIONS).map(section => ({ params: { section } }));
 }
 const { section } = Astro.params;
-const items = allEntities().filter(e => e.section === section);
+const items = allEntities().filter(e => e.section === section).map(e => ({ e, s: reviewSummary(publicClaims(e)) }));
 ---
-<Base title={LABELS[section]}>
+<Base title={LABELS[section]} noindex={items.length === 0}>
   <h1>{LABELS[section]}</h1>
-  {items.length === 0 ? <p class="meta">No reviewed entries yet.</p> :
-  <ul>{items.map(e => <li><a href={e.url}>{e.name}</a> — {e.summary} {e.status !== 'published' && <span class="pill">{e.status}</span>}</li>)}</ul>}
+  {items.length === 0 ? <p class="meta">No entries yet.</p> :
+  <ul class="entries">{items.map(({ e, s }) => <li><a href={e.url}>{e.name}</a> — {e.summary}
+    <div>{['external', 'internal', 'draft', 'disputed'].filter(l => s.counts[l] > 0).map(l => <ReviewTag level={l} count={s.counts[l]} short />)}</div></li>)}</ul>}
 </Base>

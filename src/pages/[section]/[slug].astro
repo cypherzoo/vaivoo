@@ -1,17 +1,21 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { allEntities, byId, publicClaims, VALUE_LABEL } from '../../lib/content.mjs';
+import ReviewTag from '../../components/ReviewTag.astro';
+import ReviewSummary from '../../components/ReviewSummary.astro';
+import { allEntities, byId, publicClaims, reviewSummary, VALUE_LABEL, LABELS } from '../../lib/content.mjs';
 export function getStaticPaths() {
   return allEntities().map(e => ({ params: { section: e.section, slug: e.slug }, props: { e } }));
 }
 const { e } = Astro.props;
 const claims = publicClaims(e);
+const summary = reviewSummary(claims);
 const rels = (e.relations || []).map(r => ({ ...r, target: byId(r.object_id) })).filter(r => r.target);
 ---
-<Base title={e.name} description={e.summary}>
-  <p class="meta">{e.type} {e.status !== 'published' && <span class="pill">{e.status}</span>} · Last verified: {e.last_verified_at ?? 'not yet verified'}</p>
+<Base title={e.name} description={e.summary} noindex={summary.approved === 0}>
+  <p class="meta"><a href={`/${e.section}/`}>{LABELS[e.section]}</a> · Last verified: {e.last_verified_at ?? 'not yet verified'}</p>
   <h1>{e.name}</h1>
   {e.aliases?.length > 0 && <p class="meta">Also known as: {e.aliases.join(', ')}</p>}
+  <ReviewSummary summary={summary} />
   <p><strong>{e.summary}</strong></p>
   {e.body && <section><h2>How it works</h2><div set:html={e.body.split(/\n\n+/).map(p => `<p>${p}</p>`).join('')} /></section>}
 
@@ -22,9 +26,12 @@ const rels = (e.relations || []).map(r => ({ ...r, target: byId(r.object_id) }))
       <tbody>{claims.map(c => (
         <tr id={c.id}>
           <td>{c.predicate.replaceAll('_', ' ')}</td>
-          <td class={`v-${c.shown}`}>{VALUE_LABEL[c.shown]}{c.unverified && <div class="meta">not yet verified</div>}</td>
-          <td>{c.statement}{c.assumptions.length > 0 && <ul>{c.assumptions.map(a => <li>{a}</li>)}</ul>}<div class="meta">Scope: {c.scope}</div></td>
-          <td>{c.evidence.map(ev => <div><a href={ev.url} rel="noopener">{ev.title}</a><div class="meta">{ev.publisher}{ev.version && `, ${ev.version}`} — {ev.locator} (retrieved {ev.retrieved_at})</div></div>)}</td>
+          <td><span class={`v-${c.shown}`}>{VALUE_LABEL[c.shown]}</span>
+            <div><ReviewTag level={c.review} short /></div>
+            {c.reviewed_by?.length > 0 && c.review !== 'draft' && <div class="meta">{c.reviewed_by.join(', ')}{c.reviewed_at && `, ${c.reviewed_at}`}</div>}
+          </td>
+          <td>{c.statement}{c.assumptions.length > 0 && <ul>{c.assumptions.map(a => <li>{a}</li>)}</ul>}<div class="meta">Scope: {c.scope}{c.claim_type !== 'fact' && ` · ${c.claim_type.replace('_', ' ')}`}</div></td>
+          <td>{c.evidence.map(ev => <div><a href={ev.url} rel="noopener">{ev.title}</a><div class="meta">{ev.publisher}{ev.version && `, ${ev.version}`} — {ev.locator} (retrieved {ev.retrieved_at}){ev.stance !== 'supports' && ` · ${ev.stance}`}</div></div>)}</td>
         </tr>))}
       </tbody>
     </table></div>
