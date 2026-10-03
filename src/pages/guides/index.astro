@@ -1,0 +1,11 @@
+---
+import Base from '../../layouts/Base.astro';
+import { isPreview } from '../../lib/content.mjs';
+const mods = Object.values(import.meta.glob('../../../content/guides/*.md', { eager: true }));
+const guides = mods.map(m => m.frontmatter).filter(f => f.status === 'published' || (isPreview && f.status !== 'archived')).sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
+---
+<Base title="Guides" description="Plain-language guides to digital authentication, with every claim linked to its source.">
+  <h1>Guides</h1>
+  {guides.length === 0 ? <p class="meta">No reviewed guides yet.</p> :
+  <ul>{guides.map(g => <li><a href={`/guides/${g.slug}/`}>{g.title}</a> — {g.summary} {g.status !== 'published' && <span class="pill">{g.status}</span>}</li>)}</ul>}
+</Base>
