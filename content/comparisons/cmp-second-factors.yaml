@@ -1,0 +1,40 @@
+# DRAFT comparison. Cells are pulled from entity claims; no new facts are stated here.
+id: cmp-second-factors
+slug: password-sms-vs-totp-vs-synced-passkey
+title: Password + SMS code vs password + TOTP vs synced passkey
+summary: Three common ways to sign in to a consumer account, compared on phishing resistance, factor count, NIST assurance level, replay, server-side secrets and recovery.
+status: draft
+owner: Christian
+intro: |
+  The first two columns add a one-time code to a password. The rows describe the code step; the password step itself is not phishing-resistant in either case (see Password authentication). The third column replaces the password with a synced passkey that requires local user verification.
+
+  Cells marked Conditional only hold under the conditions listed on the linked claim.
+columns:
+  - entity: method-sms-otp
+    label: Password + SMS code
+    note: Code sent by text message after the password
+  - entity: method-totp-authentication
+    label: Password + TOTP
+    note: Code from an authenticator app after the password
+  - entity: profile-synced-passkey-uv
+    label: Synced passkey (UV required)
+    note: No password; PIN or biometric unlocks the passkey
+    fallback_entities: [credential-passkey]
+rows:
+  - label: Phishing resistance
+    predicates: [phishing_resistance]
+  - label: Counts as multi-factor (NIST)
+    predicates: [mfa_qualification, multi_factor_qualification]
+  - label: NIST AAL3 / highest level
+    predicates: [max_nist_aal, aal3_eligible]
+  - label: Replay resistance
+    predicates: [replay_resistance]
+  - label: Secret held by the service
+    help: Can a breach of the service's database yield something that signs in?
+    predicates: [shared_secret_server_side, no_shared_secret]
+  - label: Restrictions in NIST guidance
+    predicates: [nist_classification]
+  - label: Passwordless
+    predicates: [passwordless]
+  - label: Recovery dependency
+    predicates: [recovery_dependency]
