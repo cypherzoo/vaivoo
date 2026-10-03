@@ -52,6 +52,7 @@
           "claim_type": { "enum": ["fact", "vendor_claim", "interpretation", "prediction", "opinion"] },
           "status": { "enum": ["proposed", "evidence_needed", "in_review", "approved", "disputed", "superseded", "rejected"] },
           "review_tier": { "enum": ["A", "B", "C"] },
+          "review_level": { "enum": ["internal", "external"], "description": "internal = approved by the Vaivoo editor (orange); external = approved by an independent reviewer (green). Required when status is approved." },
           "reviewed_by": { "type": "array", "items": { "type": "string" } },
           "reviewed_at": { "type": ["string", "null"], "format": "date" },
           "valid_from": { "type": ["string", "null"], "format": "date" },
