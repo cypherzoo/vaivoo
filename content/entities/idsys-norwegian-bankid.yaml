@@ -100,7 +100,7 @@ claims:
     predicate: assurance_level
     value: conditional
     statement: The operator presents the "BankID High" login as the highest level of assurance, returning acr "urn:bankid:bid;LOA=4"; the "BankID with biometrics" login returns LOA=3.
-    scope: Operator's own classification in its OIDC service. No Digdir or Nkom page confirming the self-declared Norwegian level ("høyt") for Norwegian BankID was retrieved.
+    scope: Operator's own classification in its OIDC service. The EU notification at level High is covered in claim-norwegian-bankid-eidas-notification; the Norwegian self-declaration register (Nkom) entry was not retrieved.
     assumptions:
       - The relying party requests the BankID High identity provider (acr_values urn:bankid:bid); the biometric variant is LOA=3.
       - LOA=4 is the operator's own label, which maps to the top of the three eIDAS/Norwegian levels (lavt, betydelig, høyt); a regulator's confirmation is still needed.
@@ -135,22 +135,30 @@ claims:
         retrieved_at: 2026-10-03
   - id: claim-norwegian-bankid-eidas-notification
     predicate: eidas_notified
-    value: unknown
-    statement: No authoritative source was retrieved that shows whether Norwegian BankID has been notified (or pre-notified) under eIDAS, or at what level of assurance.
-    scope: eIDAS cross-border notification status. The European Commission overview of notified eID schemes could not be retrieved (request timed out).
+    value: supported
+    statement: The European Commission's overview of eID schemes under eIDAS lists Norway's BankID scheme as notified at level of assurance High, with notification dated 24 October 2022.
+    scope: eIDAS (Regulation (EU) No 910/2014) cross-border notification status as shown in the Commission overview at retrieval time.
     assumptions: []
-    claim_type: interpretation
+    claim_type: fact
     status: proposed
     review_tier: C
     reviewed_by: []
     reviewed_at: null
     evidence:
+      - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/48762251/Overview+of+pre-notified+and+notified+eID+schemes+under+eIDAS
+        title: Overview of pre-notified and notified eID schemes under eIDAS
+        publisher: European Commission (eID User Community)
+        version: Page last updated 2026-02-02
+        locator: "Table row 'Norway - BankID' (country Norway, scheme Norwegian eID scheme, LoA High, status NOTIFIED, 24 Oct 2022)"
+        note: Lists Norway - BankID as NOTIFIED at level High dated 24 Oct 2022; the row's Official Journal link points to a 2020 notice, which looks inconsistent.
+        stance: supports
+        retrieved_at: 2026-10-03
       - url: https://developer.bankid.no/bankid-esign-provider/pki/certificate-profiles/
         title: Certificate Profiles - BankID documentation
         publisher: Stø AS (developer.bankid.no)
         version: Page last updated 2026-01-28
         locator: "Section 'Qualified Certificate for Natural Person', rows under 'eID Means Reference'"
-        note: Certificate field records the eID scheme as 'BANKID' and links to the Commission's notified-schemes overview; this does not by itself establish notification.
+        note: Certificate field records the eID scheme as 'BANKID' and links to the Commission's notified-schemes overview.
         stance: contextualizes
         retrieved_at: 2026-10-03
   - id: claim-norwegian-bankid-oidc

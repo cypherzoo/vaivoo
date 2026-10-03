@@ -1,0 +1,212 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: crypto-ml-dsa
+type: CryptographicPrimitive
+slug: ml-dsa
+name: ML-DSA (FIPS 204)
+aliases: ["ML-DSA", "Module-Lattice-Based Digital Signature Algorithm", "ML-DSA-44", "ML-DSA-65", "ML-DSA-87"]
+summary: NIST's module-lattice-based post-quantum digital signature standard (FIPS 204, August 2024), derived from CRYSTALS-Dilithium. It comes in three parameter sets and is believed to resist attacks by large-scale quantum computers, at the cost of much larger keys and signatures than elliptic-curve schemes.
+layer: [crypto]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  ML-DSA is a digital signature scheme built to stay secure even if large quantum computers arrive. A device signs with a private key, and anyone with the public key can verify, just as with ECDSA or Ed25519. The difference is the mathematics underneath: instead of elliptic curves, which a quantum computer could break, ML-DSA relies on hard problems over lattices.
+
+  NIST published ML-DSA as FIPS 204 in August 2024. It comes in three sizes: ML-DSA-44, ML-DSA-65 and ML-DSA-87. Keys and signatures are much bigger than with elliptic curves. The smallest set has a 1,312-byte public key and a 2,420-byte signature, compared with 32 and 64 bytes for Ed25519.
+
+  For authentication, NIST's draft transition plan names ML-DSA as a replacement for quantum-vulnerable signatures such as ECDSA and EdDSA. At the time of writing we could not confirm final COSE identifiers or WebAuthn support for ML-DSA, so passkeys cannot yet be assumed to use it.
+crypto: |
+  Construction: a Schnorr-like Fiat-Shamir-with-aborts signature over the polynomial ring R_q with q = 8380417. It uses module-structured matrices (k × ℓ) and rejection sampling to avoid leaking the private key (FIPS 204 Sections 3 and 3.3). Security rests on Module Learning With Errors (MLWE) and a nonstandard variant of Module SIS called SelfTargetMSIS (Section 3.2). It uses SHAKE128 and SHAKE256. The pre-hash variant HashML-DSA is separate and domain-separated.
+
+  Parameter sets (FIPS 204 Table 1 and Table 2, sizes in bytes):
+  - ML-DSA-44: (k, ℓ) = (4, 4), security category 2; private key 2560, public key 1312, signature 2420.
+  - ML-DSA-65: (6, 5), category 3; private key 4032, public key 1952, signature 3309.
+  - ML-DSA-87: (8, 7), category 5; private key 4896, public key 2592, signature 4627.
+  A category means the scheme is claimed to be at least as hard to break as a reference block cipher or hash. NIST IR 8547 (draft) Table 3 gives security strengths of 128, 192 and 256 bits for these sets. The private key can be stored as just the 32-byte seed ξ.
+
+  Randomness: signing is "hedged" by default. It mixes a fresh 32-byte rnd with precomputed private randomness, so a weak RNG does not leak the key and fault and side-channel attacks are harder. A fully deterministic variant (rnd set to zero) is allowed but discouraged where side channels are a concern (FIPS 204 Sections 3.4 and 3.6.1). Verifiers must reject public keys and signatures of the wrong length (Section 3.6.2).
+relations:
+  - predicate: alternative_to
+    object_id: crypto-ecdsa-p256
+    claim_id: claim-ml-dsa-nist-transition-role
+    note: NIST's draft transition plan identifies ML-DSA as a post-quantum signature to migrate to from ECDSA.
+  - predicate: alternative_to
+    object_id: crypto-ed25519
+    claim_id: claim-ml-dsa-nist-transition-role
+    note: NIST's draft transition plan identifies ML-DSA as a post-quantum signature to migrate to from EdDSA.
+claims:
+  - id: claim-ml-dsa-publication-status
+    predicate: publication_status
+    value: supported
+    statement: ML-DSA is specified in FIPS 204, Module-Lattice-Based Digital Signature Standard, published as final by NIST on 13 August 2024. It is based on CRYSTALS-Dilithium.
+    scope: Standard status at retrieval; the CSRC page lists errata planned for a future revision.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://csrc.nist.gov/pubs/fips/204/final
+        title: "FIPS 204: Module-Lattice-Based Digital Signature Standard (landing page)"
+        publisher: NIST
+        version: Page as retrieved 2026-10-03
+        locator: Date Published; Document History; Planning Note (07/31/2026)
+        note: Final published August 13, 2024 (draft August 24, 2023); planning note lists minor issues to be corrected in a future revision.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf
+        title: "FIPS 204: Module-Lattice-Based Digital Signature Standard"
+        publisher: NIST
+        version: FIPS 204 (August 13, 2024)
+        locator: Section 3 (Overview of the ML-DSA Signature Scheme)
+        note: ML-DSA is based on CRYSTALS-DILITHIUM and uses the Fiat-Shamir With Aborts construction.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ml-dsa-quantum-resistance
+    predicate: quantum_resistance
+    value: supported
+    statement: NIST states that ML-DSA is believed to be secure even against an adversary with a large-scale quantum computer. Its security rests on the Module-LWE problem and the SelfTargetMSIS variant of Module-SIS.
+    scope: NIST's assessment as stated in the standard; a belief based on current cryptanalysis, not a proof.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://csrc.nist.gov/pubs/fips/204/final
+        title: "FIPS 204: Module-Lattice-Based Digital Signature Standard (landing page)"
+        publisher: NIST
+        version: Page as retrieved 2026-10-03
+        locator: Abstract
+        note: ML-DSA is believed to be secure, even against adversaries in possession of a large-scale quantum computer.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf
+        title: "FIPS 204: Module-Lattice-Based Digital Signature Standard"
+        publisher: NIST
+        version: FIPS 204 (August 13, 2024)
+        locator: Section 3.1 (Security Properties); Section 3.2 (Computational Assumptions)
+        note: Designed for strong existential unforgeability (SUF-CMA); security based on MLWE over R_q and a nonstandard MSIS variant, SelfTargetMSIS.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ml-dsa-parameter-sets
+    predicate: parameter_sets
+    value: supported
+    statement: FIPS 204 defines three parameter sets. ML-DSA-44 is claimed in security category 2, ML-DSA-65 in category 3 and ML-DSA-87 in category 5. NIST's draft transition report lists their security strengths as 128, 192 and 256 bits.
+    scope: Parameter sets in FIPS 204; categories as defined in NIST's PQC call for proposals.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf
+        title: "FIPS 204: Module-Lattice-Based Digital Signature Standard"
+        publisher: NIST
+        version: FIPS 204 (August 13, 2024)
+        locator: Section 4 (Parameter Sets), Table 1 (ML-DSA parameter sets)
+        note: Claimed security strength Category 2, 3 and 5 for ML-DSA-44, -65 and -87; names reflect matrix dimensions (k, ℓ).
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024)
+        locator: Section 4.1.1, Table 3 (Post-quantum digital signature algorithms)
+        note: "ML-DSA-44: 128 bits, category 2; ML-DSA-65: 192 bits, category 3; ML-DSA-87: 256 bits, category 5."
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ml-dsa-key-signature-sizes
+    predicate: key_and_signature_size
+    value: supported
+    statement: "ML-DSA sizes in bytes (private key / public key / signature): ML-DSA-44 2560 / 1312 / 2420; ML-DSA-65 4032 / 1952 / 3309; ML-DSA-87 4896 / 2592 / 4627."
+    scope: Encoded sizes in FIPS 204; storing only the 32-byte seed for the private key is an allowed optimisation.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf
+        title: "FIPS 204: Module-Lattice-Based Digital Signature Standard"
+        publisher: NIST
+        version: FIPS 204 (August 13, 2024)
+        locator: Section 4, Table 2 (Sizes (in bytes) of keys and signatures of ML-DSA)
+        note: Gives the private key, public key and signature sizes per parameter set; notes the private key may be stored as the 32-byte seed.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ml-dsa-hedged-signing
+    predicate: nonce_requirement
+    value: supported
+    statement: ML-DSA signing is hedged by default, combining fresh randomness with precomputed private randomness. A deterministic variant is permitted, but FIPS 204 says it should not be used where side-channel attacks are a concern and cannot be otherwise mitigated.
+    scope: Signing procedure; verification is the same for both variants.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf
+        title: "FIPS 204: Module-Lattice-Based Digital Signature Standard"
+        publisher: NIST
+        version: FIPS 204 (August 13, 2024)
+        locator: Section 3.4 (Hedged and Deterministic Signing); Section 3.6.1 (Randomness Generation)
+        note: The commitment y must not be reused or guessable; hedged is the default; deterministic is discouraged where side channels matter; even a weak RBG beats fully deterministic.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ml-dsa-nist-transition-role
+    predicate: transition_target
+    value: supported
+    statement: NIST's draft transition report identifies ML-DSA (FIPS 204) as a quantum-resistant digital signature standard to migrate to from quantum-vulnerable ECDSA, EdDSA and RSA.
+    scope: The source is an initial public draft (November 2024), not final guidance.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024)
+        locator: Section 2.1.1 (Digital Signature Algorithms); Section 4.1.1, Tables 2 and 3
+        note: FIPS 186 algorithms are Shor-vulnerable; FIPS 204 ML-DSA and FIPS 205 SLH-DSA are the quantum-resistant signature standards for migration.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://csrc.nist.gov/pubs/ir/8547/ipd
+        title: "NIST IR 8547 (Initial Public Draft) landing page"
+        publisher: NIST
+        version: Page as retrieved 2026-10-03
+        locator: Header and Document History
+        note: Still labelled Initial Public Draft (November 12, 2024); no final version listed at retrieval.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+  - id: claim-ml-dsa-cose-webauthn-support
+    predicate: protocol_support
+    value: unknown
+    statement: We could not verify whether final COSE algorithm identifiers for ML-DSA have been registered, or whether WebAuthn Level 3 names any ML-DSA algorithm. The IETF draft for ML-DSA in JOSE and COSE requests values -48, -49 and -50, still marked TBD.
+    scope: COSE/JOSE identifiers and WebAuthn support at retrieval; IANA registry and full WebAuthn text were not retrievable.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.ietf.org/archive/id/draft-ietf-cose-dilithium-11.txt
+        title: "ML-DSA for JOSE and COSE (draft-ietf-cose-dilithium-11)"
+        publisher: IETF COSE Working Group
+        version: Internet-Draft -11 (15 November 2025, expires 19 May 2026)
+        locator: Section 8.1.1 (New COSE Algorithms)
+        note: Asks IANA for ML-DSA-44/65/87 with "Value TBD (requested assignment -48/-49/-50)"; a work in progress, not an RFC.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"

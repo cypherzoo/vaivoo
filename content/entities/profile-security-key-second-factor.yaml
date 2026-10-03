@@ -1,0 +1,269 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: profile-security-key-second-factor
+type: DeploymentProfile
+slug: security-key-second-factor
+name: Password plus hardware security key
+aliases: ["security key as second factor", "password + roaming WebAuthn authenticator", "FIDO2 security key 2FA"]
+summary: "A deployment in which the user types a password and then touches a separate hardware security key. The key signs a WebAuthn challenge bound to the website's domain. The key only checks that someone is present; the password supplies the knowledge factor."
+layer: [core, crypto]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+configuration:
+  first_factor: password
+  second_factor: roaming hardware security key via WebAuthn/FIDO2
+  authenticator_attachment: cross-platform (roaming), e.g. over USB, NFC or BLE
+  user_verification: "typically discouraged / not required (user presence only)"
+  credential_storage: device-bound on the security key
+  backup_eligibility_flag: "BE = 0 expected (single-device credential)"
+  key_exportability: non-exportable (dedicated hardware)
+body: |
+  The user first signs in with a password as usual. The website then asks for a WebAuthn assertion, and the user plugs in or taps a small hardware security key and touches it. The key signs the website's challenge with a private key it created for that site when the key was registered.
+
+  In this profile the website does not ask the key to verify the user with a PIN or fingerprint. A touch only proves that someone is present. The password provides "something you know" and the key provides "something you have", so together they form two-factor authentication.
+
+  The key's signature is bound to the website's domain, so a fake site cannot use it. The password can still be phished, but a stolen password alone is not enough to sign in. The private key is meant never to leave the key, so the credential cannot be copied or synced. If the key is lost, the user needs another registered key or the account recovery process, and the strength of that fallback matters as much as the key itself.
+crypto: |
+  At registration the security key creates a credential key pair scoped to the website's RP ID and returns the credential public key. At sign-in the verifier sends a fresh random challenge (NIST requires at least 64 bits), and the key returns a signed assertion. WebAuthn states that the full origin of the requester is included and signed over in every assertion, so a response obtained on another origin does not verify.
+
+  The assertion carries flags. With user verification discouraged, a touch satisfies the test of user presence, and no user verification is requested. A credential on a security key is not backup-eligible (BE = 0), which WebAuthn calls a single-device credential.
+
+  The private key stays inside the security key. NIST treats keys as non-exportable when they are generated, stored and used in protected hardware such as a dedicated security key. The verifier holds only the public key, so a server breach does not reveal anything that can produce signatures.
+relations:
+  - { predicate: specified_by, object_id: standard-webauthn, claim_id: claim-sk2f-phishing-resistance }
+  - { predicate: depends_on, object_id: method-password-authentication, claim_id: claim-sk2f-mfa, note: "The password supplies the knowledge factor; the key is used without user verification." }
+  - { predicate: alternative_to, object_id: method-sms-otp, claim_id: claim-sk2f-phishing-resistance, note: "Both serve as a second factor after a password; SMS codes are not phishing-resistant." }
+  - { predicate: alternative_to, object_id: profile-device-bound-passkey-uv, claim_id: claim-sk2f-user-presence-only, note: "Same device-bound key type, but with UV the key itself is multi-factor and no password is needed." }
+claims:
+  - id: claim-sk2f-phishing-resistance
+    predicate: phishing_resistance
+    value: conditional
+    statement: "The security-key step is phishing-resistant through verifier name binding: the credential is scoped to the RP ID and the signed response includes the origin. The password step is not phishing-resistant, so a phishing site can capture the password, but it cannot produce a valid security-key assertion for the real site."
+    scope: The authentication ceremony only; account recovery, fallback second factors and session handling are assessed separately.
+    assumptions:
+      - "The Relying Party verifies the origin and RP ID hash in every assertion as WebAuthn requires."
+      - "No weaker second factor (for example SMS) is offered as a fallback at sign-in."
+      - "The user's device and browser are not compromised."
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.2.5 Phishing Resistance, subsection 'Verifier Name Binding' (#verifier-name-binding)"
+        note: WebAuthn, used by FIDO2 authenticators, is cited as providing phishing resistance via verifier name binding based on the verifier's authenticated domain.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.w3.org/TR/webauthn-3/
+        title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
+        publisher: W3C
+        version: "W3C Recommendation, 25 August 2026"
+        locator: "§5 Web Authentication API, introductory text"
+        note: Authenticator ensures operations are scoped to an origin and cannot be replayed against another origin; the full origin is signed in all assertions.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.1.1 Passwords (#password), introductory text"
+        note: Passwords are not phishing-resistant; this applies to the first step of this profile.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+  - id: claim-sk2f-mfa
+    predicate: multi_factor_qualification
+    value: supported
+    statement: "Under NIST SP 800-63B-4, a password combined with a single-factor cryptographic authenticator is a permitted AAL2 combination of two separate factors (something you know plus something you have)."
+    scope: NIST SP 800-63B-4 classification; the key alone, without UV, counts as single-factor.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/aal/
+        title: "NIST SP 800-63B-4: Authentication Assurance Levels"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 2 'Authentication Assurance Level 2' > 'Permitted Authenticator Types' (#aal2types)"
+        note: Two single-factor authenticators must include a physical authenticator, listed including single-factor cryptographic, plus a password or biometric comparison.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.1.6 Single-Factor Cryptographic Authentication (#sfc)"
+        note: A single-factor cryptographic authenticator is "something you have", proving possession of a key via an authentication protocol.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-sk2f-user-presence-only
+    predicate: user_verification_required
+    value: not_supported
+    statement: "In this profile the Relying Party sets userVerification to \"discouraged\", so the key only performs a test of user presence (typically a touch). WebAuthn states this is not user verification. NIST says that when a flag shows no activation factor was used, the authentication is single-factor."
+    scope: Holds by configuration of this profile; the same key can perform UV if the RP requires it and the key supports it.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.w3.org/TR/webauthn-3/
+        title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
+        publisher: W3C
+        version: "W3C Recommendation, 25 August 2026"
+        locator: "§4 Terminology, 'Test of User Presence' and 'User Present'"
+        note: A user presence test is a simple gesture such as touching the authenticator; it does not constitute user verification.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.w3.org/TR/webauthn-3/
+        title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
+        publisher: W3C
+        version: "W3C Recommendation, 25 August 2026"
+        locator: "§5.1.3 Create a New Credential, step setting the effective user verification requirement"
+        note: When userVerification is set to discouraged, the client sets userVerification to false.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.1.7 'Multi-Factor Cryptographic Verifiers' (#multi-factor-cryptographic-verifiers)"
+        note: If a flag indicates an activation factor was not used, the authentication SHALL be treated as single-factor.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-sk2f-device-bound
+    predicate: non_exportable_key
+    value: conditional
+    statement: "The credential is a single-device credential (not backup-eligible, BE = 0) and the private key is generated and used inside the security key. NIST treats keys in a dedicated device such as a security key as non-exportable, provided the hardware cannot be made to release the key to the host."
+    scope: Security keys used as roaming authenticators; specific hardware models are not assessed.
+    assumptions:
+      - "The security key generates, stores and uses the private key in protected hardware and cannot be reprogrammed by the host to extract it."
+      - "The Relying Party checks that the BE flag is 0 if it relies on the credential being device-bound."
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.w3.org/TR/webauthn-3/
+        title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
+        publisher: W3C
+        version: "W3C Recommendation, 25 August 2026"
+        locator: "§4 Terminology, 'Backup Eligibility / Backup Eligible'"
+        note: Backup eligibility is set at creation, permanent, and signalled in flags; a non-backup-eligible source is a single-device credential.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.2 General Authenticator Requirements, subsection 'Exportability' (#export)"
+        note: Keys are exportable unless generated, stored and used in protected hardware such as a dedicated security key; non-exportable devices SHALL prohibit export to the host.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-sk2f-max-nist-aal
+    predicate: max_nist_aal
+    value: conditional
+    statement: "This profile meets the AAL2 authenticator combination. It can also reach AAL3, because NIST permits a single-factor cryptographic authenticator used together with a password, provided the key is non-exportable, phishing-resistant, replay-resistant, demonstrates authentication intent and is FIPS 140 validated."
+    scope: NIST SP 800-63B-4; AAL3 additionally requires its reauthentication and verifier requirements.
+    assumptions:
+      - "The security key's private key is non-exportable as defined in NIST 'Exportability'."
+      - "The key demonstrates authentication intent (for example, a touch per authentication) as required by Sec. 3.2.8."
+      - "The authenticator is validated to FIPS 140 Level 1 or higher overall, and verifier cryptography is validated at Level 1 or higher."
+      - "The Relying Party verifies origin binding so that phishing resistance holds."
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/aal/
+        title: "NIST SP 800-63B-4: Authentication Assurance Levels"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 2 'Authentication Assurance Level 3' > 'Permitted Authenticator Types' (#aal3types)"
+        note: AAL3 SHALL use MF cryptographic, or SF cryptographic used with either a password or a biometric comparison.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/aal/
+        title: "NIST SP 800-63B-4: Authentication Assurance Levels"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 2.3.2 Authenticator and Verifier Requirements (#aal3req)"
+        note: Non-exportable private key, phishing resistance, replay resistance, authentication intent, public-key crypto and FIPS 140 Level 1 validation are required.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.2.8 Authentication Intent (#intent); Sec. 3.1.6.1 Single-Factor Cryptographic Authenticators (#sfca)"
+        note: Requiring claimant action such as pushing a button establishes intent; SF cryptographic authenticators used at AAL3 must meet intent requirements.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-sk2f-roaming-transport
+    predicate: authenticator_attachment
+    value: supported
+    statement: "A security key is a roaming (cross-platform) authenticator: it is separate from the client device and is reached over a transport such as USB, Bluetooth Low Energy or NFC."
+    scope: WebAuthn terminology; transport support varies by key.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.w3.org/TR/webauthn-3/
+        title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
+        publisher: W3C
+        version: "W3C Recommendation, 25 August 2026"
+        locator: "§1 Introduction (paragraph on authenticator implementation); §1.2.2 Workforce with Single-Device Credentials"
+        note: Off-device roaming authenticators are reached over USB, BLE or NFC; the use case names a USB security key as a roaming authenticator.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-sk2f-recovery-dependency
+    predicate: recovery_dependency
+    value: supported
+    statement: "Because the key cannot be copied, losing it leaves the user dependent on another registered authenticator or on account recovery. In practice the profile is only as strong as that fallback path. NIST recommends keeping at least two separate means of authentication."
+    scope: Interpretation; the fallback and recovery methods a given deployment offers are not assessed here.
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/events/
+        title: "NIST SP 800-63B-4: Authenticator Event Management"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 4.1.2.1 Binding an Additional Authenticator (#bindexisting)"
+        note: To minimize account recovery, CSPs SHOULD encourage at least two separate means of authentication and SHALL permit binding multiple authenticators.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/events/
+        title: "NIST SP 800-63B-4: Authenticator Event Management"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 4.2 Account Recovery (#recovery), 'Recovery at AAL2' (#recovery-at-aal2)"
+        note: Recovering an AAL2 account needs two recovery codes by different methods, a code plus a bound single-factor authenticator, or repeated identity proofing.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/events/
+        title: "NIST SP 800-63B-4: Authenticator Event Management"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "'Loss, Theft, Damage, and Compromise' (#loss-theft-damage-and-compromise)"
+        note: A lost authenticator must be assumed stolen or compromised; the CSP SHALL suspend, invalidate or destroy it promptly.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"

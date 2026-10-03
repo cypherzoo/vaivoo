@@ -1,0 +1,232 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: crypto-ed25519
+type: CryptographicPrimitive
+slug: ed25519
+name: Ed25519 (EdDSA)
+aliases: ["Ed25519", "EdDSA with Ed25519", "Edwards25519 signatures"]
+summary: The Edwards-curve Digital Signature Algorithm (EdDSA) on the edwards25519 curve. It is defined in RFC 8032 and approved in FIPS 186-5, gives about 128-bit classical security, and signs deterministically with 32-byte public keys and 64-byte signatures.
+layer: [crypto]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  Ed25519 is a digital signature scheme. A device signs with its private key, and anyone with the public key can check the signature. It does the same job as ECDSA with P-256 but was designed to be simpler to implement safely and to produce small keys and signatures.
+
+  An important difference from ECDSA is that Ed25519 needs no fresh random number for each signature. The value used in signing is derived from the private key and the message, which removes a class of failures caused by bad randomness. Implementations still have to guard against side-channel and fault attacks.
+
+  In WebAuthn and COSE, Ed25519 has been signalled as "EdDSA" (-8) with the curve set to Ed25519. Newer COSE rules add a dedicated "Ed25519" identifier (-19). Like other elliptic-curve schemes, Ed25519 would be broken by a large enough quantum computer.
+crypto: |
+  Curve: edwards25519, a twisted Edwards curve over GF(p) with p = 2^255 − 19, a = −1, d = −121665/121666 and cofactor 8 (SP 800-186 Section 3.2.3.1; RFC 8032 Section 5.1). It is birationally equivalent to Curve25519, the Montgomery curve used for X25519 key exchange. EdDSA is a variant of Schnorr signatures.
+
+  Sizes (RFC 8032 Section 5.1.5 and 5.1.6): private key 32 octets of random data; public key 32 octets (encoded point); signature 64 octets (R || S, each 32 octets). The hash is SHA-512.
+
+  Nonce: deterministic. The signing scalar r = SHA-512(prefix || M), where prefix is the second half of SHA-512(private key) (RFC 8032 Section 5.1.6). RFC 8032 Section 8.2 says this protects against bad-randomness attacks. FIPS 186-5 Section 7.1 repeats this and warns that deterministic schemes in hardware, embedded and smartcard devices need side-channel and fault-attack protection.
+
+  Security level: about 128 bits classically (RFC 8032 Section 1; FIPS 186-5 Section 7.1; SP 800-186 Table 1). EdDSA and ECDH compute public values differently, so a public key from one should not be used with the other (RFC 9053 Section 2.2.1).
+relations:
+  - predicate: alternative_to
+    object_id: crypto-ecdsa-p256
+    claim_id: claim-ed25519-fips-approval
+    note: Both are FIPS 186-5 approved elliptic-curve signature schemes at about 128-bit security.
+claims:
+  - id: claim-ed25519-fips-approval
+    predicate: approval_status
+    value: supported
+    statement: EdDSA is specified in RFC 8032 (January 2017, Informational) and approved by NIST in FIPS 186-5 (February 2023). SP 800-186 lists Edwards25519 as a recommended curve allowed for EdDSA.
+    scope: IETF specification and NIST approval for US federal use.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+        title: "FIPS 186-5: Digital Signature Standard (DSS)"
+        publisher: NIST
+        version: FIPS 186-5 (February 3, 2023)
+        locator: Section 1 (Introduction), item (3); Section 7.1 (EdDSA Parameters)
+        note: EdDSA, specified in RFC 8032, is approved with additional requirements; Ed25519 must use SHA-512.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://doi.org/10.6028/NIST.SP.800-186
+        title: "SP 800-186: Recommendations for Discrete Logarithm-based Cryptography: Elliptic Curve Domain Parameters"
+        publisher: NIST
+        version: SP 800-186 (February 2023)
+        locator: Section 3.1, Table 2 (Allowed Usage of the Specified Curves); Section 3.2.3.1 (Edwards25519)
+        note: Edwards25519 and Edwards448 are allowed for EdDSA; Edwards25519 is a twisted Edwards curve over GF(2^255 − 19).
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc8032
+        title: "RFC 8032: Edwards-Curve Digital Signature Algorithm (EdDSA)"
+        publisher: IETF
+        version: RFC 8032 (January 2017)
+        locator: Document header (Category Informational); Section 5.1 (Ed25519ph, Ed25519ctx, and Ed25519)
+        note: Informational RFC giving recommended EdDSA parameters for edwards25519, with p = 2^255 − 19.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ed25519-security-strength
+    predicate: security_strength
+    value: supported
+    statement: Ed25519 is intended to provide about 128 bits of classical security.
+    scope: Classical (non-quantum) attacks.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc8032
+        title: "RFC 8032: Edwards-Curve Digital Signature Algorithm (EdDSA)"
+        publisher: IETF
+        version: RFC 8032 (January 2017)
+        locator: Section 1 (Introduction)
+        note: Ed25519 is intended to operate at around the 128-bit security level, Ed448 at around 224-bit.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+        title: "FIPS 186-5: Digital Signature Standard (DSS)"
+        publisher: NIST
+        version: FIPS 186-5 (February 3, 2023)
+        locator: Section 7.1 (EdDSA Parameters)
+        note: Notes Ed25519 is intended to provide approximately 128 bits of security.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ed25519-key-signature-sizes
+    predicate: key_and_signature_size
+    value: supported
+    statement: Ed25519 uses a 32-byte private key, a 32-byte public key and a 64-byte signature.
+    scope: PureEdDSA Ed25519 as specified in RFC 8032.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc8032
+        title: "RFC 8032: Edwards-Curve Digital Signature Algorithm (EdDSA)"
+        publisher: IETF
+        version: RFC 8032 (January 2017)
+        locator: Section 1 (advantage 4); Section 5.1.5 (Key Generation); Section 5.1.6 (Sign)
+        note: Public keys are 32 bytes and signatures 64 bytes for Ed25519; the private key is 32 octets of random data; signature is R (32) || S (32).
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+        title: "FIPS 186-5: Digital Signature Standard (DSS)"
+        publisher: NIST
+        version: FIPS 186-5 (February 3, 2023)
+        locator: Section 7.4 (EdDSA Key Pair Generation)
+        note: Public keys are b bits and signatures 2b bits; for Ed25519 b = 256 and the private key is 32 octets.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ed25519-deterministic-signing
+    predicate: nonce_requirement
+    value: supported
+    statement: Ed25519 signing is deterministic. The per-signature value is derived from a hash of the private key and the message, so no random number is needed at signing time. This removes bad-randomness failures but not side-channel or fault risks.
+    scope: Signature generation; key generation still needs good randomness.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc8032
+        title: "RFC 8032: Edwards-Curve Digital Signature Algorithm (EdDSA)"
+        publisher: IETF
+        version: RFC 8032 (January 2017)
+        locator: Section 8.2 (Randomness Considerations); Section 5.1.6 (Sign), steps 1–2
+        note: EdDSA signatures are deterministic, protecting against bad-randomness attacks that can reach full key compromise; key generation still needs randomness.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+        title: "FIPS 186-5: Digital Signature Standard (DSS)"
+        publisher: NIST
+        version: FIPS 186-5 (February 3, 2023)
+        locator: Section 7.1 (EdDSA Parameters)
+        note: EdDSA signatures are deterministic; care is needed against side-channel and fault attacks, especially in hardware, embedded devices and smartcards.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ed25519-cose-identifiers
+    predicate: algorithm_identifiers
+    value: supported
+    statement: In COSE, Ed25519 has been signalled as EdDSA (-8) with an OKP key on curve Ed25519 (crv 6). RFC 9864 registers the fully specified Ed25519 (-19) and marks the COSE EdDSA (-8) registration as Deprecated. It also notes that WebAuthn restricts -8 to Ed25519.
+    scope: COSE algorithm identifiers as stated in the RFCs; the live IANA registry page was not retrieved.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc9053
+        title: "RFC 9053: CBOR Object Signing and Encryption (COSE): Initial Algorithms"
+        publisher: IETF
+        version: RFC 9053 (August 2022)
+        locator: Section 2.2, Table 2 (EdDSA Algorithm Value); Section 7.1 curve table
+        note: EdDSA has value -8 and requires kty OKP; curve Ed25519 is crv 6, for use with EdDSA only.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc9864
+        title: "RFC 9864: Fully-Specified Algorithms for JOSE and COSE"
+        publisher: IETF
+        version: RFC 9864 (October 2025, Standards Track)
+        locator: Section 1 (Introduction); Section 2.2, Table 2; Sections 4.2.1 and 4.2.2
+        note: Registers Ed25519 = -19 (Recommended Yes); EdDSA (-8) becomes Deprecated; cites WebAuthn's workaround "-8 (EdDSA), where crv is 6 (Ed25519)".
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ed25519-quantum-vulnerable
+    predicate: quantum_vulnerability
+    value: supported
+    statement: Ed25519 would be broken by a sufficiently large quantum computer. NIST lists EdDSA among the quantum-vulnerable signature algorithms threatened by Shor's algorithm.
+    scope: Future large-scale quantum adversary; no claim on when such a computer will exist.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc8032
+        title: "RFC 8032: Edwards-Curve Digital Signature Algorithm (EdDSA)"
+        publisher: IETF
+        version: RFC 8032 (January 2017)
+        locator: Section 1 (Introduction)
+        note: States that a sufficiently large quantum computer would be able to break both Ed25519 and Ed448.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024)
+        locator: Section 2.1.1 (Digital Signature Algorithms)
+        note: FIPS 186 algorithms including EdDSA are vulnerable to Shor's algorithm on a cryptographically relevant quantum computer.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ed25519-nist-transition-timeline
+    predicate: deprecation_timeline
+    value: conditional
+    statement: Under NIST's proposed transition plan, EdDSA at 128-bit security or higher, which includes Ed25519, would be disallowed after 2035.
+    scope: NIST-approved (US federal) use; the source is a draft, not final guidance.
+    assumptions:
+      - NIST IR 8547 is finalized with the dates in the November 2024 initial public draft (as of 2026-10-03 the CSRC page still lists only the draft).
+      - Applies to NIST approval status; other jurisdictions and sectors may set different dates.
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024)
+        locator: Section 4.1.1 (Digital Signatures), Table 2 (Quantum-vulnerable digital signature algorithms)
+        note: "EdDSA [FIPS186], at least 128 bits of security strength: disallowed after 2035."
+        stance: supports
+        retrieved_at: "2026-10-03"

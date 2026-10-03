@@ -1,0 +1,294 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: idsys-mitid
+type: IdentitySystem
+slug: mitid
+name: MitID (Denmark)
+aliases: [MitID, MitID Erhverv]
+summary: Denmark's national digital ID, owned by a public-sector and bank partnership, used to log in and approve actions at public self-service sites and in online banking.
+layer: [nordic-eu, core]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  MitID is Denmark's digital ID. People use it to log in to public self-service sites such as borger.dk, skat.dk and sundhed.dk, and to approve actions such as money transfers in online banking. The MitID partnership owns it. The partnership is the Danish Agency for Digital Government (representing the state, regions and municipalities) and the financial institutions, represented by Finance Denmark. MitID was phased in from October 2021 to June 2023 and replaced NemID.
+
+  MitID is free, the minimum age is 13, and having it is not mandatory. The main authenticator is the MitID app: the user enters a user ID at the service, opens the app and approves with a swipe after a PIN or device biometrics. On a computer the app scans a QR code shown on screen; on the same phone a button switches to the app. If the user cannot use the app, there are three alternatives. The code display and the audio code reader show or read out time-based one-time codes. The MitID chip is a paid hardware device connected by USB, NFC or Bluetooth. The code display, audio code reader and chip are used together with a MitID password.
+
+  Services do not connect to MitID directly. Every service provider goes through a certified MitID broker. NemLog-in is the broker for public-sector services, and bank brokers serve the banks. Companies and associations that act on their own behalf in public self-service use a separate business product, MitID Erhverv.
+
+  Denmark has notified MitID under eIDAS at levels of assurance Substantial and High. Internally MitID uses the levels low, substantial and high from the Danish NSIS standard, and the service provider chooses which level it requires.
+crypto: |
+  The operator's background paper says that activating the MitID app binds two key pairs to the user's MitID, held between the app and the MitID servers. ECDSA is used for signing and RSA for public-key encryption. The transaction text is encrypted so that only the user's app can read it. The app PIN is never sent to the server. Instead, a derivative is checked centrally using a zero-knowledge password proof (ZKPP) protocol. Device biometrics only unlock the PIN locally and are not a separate authentication factor. The paper does not give the elliptic curves or key sizes.
+
+  The core system's cryptographic keys are held in hardware security modules approved to FIPS 140-2. The MitID chip is listed as FIDO U2F certified, using ECDSA and SHA-256. The code display and audio code reader produce TOTP codes, but the TOTP parameters (algorithm, time step, digits) are not publicly specified in the sources reviewed.
+relations:
+  - predicate: uses_protocol
+    object_id: protocol-openid-connect
+    claim_id: claim-mitid-broker-integration
+    note: Operator says MitID is based on OAuth 2.0 and OpenID Connect; service providers integrate through certified brokers, not directly.
+  - predicate: depends_on
+    object_id: method-totp-authentication
+    claim_id: claim-mitid-authenticator-forms
+    note: Applies only to the code display and audio code reader.
+claims:
+  - id: claim-mitid-owner
+    predicate: owned_by
+    value: supported
+    statement: MitID is owned solely by the MitID partnership. The partners are the Danish Agency for Digital Government (for the state, regions and municipalities) and the financial institutions, represented by Finance Denmark.
+    scope: Ownership and governance as described by the scheme on the retrieval date.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.mitid.dk/en-gb/about-mitid/
+        title: About MitID - MitID
+        publisher: MitID partnership (mitid.dk)
+        locator: "Section 'MitID - developed and owned by the public sector and financial institutions'"
+        note: Partnership of the Agency for Digital Government and financial institutions via Finance Denmark; the partnership is sole owner of MitID.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-mitid-replaced-nemid
+    predicate: supersedes_scheme
+    value: supported
+    statement: MitID replaced NemID and was phased in from October 2021 to June 2023.
+    scope: Transition from NemID to MitID.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.mitid.dk/media/jh5nnnty/om-mitid_baggrund_v104.pdf
+        title: Om MitID - Baggrund
+        publisher: Digitaliseringsstyrelsen and Finans Danmark (MitID partnership)
+        version: Version 1.04
+        locator: "Page 21, section 'Baggrund' > 'Fra NemID til MitID'"
+        note: (Danish) MitID was phased in from October 2021 to June 2023; the transition from NemID happened in phases.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-mitid-authenticator-forms
+    predicate: authenticator_forms
+    value: supported
+    statement: The MitID app is the primary authenticator. The alternatives are the MitID code display and audio code reader, which give time-based one-time codes, and the MitID chip. The Commission's list of eID means also includes the MitID password and "MitID App enhanced security".
+    scope: User-facing authenticators on the retrieval date.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.mitid.dk/en-gb/get-started-with-mitid/how-to-use-mitid/
+        title: How to use MitID app, code display, audio code reader and chip - MitID
+        publisher: MitID partnership (mitid.dk)
+        locator: "Intro under 'How you use MitID' and sections 'MitID app', 'MitID code display', 'MitID audio code reader', 'MitID chip'"
+        note: App is the primary authenticator; the code display, audio code reader and chip are alternatives; code devices show a one-time password.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.mitid.dk/en-gb/security/totp/
+        title: "TOTP: Time-based One-Time Password - MitID"
+        publisher: MitID partnership (mitid.dk)
+        locator: "Section 'Time-based One-Time Password'"
+        note: The code display and audio code reader use time-based one-time passwords; the device is locked briefly after the third wrong attempt.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/733052990/Denmark+-+MitID+eID
+        title: Denmark - MitID eID - eID User Community
+        publisher: European Commission (eID User Community)
+        version: Page created 2024-05-14
+        locator: "Table row 'eID means under the scheme'"
+        note: Lists MitID Mobile App, App enhanced security, chip, code display, audio code reader and MitID Password as eID means.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-mitid-app-security-design
+    predicate: app_multifactor_design
+    value: supported
+    statement: The operator describes the MitID app as a multi-factor authenticator in itself, combining a PIN with device-bound keys. The PIN is checked centrally by zero-knowledge password proof. The code display, audio code reader, chip and password are single-factor and must be combined.
+    scope: The operator's own security description; no independent evaluation was retrieved.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.mitid.dk/media/jh5nnnty/om-mitid_baggrund_v104.pdf
+        title: Om MitID - Baggrund
+        publisher: Digitaliseringsstyrelsen and Finans Danmark (MitID partnership)
+        version: Version 1.04
+        locator: "Page 13, 'Sikkerhedsdesign i MitID app'; page 20, 'Generelt om sikkerheden i MitID app'"
+        note: (Danish) App holds two factors, PIN and device binding; two key pairs (ECDSA, RSA); PIN derivative verified centrally via ZKPP; other means single-factor.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-mitid-chip
+    predicate: hardware_authenticator
+    value: supported
+    statement: The MitID chip is a paid hardware authenticator, used after entering a user ID and password, that connects by USB, NFC or Bluetooth. Its specifications list FIDO U2F certification and ECDSA and SHA-256.
+    scope: MitID chip only; the specification lists no curve, key size or attestation details.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.mitid.dk/en-gb/get-started-with-mitid/how-to-use-mitid/mitid-chip/
+        title: MitID chip - MitID
+        publisher: MitID partnership (mitid.dk)
+        locator: "Sections 'How to use your MitID chip' and 'Certifications'"
+        note: Costs 143.60 DKK; user ID plus password then chip via USB, NFC or Bluetooth; browser shows a security-key prompt; certification Fido U2F, ECDSA, SHA256.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-mitid-eidas-notified
+    predicate: eidas_notified
+    value: supported
+    statement: Denmark has notified the MitID eID scheme under eIDAS. Pre-notification was on 14 Dec 2021, the Cooperation Network opinion on 27 Jun 2022, and publication in the Official Journal on 24 Oct 2022.
+    scope: eIDAS (Regulation (EU) No 910/2014) cross-border notification status as listed by the Commission.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/733052990/Denmark+-+MitID+eID
+        title: Denmark - MitID eID - eID User Community
+        publisher: European Commission (eID User Community)
+        version: Page created 2024-05-14
+        locator: "Table rows 'Status', 'Date of Pre-notification', 'Date of Opinion of the CN', 'Date of Publication to the official journal'"
+        note: Status NOTIFIED; pre-notification 14 Dec 2021; Cooperation Network opinion 27 Jun 2022 (Opinion No. 5-2022); OJ publication 24 Oct 2022.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/48762251/Overview+of+pre-notified+and+notified+eID+schemes+under+eIDAS
+        title: Overview of pre-notified and notified eID schemes under eIDAS - eID User Community
+        publisher: European Commission (eID User Community)
+        version: Last updated 2026-02-02 (page version 23)
+        locator: "Table row 'Denmark - MitID eID'"
+        note: Lists Kingdom of Denmark, MitID eID, LoA Substantial and High, status NOTIFIED, date 24 Oct 2022.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.mitid.dk/media/jh5nnnty/om-mitid_baggrund_v104.pdf
+        title: Om MitID - Baggrund
+        publisher: Digitaliseringsstyrelsen and Finans Danmark (MitID partnership)
+        version: Version 1.04
+        locator: "Page 5, 'EU-lovgivning regulerer området'"
+        note: (Danish) States Denmark has notified MitID as its national eID solution, so its identities must be recognised across the EU.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-mitid-assurance-level
+    predicate: assurance_level
+    value: conditional
+    statement: MitID is notified at eIDAS levels of assurance Substantial and High. Internally it uses the NSIS levels low, substantial and high, and the service provider chooses the level. Which authenticator or combination reaches which level is not stated in the sources reviewed.
+    scope: Scheme-level LoA. The mapping from each authenticator to a level is not publicly specified in the pages retrieved.
+    assumptions:
+      - The level actually reached in a given login depends on the authenticator(s) used and on identity proofing; no per-authenticator mapping was retrieved.
+      - Public service providers generally require at least 'substantial' (operator statement).
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/733052990/Denmark+-+MitID+eID
+        title: Denmark - MitID eID - eID User Community
+        publisher: European Commission (eID User Community)
+        version: Page created 2024-05-14
+        locator: "Table row 'Level of assurance'"
+        note: Level of assurance listed as Substantial, High for the scheme as a whole, without a per-means breakdown.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.mitid.dk/media/jh5nnnty/om-mitid_baggrund_v104.pdf
+        title: Om MitID - Baggrund
+        publisher: Digitaliseringsstyrelsen and Finans Danmark (MitID partnership)
+        version: Version 1.04
+        locator: "Page 5, 'Sikringsniveauer lav, betydelig og høj'"
+        note: (Danish) MitID has levels low, substantial, high per NSIS and eIDAS; service provider defines required level; public providers usually require at least substantial.
+        stance: contextualizes
+        retrieved_at: 2026-10-03
+  - id: claim-mitid-broker-integration
+    predicate: relying_party_integration
+    value: supported
+    statement: Public and private service providers must connect to MitID through a certified broker. NemLog-in is the broker for public authorities and bank brokers serve the banks. The operator says MitID is based on OAuth 2.0 and OpenID Connect.
+    scope: Relying-party integration architecture; broker-specific interfaces are not described here.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.mitid.dk/en-gb/broker/conceptual-description/
+        title: What does it mean to be a MitID broker? - MitID
+        publisher: MitID partnership (mitid.dk)
+        locator: "Section 'Become a broker'"
+        note: Broker relays authentication between MitID and service providers; all must connect via a broker; NemLogin3 is the broker for public service providers.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.mitid.dk/en-gb/security/security-behind-mitid/
+        title: Security behind MitID - MitID
+        publisher: MitID partnership (mitid.dk)
+        locator: "Section 'The technical architecture'"
+        note: MitID is designed to comply with NSIS and is based on OAuth 2.0 and OpenID Connect; core keys are in FIPS 140-2 approved HSMs.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.mitid.dk/media/jh5nnnty/om-mitid_baggrund_v104.pdf
+        title: Om MitID - Baggrund
+        publisher: Digitaliseringsstyrelsen and Finans Danmark (MitID partnership)
+        version: Version 1.04
+        locator: "Page 4, 'Sådan er MitID opbygget'"
+        note: (Danish) Bank brokers give banks access, NemLog-in gives public authorities access, other brokers serve other providers; all connect via certified brokers.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-mitid-erhverv
+    predicate: business_variant
+    value: supported
+    statement: MitID Erhverv lets companies and associations create users who can access public self-service solutions, such as Digital Post, and sign on the organisation's behalf. Owners who can represent the company alone may use their personal MitID instead.
+    scope: Business use toward public self-service; business online banking is handled by each bank.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.mitid.dk/en-gb/mitid-business/
+        title: MitID Erhverv for companies and associations - MitID
+        publisher: MitID partnership (mitid.dk)
+        locator: "Intro and section 'Do you need MitID Erhverv?'"
+        note: Organisations create users for Digital Post, public self-service and signing on their behalf; sole representatives may use personal MitID.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-mitid-phishing-resistance
+    predicate: phishing_resistance
+    value: unknown
+    statement: No primary source reviewed states whether MitID logins are phishing-resistant. The operator describes anti-phishing measures, but these rely on user checks.
+    scope: All authenticators. The chip is FIDO U2F certified, but the operator makes no phishing-resistance claim for it.
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.mitid.dk/media/jh5nnnty/om-mitid_baggrund_v104.pdf
+        title: Om MitID - Baggrund
+        publisher: Digitaliseringsstyrelsen and Finans Danmark (MitID partnership)
+        version: Version 1.04
+        locator: "Page 19, 'Beskyttelse mod falske hjemmesider' and 'Sammenkobling af kanaler'"
+        note: (Danish) Users should check that the URL ends in mitid.dk; scanning a QR code helps ensure the user started the action. User-dependent measures, not a phishing-resistance claim.
+        stance: contextualizes
+        retrieved_at: 2026-10-03
+      - url: https://www.mitid.dk/en-gb/security/
+        title: Security in MitID - MitID
+        publisher: MitID partnership (mitid.dk)
+        locator: "Section 'How to protect your MitID'"
+        note: Advises never sharing codes, user ID or MitID QR codes and reading what you approve, acknowledging social-engineering risk.
+        stance: contextualizes
+        retrieved_at: 2026-10-03
