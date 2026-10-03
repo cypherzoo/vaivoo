@@ -9,7 +9,7 @@ aliases: [MFA fatigue, Push bombing, Push fatigue, Prompt fatigue, Authenticatio
 summary: "An attacker who already has a user's password triggers sign-in after sign-in so the user's phone fills with approval prompts, hoping the user taps 'approve' by mistake or to make them stop. It works against simple push approval. Making the user type in a number shown on the sign-in screen, rate limits, and phishing-resistant authenticators counter it."
 layer: [core]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

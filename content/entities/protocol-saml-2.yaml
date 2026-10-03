@@ -9,7 +9,7 @@ aliases: ["SAML 2.0", "SAML", "Security Assertion Markup Language 2.0", "SAML V2
 summary: "An OASIS standard (March 2005) for federated single sign-on. A service provider sends the user's browser to an identity provider, which authenticates the user and returns a signed XML assertion saying who the user is and how and when they were authenticated."
 layer: [core]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

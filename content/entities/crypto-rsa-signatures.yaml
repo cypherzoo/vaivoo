@@ -9,7 +9,7 @@ aliases: ["RSA signatures", "RSASSA-PKCS1-v1_5", "RSASSA-PSS", "RS256 (COSE/JOSE
 summary: The two RSA signature schemes defined in PKCS #1 (RFC 8017) and approved in FIPS 186-5. They are widely used for certificates and some authenticators, need large keys (at least 2048 bits for NIST use), and would be broken by a large-scale quantum computer.
 layer: [crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

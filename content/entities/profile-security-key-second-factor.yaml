@@ -9,7 +9,7 @@ aliases: ["security key as second factor", "password + roaming WebAuthn authenti
 summary: "A deployment in which the user types a password and then touches a separate hardware security key. The key signs a WebAuthn challenge bound to the website's domain. The key only checks that someone is present; the password supplies the knowledge factor."
 layer: [core, crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 configuration:

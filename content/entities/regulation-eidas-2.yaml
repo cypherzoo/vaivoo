@@ -9,7 +9,7 @@ aliases: [eIDAS 2, eIDAS 2.0, Regulation (EU) 2024/1183, European Digital Identi
 summary: The 2024 EU regulation that amends eIDAS (910/2014) to create the European Digital Identity Framework, including the European Digital Identity Wallet and duties to accept it.
 layer: [nordic-eu]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

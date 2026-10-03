@@ -9,7 +9,7 @@ aliases: ["ML-KEM", "Module-Lattice-Based Key-Encapsulation Mechanism", "ML-KEM-
 summary: NIST's module-lattice-based post-quantum key-encapsulation mechanism (FIPS 203, August 2024), derived from CRYSTALS-Kyber. It establishes shared secret keys rather than producing signatures, so its role in authentication is indirect. Its main use is protecting the encrypted channel (for example TLS 1.3 hybrid key exchange) that logins travel over.
 layer: [crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

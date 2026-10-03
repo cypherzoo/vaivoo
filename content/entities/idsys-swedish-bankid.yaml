@@ -9,7 +9,7 @@ aliases: [BankID (Sweden), Svenskt BankID, Mobilt BankID, BankID på fil, BankID
 summary: Sweden's most widely used electronic ID, issued by Swedish banks and run by Finansiell ID-Teknik BID AB, used to identify and sign at companies and public authorities.
 layer: [nordic-eu]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

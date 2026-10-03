@@ -9,7 +9,7 @@ aliases: [FTN, Luottamusverkosto, Tunnistuspalvelun tarjoajien luottamusverkosto
 summary: Finland's statutory network of registered strong electronic identification providers (bank IDs, mobile certificates, the DVV citizen certificate and broker services), supervised by Traficom.
 layer: [nordic-eu]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

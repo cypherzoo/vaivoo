@@ -9,7 +9,7 @@ aliases: [SMS OTP, Text-message code, SMS verification code, PSTN out-of-band au
 summary: "The service sends a short random code to the user's registered phone number by text message, and the user types it in. NIST treats this as a restricted out-of-band authenticator. It is not phishing-resistant and depends on control of the phone number."
 layer: [core]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

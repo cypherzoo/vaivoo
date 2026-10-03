@@ -9,7 +9,7 @@ aliases: [MitID, MitID Erhverv]
 summary: Denmark's national digital ID, owned by a public-sector and bank partnership, used to log in and approve actions at public self-service sites and in online banking.
 layer: [nordic-eu, core]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |

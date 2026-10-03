@@ -9,7 +9,7 @@ aliases: ["WebAuthn", "W3C Web Authentication", "WebAuthn Level 3"]
 summary: "W3C specification that defines a browser API and authenticator model for creating and using public-key credentials scoped to a website (Relying Party). Level 3 was published as a W3C Recommendation on 25 August 2026."
 layer: [core, crypto]
 status: draft
-owner: Christian
+owner: Chris War
 last_verified_at: null
 next_review_at: null
 body: |
