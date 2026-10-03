@@ -1,0 +1,64 @@
+# Reference example (DRAFT). Claims are proposed, not approved — do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: method-totp-authentication
+type: Method
+slug: totp
+name: TOTP authentication
+aliases: [Time-based one-time password, authenticator-app codes]
+summary: Proving possession of a shared secret by entering a short code derived from that secret and the current time.
+layer: [core, crypto]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  During enrollment, the service and the user's authenticator (usually an app) share a secret key, often transferred by scanning a QR code. At sign-in, both sides compute a short code from the secret and the current time window; the service accepts the code if it matches.
+
+  The code proves possession of the secret at that moment. It does not by itself bind the code to the website the user is visiting.
+crypto: |
+  TOTP applies HMAC to a counter derived from the current time (by default 30-second steps), then truncates the result to a short decimal code. It is the time-based variant of HOTP. The shared secret is symmetric: anyone holding a copy, including the server's database, can generate valid codes.
+relations:
+  - { predicate: specified_by, object_id: standard-rfc-6238-totp }
+  - { predicate: uses_primitive, object_id: crypto-hmac }
+claims:
+  - id: claim-totp-spec-rfc6238
+    predicate: specified_by
+    value: supported
+    statement: TOTP is specified in IETF RFC 6238 as an extension of the HOTP algorithm (RFC 4226).
+    scope: Algorithm definition only.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc6238
+        title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 6238 (2011)
+        locator: Abstract; Section 4
+        note: Defines TOTP as a time-based extension of HOTP.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-totp-phishing-resistance
+    predicate: phishing_resistance
+    value: not_supported
+    statement: A TOTP code is not bound to the verifier's identity, so a user can be tricked into entering it on an attacker's site that relays it in real time.
+    scope: TOTP as the authentication mechanism; does not assess surrounding controls.
+    assumptions: [Attacker operates a real-time relay (adversary-in-the-middle) page.]
+    claim_type: fact
+    status: evidence_needed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticators"
+        publisher: NIST
+        version: SP 800-63B-4
+        locator: Phishing resistance section — reviewer to confirm exact passage
+        note: Research anchor; locator must be pinned before approval.
+        stance: supports
+        retrieved_at: 2026-10-03

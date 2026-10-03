@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:vaivoo:entity:1.1",
+  "title": "Vaivoo knowledge entity (schema 1.1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "taxonomy_version", "id", "type", "slug", "name", "summary", "status", "owner", "claims"],
+  "properties": {
+    "schema_version": { "const": "1.1" },
+    "taxonomy_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "type": { "enum": ["Method", "DeploymentProfile", "Authenticator", "Credential", "Protocol", "Standard", "Factor", "Signal", "Process", "IdentitySystem", "Attack", "Provider", "Product", "UseCase", "CryptographicPrimitive", "KeyProtection", "Regulation"] },
+    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "name": { "type": "string", "minLength": 1 },
+    "aliases": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "summary": { "type": "string", "minLength": 1 },
+    "body": { "type": "string", "description": "Markdown: how it works, explanation" },
+    "crypto": { "type": "string", "description": "Markdown: cryptography under the hood" },
+    "layer": { "type": "array", "items": { "enum": ["core", "crypto", "nordic-eu"] }, "uniqueItems": true },
+    "status": { "enum": ["draft", "in_review", "published", "archived"] },
+    "owner": { "type": "string" },
+    "configuration": { "type": "object" },
+    "last_verified_at": { "type": ["string", "null"], "format": "date" },
+    "next_review_at": { "type": ["string", "null"], "format": "date" },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["predicate", "object_id"],
+        "properties": {
+          "predicate": { "enum": ["uses_protocol", "specified_by", "implemented_by", "offered_by", "member_of_scheme", "uses_authenticator", "requires_factor", "uses_credential", "uses_primitive", "protected_by", "mitigates", "vulnerable_under", "depends_on", "alternative_to", "variant_of", "supersedes", "relevant_to_country", "regulated_by"] },
+          "object_id": { "type": "string" },
+          "claim_id": { "type": "string" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "predicate", "value", "statement", "scope", "assumptions", "claim_type", "status", "review_tier", "evidence"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^claim-[a-z0-9-]+$" },
+          "predicate": { "type": "string" },
+          "value": { "enum": ["supported", "not_supported", "conditional", "unknown", "not_applicable"] },
+          "statement": { "type": "string", "minLength": 1 },
+          "scope": { "type": "string" },
+          "assumptions": { "type": "array", "items": { "type": "string" } },
+          "claim_type": { "enum": ["fact", "vendor_claim", "interpretation", "prediction", "opinion"] },
+          "status": { "enum": ["proposed", "evidence_needed", "in_review", "approved", "disputed", "superseded", "rejected"] },
+          "review_tier": { "enum": ["A", "B", "C"] },
+          "reviewed_by": { "type": "array", "items": { "type": "string" } },
+          "reviewed_at": { "type": ["string", "null"], "format": "date" },
+          "valid_from": { "type": ["string", "null"], "format": "date" },
+          "valid_to": { "type": ["string", "null"], "format": "date" },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["url", "title", "publisher", "locator", "note", "stance", "retrieved_at"],
+              "properties": {
+                "url": { "type": "string", "format": "uri" },
+                "title": { "type": "string" },
+                "publisher": { "type": "string" },
+                "version": { "type": "string" },
+                "publication_date": { "type": "string" },
+                "locator": { "type": "string" },
+                "note": { "type": "string" },
+                "stance": { "enum": ["supports", "contradicts", "contextualizes"] },
+                "retrieved_at": { "type": "string", "format": "date" },
+                "content_hash": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

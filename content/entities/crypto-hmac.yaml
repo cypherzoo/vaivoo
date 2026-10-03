@@ -1,0 +1,12 @@
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: crypto-hmac
+type: CryptographicPrimitive
+slug: hmac
+name: HMAC
+aliases: [Keyed-hash message authentication code]
+summary: A construction that combines a secret key with a hash function to produce a message authentication code.
+layer: [crypto]
+status: draft
+owner: Christian
+claims: []

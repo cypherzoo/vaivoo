@@ -1,0 +1,14 @@
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: standard-rfc-6238-totp
+type: Standard
+slug: rfc-6238-totp
+name: RFC 6238 (TOTP)
+aliases: [TOTP specification]
+summary: IETF specification defining the Time-Based One-Time Password algorithm.
+layer: [core, crypto]
+status: draft
+owner: Christian
+relations:
+  - { predicate: uses_primitive, object_id: crypto-hmac }
+claims: []

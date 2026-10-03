@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import { allEntities, LABELS } from '../lib/content.mjs';
+const items = allEntities();
+const counts = items.reduce((m, e) => (m[e.section] = (m[e.section] || 0) + 1, m), {});
+---
+<Base>
+  <h1>Authentication, explained with evidence</h1>
+  <p>How people and machines prove who they are online — the methods, standards and cryptography behind them, and the Nordic and EU identity systems built on top. Every security claim is scoped, sourced and dated.</p>
+  {items.length === 0
+    ? <p class="meta">The first reviewed entries are being prepared. Read the <a href="/methodology/">methodology</a> to see how they are checked.</p>
+    : <ul>{Object.entries(counts).map(([s, n]) => <li><a href={`/${s}/`}>{LABELS[s]}</a> <span class="meta">({n} published)</span></li>)}</ul>}
+</Base>

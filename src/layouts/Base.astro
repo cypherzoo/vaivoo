@@ -1,0 +1,49 @@
+---
+import { isPreview } from '../lib/content.mjs';
+const { title, description = 'Source-backed reference on digital authentication and the cryptography behind it.' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title ? `${title} · Vaivoo` : 'Vaivoo — authentication, explained with evidence'}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+  <style is:global>
+    :root { --bg:#fbfbf9; --fg:#1c1c1a; --muted:#5f5f5a; --line:#e2e1dc; --accent:#2b5bd7; --warn:#a15c00; --ok:#1d7a46; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#141413; --fg:#ecebe6; --muted:#a3a29b; --line:#2e2d2a; --accent:#8fb0ff; --warn:#f0b35a; --ok:#6fd39a; } }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui, -apple-system, Segoe UI, sans-serif; }
+    a { color: var(--accent); }
+    header, main, footer { max-width: 900px; margin: 0 auto; padding: 0 16px; }
+    header { display:flex; flex-wrap:wrap; gap:16px; align-items:baseline; padding-top:20px; padding-bottom:12px; border-bottom:1px solid var(--line); }
+    header .brand { font-weight:700; font-size:1.2rem; text-decoration:none; color:var(--fg); }
+    nav { display:flex; flex-wrap:wrap; gap:14px; font-size:.95rem; }
+    main { padding-top:24px; padding-bottom:48px; }
+    footer { border-top:1px solid var(--line); padding-top:16px; padding-bottom:32px; color:var(--muted); font-size:.9rem; }
+    table { width:100%; border-collapse:collapse; font-size:.95rem; }
+    th, td { text-align:left; vertical-align:top; padding:8px; border-bottom:1px solid var(--line); }
+    .meta { color:var(--muted); font-size:.9rem; }
+    .pill { display:inline-block; padding:1px 8px; border:1px solid var(--line); border-radius:999px; font-size:.8rem; }
+    .v-supported { color:var(--ok); } .v-conditional, .v-unknown { color:var(--warn); }
+    .banner { background:var(--warn); color:var(--bg); padding:6px 16px; text-align:center; font-size:.9rem; }
+    .table-wrap { overflow-x:auto; }
+  </style>
+</head>
+<body>
+  {isPreview && <div class="banner">Preview build — includes unpublished drafts</div>}
+  <header>
+    <a class="brand" href="/">Vaivoo</a>
+    <nav>
+      <a href="/methods/">Methods</a><a href="/profiles/">Profiles</a><a href="/standards/">Standards</a>
+      <a href="/crypto/">Cryptography</a><a href="/identity-systems/">Identity systems</a>
+      <a href="/search/">Search</a><a href="/methodology/">Methodology</a>
+    </nav>
+  </header>
+  <main data-pagefind-body><slot /></main>
+  <footer>
+    <a href="/about/">About &amp; disclosures</a> · <a href="/methodology/">Methodology</a> · <a href="/corrections/">Corrections</a> · <a href="/data/entities.json">Data (JSON)</a>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "vaivoo-site",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "dev": "astro dev",
+    "build": "npm run validate && astro build && pagefind --site dist",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.0.0",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "pagefind": "^1.1.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
