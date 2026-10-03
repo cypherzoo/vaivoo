@@ -87,4 +87,11 @@ export function comparisonCell(column, row) {
   return null;
 }
 
+// Dates are shown to readers as month + year ("Oct 2026"); the full date stays in the data and the JSON export.
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+export function monthLabel(d) {
+  const m = /^(\d{4})-(\d{2})/.exec(String(d ?? ''));
+  return m ? `${MONTHS[Number(m[2]) - 1]} ${m[1]}` : null;
+}
+
 export const isPreview = PREVIEW;
