@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: attack-aitm-phishing
@@ -8,10 +8,10 @@ name: Adversary-in-the-middle phishing
 aliases: [AiTM phishing, Real-time phishing relay, Reverse-proxy phishing, Verifier impersonation]
 summary: "A fake sign-in page sits between the user and the real service and passes everything through in real time. It defeats passwords, one-time codes, SMS codes and push approvals, and can capture the session cookie. Authenticators that bind their output to the real site's name, such as WebAuthn, resist it."
 layer: [core]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   The attacker lures the user to a site that looks like the real sign-in page, usually through a link in an email or message. Behind the scenes, the fake site acts as a relay: it forwards each request to the real service and shows the real responses to the user.
 
@@ -37,10 +37,11 @@ claims:
     scope: Definitions only; NIST uses 'verifier impersonation' as the older term for the same attack.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
@@ -65,10 +66,11 @@ claims:
     scope: Manually entered OTP authenticators (single-factor and multi-factor) as defined in NIST SP 800-63B-4.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
@@ -110,10 +112,11 @@ claims:
     scope: Out-of-band authenticators per NIST SP 800-63B-4 Sec. 3.1.3, including PSTN delivery.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
@@ -138,10 +141,11 @@ claims:
     scope: Passwords entered into a web or application sign-in form.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
@@ -166,10 +170,11 @@ claims:
     scope: App-based push approval with or without number matching; assumes the relay forwards any number shown on the real sign-in page to the victim.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implementing-phishing-resistant-mfa-508c.pdf
         title: Implementing Phishing-Resistant MFA (fact sheet)
@@ -203,10 +208,11 @@ claims:
     scope: "The authentication step only, with WebAuthn or equivalent bound authenticators used correctly by the relying party. Does not cover a compromised endpoint or browser, a misissued certificate for the real domain (relevant to name binding only), weaker fallback or recovery methods offered alongside, or theft of the session afterwards."
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
@@ -240,10 +246,11 @@ claims:
     scope: Web sessions maintained by bearer cookies; the domain-binding mitigation applies to the relay path only.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://attack.mitre.org/techniques/T1539/
         title: "Steal Web Session Cookie, Technique T1539 - Enterprise"
@@ -268,10 +275,11 @@ claims:
     scope: NIST SP 800-63B-4; federal requirements apply to US agencies.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/security/
         title: "NIST SP 800-63B-4: Threats and Security Considerations"

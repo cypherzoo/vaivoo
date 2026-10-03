@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: protocol-openid-connect
@@ -8,10 +8,10 @@ name: OpenID Connect
 aliases: ["OIDC", "OpenID Connect Core 1.0", "OpenID Connect 1.0"]
 summary: "An identity layer on top of OAuth 2.0. A website or app (the Relying Party) sends the user to an OpenID Provider, which authenticates the user and returns a signed ID Token saying who the user is and how and when they were authenticated."
 layer: [core, crypto]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   OAuth 2.0 lets an app obtain limited access to resources, but on its own it does not tell the app who the user is. OpenID Connect adds that. The app asks for the "openid" scope, the user is sent to the OpenID Provider (OP), and the OP returns an ID Token: a signed JSON Web Token naming the issuer, the user (subject), the intended audience and validity times.
 
@@ -35,10 +35,11 @@ claims:
     scope: Purpose and relationship to OAuth 2.0 as stated in OpenID Connect Core 1.0.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://openid.net/specs/openid-connect-core-1_0.html
         title: OpenID Connect Core 1.0 incorporating errata set 2
@@ -55,10 +56,11 @@ claims:
     scope: "Core 1.0. The \"federation protocol, not an authenticator\" framing is an editorial interpretation of the cited text."
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://openid.net/specs/openid-connect-core-1_0.html
         title: OpenID Connect Core 1.0 incorporating errata set 2
@@ -85,10 +87,11 @@ claims:
       - The client has not registered for alg "none".
       - The Relying Party performs ID Token validation as in §3.1.3.7 (issuer, audience, signature or TLS-validated issuer, expiry).
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://openid.net/specs/openid-connect-core-1_0.html
         title: OpenID Connect Core 1.0 incorporating errata set 2
@@ -113,10 +116,11 @@ claims:
     scope: Default and mandatory-to-advertise algorithm; other JWS algorithms may be negotiated.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://openid.net/specs/openid-connect-core-1_0.html
         title: OpenID Connect Core 1.0 incorporating errata set 2
@@ -141,10 +145,11 @@ claims:
     scope: Token replay and injection at the Relying Party; the precise replay-detection method is client-specific.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://openid.net/specs/openid-connect-core-1_0.html
         title: OpenID Connect Core 1.0 incorporating errata set 2
@@ -169,10 +174,11 @@ claims:
     scope: What the ID Token can express; it does not guarantee the OP's assertion is accurate or that the RP checks it.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://openid.net/specs/openid-connect-core-1_0.html
         title: OpenID Connect Core 1.0 incorporating errata set 2
@@ -197,10 +203,11 @@ claims:
     scope: Protocol level. Federation-specific threats (e.g. token injection, redirect misuse) are a separate topic and not assessed here.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticators"
@@ -225,10 +232,11 @@ claims:
     scope: Document status as shown on the OpenID Foundation page at retrieval time.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://openid.net/specs/openid-connect-core-1_0.html
         title: OpenID Connect Core 1.0 incorporating errata set 2

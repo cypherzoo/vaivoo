@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: profile-synced-passkey-uv
@@ -8,10 +8,10 @@ name: Synced passkey with required user verification
 aliases: ["synced passkey (UV required)", "multi-device WebAuthn credential with user verification", "syncable authenticator with UV"]
 summary: "A deployment in which the website accepts passkeys that a passkey provider copies across the user's devices, and requires the authenticator to verify the user locally (biometric, PIN or pattern) on every sign-in."
 layer: [core, crypto]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 configuration:
   user_verification: required
   credential_storage: synchronised across the user's devices by a passkey provider
@@ -48,10 +48,11 @@ claims:
       - The RP ID is the site's domain or a parent domain at least one level below the public suffix.
       - The user's device and browser are not compromised.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticators"
@@ -86,10 +87,11 @@ claims:
       - The Relying Party sets userVerification to required and checks the UV flag.
       - The Relying Party does not also demand a password in the sign-in flow.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.w3.org/TR/webauthn-3/
         title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
@@ -114,10 +116,11 @@ claims:
     scope: Holds by configuration of this profile; WebAuthn itself also allows "preferred" and "discouraged".
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.w3.org/TR/webauthn-3/
         title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
@@ -142,10 +145,11 @@ claims:
     scope: What the flags signal; the sync mechanism itself is outside WebAuthn.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.w3.org/TR/webauthn-3/
         title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
@@ -180,10 +184,11 @@ claims:
       - The UV flag is set in the response and the Relying Party inspects it.
       - The activation factor meets NIST Sec. 3.2.10 (activation secrets) or Sec. 3.2.3 (biometrics).
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/syncable/
         title: "NIST SP 800-63B-4: Appendix B. Syncable Authenticators"
@@ -208,10 +213,11 @@ claims:
     scope: NIST SP 800-63B-4; AAL2 also requires the other AAL2 and Appendix B conditions to be met.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/aal/
         title: "NIST SP 800-63B-4: Authentication Assurance Levels"
@@ -232,14 +238,15 @@ claims:
   - id: claim-synced-passkey-uv-recovery-dependency
     predicate: recovery_dependency
     value: supported
-    statement: "The overall security of this profile is bounded by the security of the passkey provider account and its recovery process, because whoever recovers that account can obtain the synced keys."
+    statement: "The overall security of this profile depends partly on the security of the passkey provider account, sync fabric and key-recovery process. Compromise or abuse of cloud account recovery may expose synced keys unless the provider's design requires additional controls, such as a user-controlled secret that is not known to the provider."
     scope: Interpretation drawing on NIST's threat table; the actual strength varies by passkey provider and is not assessed here.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/syncable/
         title: "NIST SP 800-63B-4: Appendix B. Syncable Authenticators"
@@ -274,10 +281,11 @@ claims:
       - The Relying Party requests a conveyance other than "none" (indirect, direct or enterprise).
       - The passkey provider actually produces a verifiable attestation statement; support varies and is not documented here.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.w3.org/TR/webauthn-3/
         title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"

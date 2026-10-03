@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: regulation-eidas-2
@@ -8,10 +8,10 @@ name: eIDAS 2 (Regulation (EU) 2024/1183)
 aliases: [eIDAS 2, eIDAS 2.0, Regulation (EU) 2024/1183, European Digital Identity Framework Regulation]
 summary: The 2024 EU regulation that amends eIDAS (910/2014) to create the European Digital Identity Framework, including the European Digital Identity Wallet and duties to accept it.
 layer: [nordic-eu]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   Regulation (EU) 2024/1183 of 11 April 2024 amends the original eIDAS Regulation, (EU) No 910/2014, to set up the European Digital Identity Framework. It was published in the Official Journal on 30 April 2024 and entered into force on 20 May 2024. It is an amending act: the rules apply as part of eIDAS as amended.
 
@@ -31,10 +31,11 @@ claims:
     scope: Date the amending act entered into force. Many obligations apply later, depending on implementing acts.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
         title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
@@ -58,10 +59,11 @@ claims:
     scope: Text of 910/2014 as amended by 2024/1183. The calendar deadline depends on when those implementing acts entered into force, which was not checked in the Official Journal here.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
         title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
@@ -78,10 +80,11 @@ claims:
     scope: Legal text of Article 5a(2)-(3).
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
         title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
@@ -98,10 +101,11 @@ claims:
     scope: Natural persons only. Charges to relying parties or legal persons are not covered by this paragraph.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
         title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
@@ -118,10 +122,11 @@ claims:
     scope: Online services of public sector bodies. The timing depends on when wallets are provided.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
         title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
@@ -140,10 +145,11 @@ claims:
       - Applies only where strong user authentication for online identification is required by law or contract.
       - Applies only on the user's voluntary request; micro and small enterprises (Recommendation 2003/361/EC) are excluded.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
         title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
@@ -161,10 +167,11 @@ claims:
     assumptions:
       - Applies only where the platform requires user authentication, and only on the user's voluntary request.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
         title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
@@ -181,10 +188,11 @@ claims:
     scope: Article 8(3) as replaced by 2024/1183 and Article 5a(5)(d). Changes to the 2015/1502 annex after 2024 were not checked.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
         title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
@@ -209,10 +217,11 @@ claims:
     scope: Status in the EEA EFTA states (including Norway) on 2026-10-03. EEA-Lex says it is for information only and may not be current.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.efta.int/eea-lex/32024r1183
         title: Factsheet - 32024R1183 (EEA-Lex)

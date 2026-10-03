@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: profile-security-key-second-factor
@@ -8,10 +8,10 @@ name: Password plus hardware security key
 aliases: ["security key as second factor", "password + roaming WebAuthn authenticator", "FIDO2 security key 2FA"]
 summary: "A deployment in which the user types a password and then touches a separate hardware security key. The key signs a WebAuthn challenge bound to the website's domain. The key only checks that someone is present; the password supplies the knowledge factor."
 layer: [core, crypto]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 configuration:
   first_factor: password
   second_factor: roaming hardware security key via WebAuthn/FIDO2
@@ -48,10 +48,11 @@ claims:
       - "No weaker second factor (for example SMS) is offered as a fallback at sign-in."
       - "The user's device and browser are not compromised."
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
@@ -84,10 +85,11 @@ claims:
     scope: NIST SP 800-63B-4 classification; the key alone, without UV, counts as single-factor.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/aal/
         title: "NIST SP 800-63B-4: Authentication Assurance Levels"
@@ -112,10 +114,11 @@ claims:
     scope: Holds by configuration of this profile; the same key can perform UV if the RP requires it and the key supports it.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.w3.org/TR/webauthn-3/
         title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
@@ -150,10 +153,11 @@ claims:
       - "The security key generates, stores and uses the private key in protected hardware and cannot be reprogrammed by the host to extract it."
       - "The Relying Party checks that the BE flag is 0 if it relies on the credential being device-bound."
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.w3.org/TR/webauthn-3/
         title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
@@ -182,10 +186,11 @@ claims:
       - "The authenticator is validated to FIPS 140 Level 1 or higher overall, and verifier cryptography is validated at Level 1 or higher."
       - "The Relying Party verifies origin binding so that phishing resistance holds."
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/aal/
         title: "NIST SP 800-63B-4: Authentication Assurance Levels"
@@ -218,10 +223,11 @@ claims:
     scope: WebAuthn terminology; transport support varies by key.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.w3.org/TR/webauthn-3/
         title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
@@ -238,10 +244,11 @@ claims:
     scope: Interpretation; the fallback and recovery methods a given deployment offers are not assessed here.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/events/
         title: "NIST SP 800-63B-4: Authenticator Event Management"

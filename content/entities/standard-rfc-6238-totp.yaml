@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: standard-rfc-6238-totp
@@ -8,10 +8,10 @@ name: RFC 6238 (TOTP)
 aliases: [TOTP specification, "RFC 6238"]
 summary: "Informational IETF RFC (May 2011) that defines the Time-Based One-Time Password algorithm, a time-based variant of HOTP (RFC 4226)."
 layer: [core, crypto]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   RFC 6238 takes the HOTP algorithm from RFC 4226 and replaces its event counter with a count of elapsed time steps. The result is the time-based one-time password (TOTP) algorithm that most authenticator apps implement.
 
@@ -29,10 +29,11 @@ claims:
     scope: Document status as shown on the RFC itself.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc6238
         title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
@@ -49,10 +50,11 @@ claims:
     scope: Algorithm definition.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc6238
         title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
@@ -69,10 +71,11 @@ claims:
     scope: Defaults and recommendations; deployments may differ.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc6238
         title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
@@ -105,10 +108,11 @@ claims:
     scope: Key management guidance in RFC 6238.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc6238
         title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"

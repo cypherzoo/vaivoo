@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: idsys-mitid
@@ -8,10 +8,10 @@ name: MitID (Denmark)
 aliases: [MitID, MitID Erhverv]
 summary: Denmark's national digital ID, owned by a public-sector and bank partnership, used to log in and approve actions at public self-service sites and in online banking.
 layer: [nordic-eu, core]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   MitID is Denmark's digital ID. People use it to log in to public self-service sites such as borger.dk, skat.dk and sundhed.dk, and to approve actions such as money transfers in online banking. The MitID partnership owns it. The partnership is the Danish Agency for Digital Government (representing the state, regions and municipalities) and the financial institutions, represented by Finance Denmark. MitID was phased in from October 2021 to June 2023 and replaced NemID.
 
@@ -41,10 +41,11 @@ claims:
     scope: Ownership and governance as described by the scheme on the retrieval date.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.mitid.dk/en-gb/about-mitid/
         title: About MitID - MitID
@@ -60,10 +61,11 @@ claims:
     scope: Transition from NemID to MitID.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.mitid.dk/media/jh5nnnty/om-mitid_baggrund_v104.pdf
         title: Om MitID - Baggrund
@@ -80,10 +82,11 @@ claims:
     scope: User-facing authenticators on the retrieval date.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.mitid.dk/en-gb/get-started-with-mitid/how-to-use-mitid/
         title: How to use MitID app, code display, audio code reader and chip - MitID
@@ -114,10 +117,11 @@ claims:
     scope: The operator's own security description; no independent evaluation was retrieved.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.mitid.dk/media/jh5nnnty/om-mitid_baggrund_v104.pdf
         title: Om MitID - Baggrund
@@ -134,10 +138,11 @@ claims:
     scope: MitID chip only; the specification lists no curve, key size or attestation details.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.mitid.dk/en-gb/get-started-with-mitid/how-to-use-mitid/mitid-chip/
         title: MitID chip - MitID
@@ -153,10 +158,11 @@ claims:
     scope: eIDAS (Regulation (EU) No 910/2014) cross-border notification status as listed by the Commission.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/733052990/Denmark+-+MitID+eID
         title: Denmark - MitID eID - eID User Community
@@ -191,10 +197,11 @@ claims:
       - The level actually reached in a given login depends on the authenticator(s) used and on identity proofing; no per-authenticator mapping was retrieved.
       - Public service providers generally require at least 'substantial' (operator statement).
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/733052990/Denmark+-+MitID+eID
         title: Denmark - MitID eID - eID User Community
@@ -219,10 +226,11 @@ claims:
     scope: Relying-party integration architecture; broker-specific interfaces are not described here.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.mitid.dk/en-gb/broker/conceptual-description/
         title: What does it mean to be a MitID broker? - MitID
@@ -253,10 +261,11 @@ claims:
     scope: Business use toward public self-service; business online banking is handled by each bank.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.mitid.dk/en-gb/mitid-business/
         title: MitID Erhverv for companies and associations - MitID
@@ -272,10 +281,11 @@ claims:
     scope: All authenticators. The chip is FIDO U2F certified, but the operator makes no phishing-resistance claim for it.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.mitid.dk/media/jh5nnnty/om-mitid_baggrund_v104.pdf
         title: Om MitID - Baggrund

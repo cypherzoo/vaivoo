@@ -8,10 +8,10 @@ name: Norwegian BankID
 aliases: [BankID (Norway), BankID Norge]
 summary: Norway's bank-issued electronic ID, used to log in and sign electronically at banks, public services (via ID-porten) and private businesses.
 layer: [nordic-eu, core]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   Norwegian BankID is a personal electronic ID for logging in and signing online. The Norwegian banks developed it together and launched it in 2004. The banks issue it to their private customers. The operator, Stø AS, maintains and develops the service and sells it to businesses through resellers. The company took the name Stø AS in May 2025. Norwegian BankID is not the same scheme as Swedish BankID.
 
@@ -39,10 +39,11 @@ claims:
     scope: Operator of the scheme as of the retrieval date.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://bankid.no/en/about-us
         title: About us - BankID
@@ -58,10 +59,11 @@ claims:
     scope: Initial issuance to private individuals.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://bankid.no/en/how-to-get-bankid
         title: How to get BankID - BankID
@@ -84,10 +86,11 @@ claims:
     scope: Login to public-sector services via ID-porten.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.digdir.no/felleslosninger/id-porten/864
         title: ID-porten (Nasjonale fellesløsninger)
@@ -105,10 +108,11 @@ claims:
       - The relying party requests the BankID High identity provider (acr_values urn:bankid:bid); the biometric variant is LOA=3.
       - LOA=4 is the operator's own label, which maps to the top of the three eIDAS/Norwegian levels (lavt, betydelig, høyt); a regulator's confirmation is still needed.
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://developer.bankid.no/bankid-oidc-provider/core-concepts/identity-providers/
         title: Identity Providers - BankID documentation
@@ -140,10 +144,11 @@ claims:
     scope: eIDAS (Regulation (EU) No 910/2014) cross-border notification status as shown in the Commission overview at retrieval time.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/48762251/Overview+of+pre-notified+and+notified+eID+schemes+under+eIDAS
         title: Overview of pre-notified and notified eID schemes under eIDAS
@@ -168,10 +173,11 @@ claims:
     scope: Relying-party integration via the operator's OIDC service.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://developer.bankid.no/bankid-oidc-provider/introduction/
         title: Introduction - BankID documentation (BankID OpenID Connect)
@@ -184,15 +190,24 @@ claims:
   - id: claim-norwegian-bankid-authenticator-forms
     predicate: authenticator_forms
     value: supported
-    statement: Users log in with their national identity number, a one-time code from the BankID app or a code device, and a personal password; the "BankID on mobile" variant is being phased out, and the app can also enable faster login with face recognition, fingerprint or PIN.
+    statement: "Users log in with their national identity number, a one-time code from the BankID app or a code device, and a personal password. The separate SIM-based BankID on mobile service was phased out on 1 September 2024. The app can also enable faster login with face recognition, fingerprint or PIN."
     scope: User-facing variants as described by the operator on the retrieval date; which code devices are available depends on the user's bank.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
+      - url: https://bankid.no/faq/hva-er-forskjellen-paa-vanlig-bankid-bankid-appen-og-bankid-paa-mobil
+        title: "Hva er forskjellen på vanlig BankID, BankID-appen og BankID på mobil?"
+        publisher: "BankID (operator)"
+        version: "FAQ page"
+        locator: "FAQ answer on BankID variants"
+        note: "The operator states that the SIM-based BankID on mobile service was phased out on 1 September 2024. Added at internal review."
+        stance: supports
+        retrieved_at: "2026-10-03"
       - url: https://bankid.no/en/what-is-bankid
         title: What is bankid - BankID
         publisher: Stø AS (bankid.no)
@@ -222,10 +237,11 @@ claims:
     scope: The "BankID with biometrics" variant only.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://developer.bankid.no/bankid-with-biometrics/introduction/
         title: Introduction - BankID documentation (BankID with biometrics)
@@ -242,10 +258,11 @@ claims:
     scope: Signing services offered by the operator; legal effect in a specific transaction is not assessed.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://developer.bankid.no/bankid-esign-provider/introduction/
         title: Introduction - BankID documentation (BankID Signing)
@@ -269,10 +286,11 @@ claims:
     scope: Certificate profiles of the current signing service (CSC and WYSIWYS), as published in the operator's documentation; the example shown is from pre-production.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://developer.bankid.no/bankid-esign-provider/pki/certificate-profiles/
         title: Certificate Profiles - BankID documentation
@@ -289,10 +307,11 @@ claims:
     scope: The "BankID with biometrics" variant only; signalled by the amr value bis-hwk.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://developer.bankid.no/bankid-with-biometrics/advanced-topics/understanding-authentication-methods/
         title: Understanding authentication methods (amr) - BankID documentation
@@ -309,10 +328,11 @@ claims:
     scope: BankID High login; not publicly specified in the sources reviewed.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://developer.bankid.no/bankid-with-biometrics/advanced-topics/understanding-authentication-methods/
         title: Understanding authentication methods (amr) - BankID documentation
@@ -329,10 +349,11 @@ claims:
     scope: All variants. The biometric variant uses WebAuthn, but the operator does not make a phishing-resistance claim in the pages reviewed.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://developer.bankid.no/bankid-with-biometrics/introduction/
         title: Introduction - BankID documentation (BankID with biometrics)

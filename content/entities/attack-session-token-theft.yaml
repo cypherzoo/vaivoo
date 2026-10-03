@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: attack-session-token-theft
@@ -8,10 +8,10 @@ name: Session token theft
 aliases: [Session hijacking, Session cookie theft, Pass-the-cookie, Token theft, Token replay]
 summary: "Instead of beating the sign-in, the attacker steals the session cookie or token issued after it, using malware on the device or a phishing relay, and reuses it. Strong authentication does not protect a session secret that is a plain bearer token once it has been issued. Binding the secret to the device, short lifetimes and session monitoring reduce the risk."
 layer: [core]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   After a successful sign-in, the service gives the browser or app a session secret, usually a cookie, so the user does not have to authenticate on every request. For web services, NIST notes that cookies are not authenticators. They are short-term secrets, and whoever presents the secret continues the session.
 
@@ -35,10 +35,11 @@ claims:
     scope: Web session cookies and similar application session secrets; OAuth access and refresh tokens are closely related.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://attack.mitre.org/techniques/T1539/
         title: "Steal Web Session Cookie, Technique T1539 - Enterprise"
@@ -63,10 +64,11 @@ claims:
     scope: Sessions maintained by bearer secrets; proof-of-possession session mechanisms are treated separately.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/session/
         title: "NIST SP 800-63B-4: Session Management"
@@ -99,10 +101,11 @@ claims:
     scope: Catalogue of observed techniques; prevalence is not assessed.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://attack.mitre.org/techniques/T1539/
         title: "Steal Web Session Cookie, Technique T1539 - Enterprise"
@@ -129,10 +132,11 @@ claims:
       - "Theft happens on the user's endpoint (malware, injected script) after a legitimate sign-in; via a look-alike-domain relay, phishing-resistant authentication blocks it."
       - "The session secret is a bearer token with no proof-of-possession binding."
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://attack.mitre.org/techniques/T1539/
         title: "Steal Web Session Cookie, Technique T1539 - Enterprise"
@@ -165,10 +169,11 @@ claims:
     scope: NIST SP 800-63B-4 Sec. 5.1 and IETF RFC 9449; deployment status of device-bound session credentials is not assessed (NIST calls it emerging).
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/session/
         title: "NIST SP 800-63B-4: Session Management"
@@ -193,10 +198,11 @@ claims:
     scope: Browser cookies used for session maintenance under NIST SP 800-63B-4. These settings mainly limit script and network exposure; they do not stop malware that reads the browser's cookie store.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/session/
         title: "NIST SP 800-63B-4: Session Management"
@@ -215,10 +221,11 @@ claims:
       - "The stolen secret is used after the overall or inactivity timeout would have expired; timeouts give no protection against immediate reuse."
       - "Timeouts are enforced on the server, not only by cookie expiry, as NIST requires."
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/aal/
         title: "NIST SP 800-63B-4: Authentication Assurance Levels"
@@ -252,10 +259,11 @@ claims:
     scope: NIST SP 800-63B-4 Sec. 5.3 (permissive, not mandatory) and MITRE ATT&CK detection guidance.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/session/
         title: "NIST SP 800-63B-4: Session Management"

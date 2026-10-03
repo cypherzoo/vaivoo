@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: crypto-ecdsa-p256
@@ -8,10 +8,10 @@ name: ECDSA with P-256
 aliases: ["ES256 (COSE/JOSE)", "ESP256 (COSE)", "ECDSA P-256", "secp256r1", "prime256v1", "NIST P-256"]
 summary: A digital signature scheme that uses elliptic curves (ECDSA) on the NIST curve P-256. It is approved in FIPS 186-5, gives about 128-bit classical security, and is the most common passkey signature algorithm (COSE ES256).
 layer: [crypto]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   ECDSA with P-256 lets a device prove it holds a private key by signing data. Anyone with the matching public key can check the signature. In WebAuthn and passkeys, the authenticator signs the server's challenge with this kind of key, and the server checks the signature with the public key it stored at registration.
 
@@ -39,10 +39,11 @@ claims:
     scope: NIST approval for US federal use; says nothing about other national schemes.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
         title: "FIPS 186-5: Digital Signature Standard (DSS)"
@@ -67,10 +68,11 @@ claims:
     scope: Classical (non-quantum) attacks on the curve and signature process.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
         title: "FIPS 186-5: Digital Signature Standard (DSS)"
@@ -95,10 +97,11 @@ claims:
     scope: Signature generation; applies to all ECDSA curves, including P-256.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
         title: "FIPS 186-5: Digital Signature Standard (DSS)"
@@ -123,10 +126,11 @@ claims:
     scope: COSE algorithm identifiers as stated in the RFCs; the live IANA registry page was not retrieved.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc9053
         title: "RFC 9053: CBOR Object Signing and Encryption (COSE): Initial Algorithms"
@@ -159,10 +163,11 @@ claims:
     scope: Future large-scale quantum adversary; no claim on when such a computer will exist.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
         title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
@@ -189,10 +194,11 @@ claims:
       - NIST IR 8547 is finalized with the dates in the November 2024 initial public draft (as of 2026-10-03 the CSRC page still lists only the draft).
       - Applies to NIST approval status; other jurisdictions and sectors may set different dates.
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
         title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"

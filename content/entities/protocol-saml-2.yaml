@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: protocol-saml-2
@@ -8,10 +8,10 @@ name: SAML 2.0 Web Browser SSO
 aliases: ["SAML 2.0", "SAML", "Security Assertion Markup Language 2.0", "SAML V2.0 Web Browser SSO Profile"]
 summary: "An OASIS standard (March 2005) for federated single sign-on. A service provider sends the user's browser to an identity provider, which authenticates the user and returns a signed XML assertion saying who the user is and how and when they were authenticated."
 layer: [core]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   SAML (Security Assertion Markup Language) 2.0 is a set of OASIS specifications for exchanging security statements, called assertions, between organisations. Its most common use is web single sign-on: a user who visits a service provider (SP) is sent to an identity provider (IdP), signs in there, and comes back with an assertion that the SP accepts instead of running its own login.
 
@@ -38,10 +38,11 @@ claims:
     scope: Document status of the SAML V2.0 specification set as shown on the OASIS documents at retrieval time. Errata composites published later are not assessed.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf
         title: Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0
@@ -77,10 +78,11 @@ claims:
     scope: Web Browser SSO Profile (urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser) using the HTTP Redirect, POST and Artifact bindings.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf
         title: Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0
@@ -98,10 +100,11 @@ claims:
     scope: "Web Browser SSO Profile. The \"federation protocol, not an authenticator\" framing is an editorial interpretation of the cited text."
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf
         title: Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0
@@ -128,10 +131,11 @@ claims:
     scope: What the assertion can express; it does not guarantee the identity provider's statement is accurate, nor that the service provider checks it.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf
         title: Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0
@@ -159,10 +163,11 @@ claims:
     assumptions:
       - The service provider holds the identity provider's correct verification key (e.g. from metadata).
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf
         title: Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0
@@ -181,10 +186,11 @@ claims:
     assumptions:
       - The service provider implements all processing rules in §4.1.4.3 and §4.1.4.5.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf
         title: Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0
@@ -202,10 +208,11 @@ claims:
     scope: Implementation-level risk in service providers' signature verification and assertion processing; not a flaw in the cryptographic signature algorithm itself. Findings date from 2012 and do not describe current implementations.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.usenix.org/conference/usenixsecurity12/technical-sessions/presentation/somorovsky
         title: "On Breaking SAML: Be Whoever You Want to Be"
