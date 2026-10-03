@@ -1,0 +1,29 @@
+---
+import Base from '../../layouts/Base.astro';
+import { allComparisons, comparisonCell, VALUE_LABEL, isPreview } from '../../lib/content.mjs';
+export function getStaticPaths() {
+  return allComparisons().map(c => ({ params: { slug: c.slug }, props: { cmp: c } }));
+}
+const { cmp } = Astro.props;
+---
+<Base title={cmp.title} description={cmp.summary}>
+  <p class="meta">Comparison {cmp.status !== 'published' && <span class="pill">{cmp.status}</span>}</p>
+  <h1>{cmp.title}</h1>
+  <p>{cmp.summary}</p>
+  {cmp.intro && <div set:html={cmp.intro.split(/\n\n+/).map(p => `<p>${p}</p>`).join('')} />}
+  <div class="table-wrap"><table class="cmp">
+    <thead><tr><th>Property</th>{cmp.columns.map(col => <th>{col.label}{col.note && <div class="meta">{col.note}</div>}</th>)}</tr></thead>
+    <tbody>{cmp.rows.map(row => (
+      <tr><th scope="row">{row.label}{row.help && <div class="meta">{row.help}</div>}</th>
+        {cmp.columns.map(col => { const cell = comparisonCell(col, row); return cell ? (
+          <td class={`v-${cell.claim.shown}`}>
+            <strong>{VALUE_LABEL[cell.claim.shown]}</strong>{cell.claim.unverified && <span class="meta"> · {isPreview ? 'proposed' : 'not yet verified'}</span>}
+            {(!cell.claim.unverified || isPreview) && <div class="meta">{cell.claim.statement}</div>}
+            {cell.claim.assumptions.length > 0 && (!cell.claim.unverified || isPreview) && <div class="meta">Conditions: {cell.claim.assumptions.length}</div>}
+            <div><a href={`${cell.entity.url}#${cell.claim.id}`}>Evidence →</a></div>
+          </td>) : <td class="v-unknown"><span class="meta">No claim yet</span></td>; })}
+      </tr>))}
+    </tbody>
+  </table></div>
+  <p class="meta">Values come from scoped claims; "Conditional" means the property only holds under the stated conditions. Read the evidence before relying on a cell.</p>
+</Base>
