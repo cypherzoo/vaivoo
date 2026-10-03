@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ReviewSummary from '../../components/ReviewSummary.astro';
-import { claimById, reviewSummary } from '../../lib/content.mjs';
+import { claimById, reviewSummary, monthLabel } from '../../lib/content.mjs';
 export function getStaticPaths() {
   return Object.values(import.meta.glob('../../../content/guides/*.md', { eager: true }))
     .filter(m => m.frontmatter.status !== 'archived')
@@ -15,7 +15,7 @@ const cited = ids.map(claimById).filter(Boolean).map(x => x.claim);
 const summary = reviewSummary(cited);
 ---
 <Base title={f.title} description={f.summary} noindex={summary.approved === 0}>
-  <p class="meta"><a href="/guides/">Guide</a> {f.status !== 'published' && <span class="pill">{f.status}</span>} · Last reviewed: {f.last_reviewed_at ?? 'not yet reviewed'}</p>
+  <p class="meta"><a href="/guides/">Guide</a> {f.status !== 'published' && <span class="pill">{f.status}</span>} · Last reviewed: {monthLabel(f.last_reviewed_at) ?? 'not yet reviewed'}</p>
   <h1>{f.title}</h1>
   <p><strong>{f.summary}</strong></p>
   <ReviewSummary summary={summary} what="claims this guide cites" />
