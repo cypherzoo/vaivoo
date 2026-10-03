@@ -6,7 +6,7 @@
   "scripts": {
     "validate": "node scripts/validate.mjs",
     "dev": "astro dev",
-    "build": "npm run validate && astro build && pagefind --site dist",
+    "build": "npm run validate && astro build && pagefind --site dist && rm -rf vaivoo-build && mv dist vaivoo-build",
     "preview": "astro preview",
     "start": "node server.mjs"
   },

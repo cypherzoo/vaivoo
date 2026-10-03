@@ -1,11 +1,11 @@
-// Minimal static server for the built site (dist/), with security headers and a real 404.
+// Minimal static server for the built site (vaivoo-build/ — not 'dist', so SiteGround runs this server instead of serving files statically), with security headers and a real 404.
 // Zero dependencies. SiteGround (Node.js Project) runs it via `npm start`.
 import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), 'dist');
+const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), 'vaivoo-build');
 const PORT = Number(process.env.PORT) || 3000;
 
 const TYPES = {

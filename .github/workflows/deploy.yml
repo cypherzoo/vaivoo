@@ -31,4 +31,4 @@ jobs:
           SSH_USER: ${{ secrets.SG_USER }}
           REMOTE_DIR: ${{ secrets.SG_REMOTE_DIR }}   # e.g. www/vaivoo.com/public_html
         run: |
-          rsync -az --delete --exclude='.well-known/' -e "ssh -p $SSH_PORT -i ~/.ssh/id_ed25519" dist/ "$SSH_USER@$SSH_HOST:$REMOTE_DIR/"
+          rsync -az --delete --exclude='.well-known/' -e "ssh -p $SSH_PORT -i ~/.ssh/id_ed25519" vaivoo-build/ "$SSH_USER@$SSH_HOST:$REMOTE_DIR/"
