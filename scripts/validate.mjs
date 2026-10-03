@@ -44,10 +44,16 @@ for (const { f, doc } of entities) {
     if (r.claim_id && !own.has(r.claim_id)) errors.push(`${f}: relation references unknown claim "${r.claim_id}"`);
   }
   for (const c of doc.claims) {
+    if (c.status !== 'approved' && c.review_level) errors.push(`${f}: ${c.id} has review_level but is not approved`);
     if (c.status === 'approved') {
       if (!c.evidence.some(e => e.stance === 'supports')) errors.push(`${f}: ${c.id} approved without supporting evidence`);
       if (!c.reviewed_by?.length || !c.reviewed_at) errors.push(`${f}: ${c.id} approved without reviewer/date`);
-      if (c.review_tier === 'C' && (c.reviewed_by?.length ?? 0) < 2) errors.push(`${f}: ${c.id} Tier C needs owner + independent technical reviewer`);
+      if (!c.review_level) errors.push(`${f}: ${c.id} approved without review_level (internal | external)`);
+      if (c.review_level === 'external') {
+        const outside = (c.reviewed_by || []).filter(r => r !== doc.owner);
+        if (outside.length === 0) errors.push(`${f}: ${c.id} external review needs a reviewer other than the owner`);
+        if (c.review_tier === 'C' && (c.reviewed_by?.length ?? 0) < 2) errors.push(`${f}: ${c.id} Tier C external review needs owner + independent technical reviewer`);
+      }
       if (c.value === 'conditional' && c.assumptions.length === 0) errors.push(`${f}: ${c.id} conditional value without stated conditions`);
     }
   }
@@ -107,5 +113,6 @@ for (const f of guideFiles) {
 }
 
 if (errors.length) { console.error(`✗ ${errors.length} problem(s):\n  ` + errors.join('\n  ')); process.exit(1); }
-const pub = entities.filter(e => e.doc.status === 'published').length;
-console.log(`✓ ${entities.length} entities valid (${pub} published, ${entities.length - pub} not public); ${cmpFiles.length} comparisons; ${guideFiles.length} guides with ${guideClaims} claim citations`);
+const lv = { external: 0, internal: 0, draft: 0 };
+for (const { doc } of entities) for (const c of doc.claims) lv[c.status === 'approved' ? (c.review_level || 'internal') : 'draft']++;
+console.log(`✓ ${entities.length} entities valid; claims: ${lv.external} external, ${lv.internal} internal, ${lv.draft} draft; ${cmpFiles.length} comparisons; ${guideFiles.length} guides with ${guideClaims} claim citations`);

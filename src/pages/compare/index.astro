@@ -6,6 +6,6 @@ const items = allComparisons();
 <Base title="Compare" description="Side-by-side comparisons of authentication setups, built only from sourced claims.">
   <h1>Compare</h1>
   <p>Each comparison sets concrete deployment setups side by side. Every cell comes from a sourced, scoped claim on the entity page; there is no overall score.</p>
-  {items.length === 0 ? <p class="meta">No reviewed comparisons yet.</p> :
+  {items.length === 0 ? <p class="meta">No comparisons yet.</p> :
   <ul>{items.map(c => <li><a href={`/compare/${c.slug}/`}>{c.title}</a> — {c.summary} {c.status !== 'published' && <span class="pill">{c.status}</span>}</li>)}</ul>}
 </Base>

@@ -1,6 +1,6 @@
 ---
 import { isPreview } from '../lib/content.mjs';
-const { title, description = 'Source-backed reference on digital authentication and the cryptography behind it.' } = Astro.props;
+const { title, description = 'Source-backed reference on digital authentication and the cryptography behind it.', noindex = false } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
@@ -10,9 +10,25 @@ const { title, description = 'Source-backed reference on digital authentication 
   <title>{title ? `${title} · Vaivoo` : 'Vaivoo — authentication, explained with evidence'}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+  {noindex && <meta name="robots" content="noindex" />}
   <style is:global>
-    :root { --bg:#fbfbf9; --fg:#1c1c1a; --muted:#5f5f5a; --line:#e2e1dc; --accent:#2b5bd7; --warn:#a15c00; --ok:#1d7a46; --bad:#b3261e; }
-    @media (prefers-color-scheme: dark) { :root { --bg:#141413; --fg:#ecebe6; --muted:#a3a29b; --line:#2e2d2a; --accent:#8fb0ff; --warn:#f0b35a; --ok:#6fd39a; --bad:#ff8a80; } }
+    :root { --bg:#fbfbf9; --fg:#1c1c1a; --muted:#5f5f5a; --line:#e2e1dc; --accent:#2b5bd7; --warn:#a15c00; --ok:#1d7a46; --bad:#b3261e;
+      --rv-ext-bg:#e3f4ea; --rv-ext-fg:#17663a; --rv-ext-bd:#9fd3b3;
+      --rv-int-bg:#fff0de; --rv-int-fg:#9a4b00; --rv-int-bd:#f2b979;
+      --rv-dft-bg:#efefec; --rv-dft-fg:#55554f; --rv-dft-bd:#d3d2cc; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#141413; --fg:#ecebe6; --muted:#a3a29b; --line:#2e2d2a; --accent:#8fb0ff; --warn:#f0b35a; --ok:#6fd39a; --bad:#ff8a80;
+      --rv-ext-bg:#12301f; --rv-ext-fg:#7fe0a6; --rv-ext-bd:#2b6a45;
+      --rv-int-bg:#3a2510; --rv-int-fg:#ffbf73; --rv-int-bd:#7a4a17;
+      --rv-dft-bg:#262624; --rv-dft-fg:#b5b4ad; --rv-dft-bd:#3d3c38; } }
+    .rv { display:inline-block; padding:1px 9px; border-radius:999px; font-size:.78rem; font-weight:600; white-space:nowrap; border:1px solid; margin:2px 4px 2px 0; }
+    .rv b { margin-right:2px; }
+    .rv-external { background:var(--rv-ext-bg); color:var(--rv-ext-fg); border-color:var(--rv-ext-bd); }
+    .rv-internal { background:var(--rv-int-bg); color:var(--rv-int-fg); border-color:var(--rv-int-bd); }
+    .rv-draft, .rv-disputed { background:var(--rv-dft-bg); color:var(--rv-dft-fg); border-color:var(--rv-dft-bd); }
+    .rv-disputed { border-style:dashed; }
+    .rv-summary { margin:8px 0 16px; } .rv-summary p { margin:4px 0 0; }
+    ul.rv-legend { list-style:none; padding:0; } ul.rv-legend li { margin:4px 0; }
+    ul.entries li { margin-bottom:10px; }
     * { box-sizing: border-box; }
     body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui, -apple-system, Segoe UI, sans-serif; }
     a { color: var(--accent); }
