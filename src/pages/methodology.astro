@@ -1,9 +1,49 @@
 ---
 import Base from '../layouts/Base.astro';
 ---
-<Base title="Methodology">
+<Base title="Methodology" description="How Vaivoo turns sources into reviewed, scoped claims: values, evidence, review tiers, AI use and updates.">
   <h1>Methodology</h1>
-  <p>Facts are stored as short, scoped claims with sources and a review date. Security properties are never a single yes/no: each is <em>supported</em>, <em>not supported</em>, <em>conditional</em> (with stated conditions), <em>unknown</em> or <em>not applicable</em>. Unknown is never shown as "no".</p>
-  <p>Comparisons are between concrete deployment profiles (for example "password plus TOTP"), not between brand names or abstract categories. There is no overall security score.</p>
-  <p>Every change is reviewed before publication and recorded in public version history.</p>
+  <p>Vaivoo does not publish opinions about which product is best. It publishes <strong>claims</strong>: short, scoped statements about authentication methods, standards, cryptography and identity systems, each tied to the sources that support it and approved by a named reviewer.</p>
+
+  <h2>Claims</h2>
+  <p>Every factual statement on an entity page, in a comparison table or in a guide is a claim. A claim has:</p>
+  <ul>
+    <li><strong>A statement</strong> in plain language.</li>
+    <li><strong>A scope</strong>: what the statement covers and what it does not. "TOTP is not phishing-resistant" is scoped to TOTP as an authentication method, not to every possible deployment.</li>
+    <li><strong>A value</strong>: <em>supported</em>, <em>not supported</em>, <em>conditional</em>, <em>unknown</em> or <em>not applicable</em>. A conditional value always lists its conditions. Unknown means we could not establish it from sources; it is never shown as "no".</li>
+    <li><strong>A type</strong>: a <em>fact</em> stated by a source, an <em>interpretation</em> that combines sources, or a <em>vendor claim</em> made by an operator or industry body about its own scheme. Vendor claims are labelled as such.</li>
+    <li><strong>Evidence</strong>: the document, its version or date, the exact section, a short note on what it says, and whether it supports, contradicts or adds context to the claim.</li>
+  </ul>
+  <p>Pages, comparison tables and guides are assembled from claims. If a claim changes, every place that uses it changes with it. Guides link each factual sentence to its claim with a small arrow (↗).</p>
+
+  <h2>Sources</h2>
+  <p>We prefer primary sources, in roughly this order:</p>
+  <ol>
+    <li>Standards and specifications: NIST, IETF RFCs, W3C, ISO, OASIS, FIDO Alliance specifications, ETSI.</li>
+    <li>Law and regulators: EU legal acts on EUR-Lex, national legislation, supervisory authorities and their registers.</li>
+    <li>Government security agencies: for example national cyber security centres and CISA.</li>
+    <li>Peer-reviewed research for attacks and cryptanalysis.</li>
+    <li>Operators' own documentation, used for what an operator says about its own scheme and labelled as a vendor claim.</li>
+  </ol>
+  <p>We do not use marketing material, affiliate content or anonymous blog posts as evidence. Where sources disagree, both are recorded and the claim says so.</p>
+
+  <h2>Review</h2>
+  <p>A claim is shown on the public site only after it is approved. Until then it appears as "not yet verified", and its proposed value is not published or exported.</p>
+  <ul>
+    <li><strong>Tier B</strong>: definitions and plain facts (for example, which RFC defines an algorithm). One reviewer.</li>
+    <li><strong>Tier C</strong>: security properties, assurance levels, attack resistance and legal or regulatory status. Two independent reviewers, one of whom is a technical specialist outside Vaivoo.</li>
+  </ul>
+  <p>Every change goes through a reviewed pull request in a public repository, so the full history of each claim is visible.</p>
+
+  <h2>Comparisons</h2>
+  <p>Comparisons set concrete deployment setups side by side, for example "password plus TOTP" against "synced passkey with user verification". They do not compare brand names or abstract categories, and there is no overall score. A cell is only filled if a claim exists for it; otherwise it shows a dash.</p>
+
+  <h2>Keeping it current</h2>
+  <p>Each published entity has a last-verified date and a next-review date. Standards and regulations change; when a source is revised, the affected claims go back to review. Drafts, withdrawn documents and superseded versions are named as such.</p>
+
+  <h2>Use of AI</h2>
+  <p>AI tools help find sources and draft text. They do not approve anything. Every published claim has been checked against its sources and approved by a named person.</p>
+
+  <h2>Independence</h2>
+  <p>Vaivoo carries no advertising and takes no payment for inclusion or placement. Ownership and interests are disclosed on the <a href="/about/">About</a> page. Errors can be reported through <a href="/corrections/">Corrections</a>.</p>
 </Base>

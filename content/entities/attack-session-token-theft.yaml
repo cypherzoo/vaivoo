@@ -1,0 +1,275 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: attack-session-token-theft
+type: Attack
+slug: session-token-theft
+name: Session token theft
+aliases: [Session hijacking, Session cookie theft, Pass-the-cookie, Token theft, Token replay]
+summary: "Instead of beating the sign-in, the attacker steals the session cookie or token issued after it, using malware on the device or a phishing relay, and reuses it. Strong authentication does not protect a session secret that is a plain bearer token once it has been issued. Binding the secret to the device, short lifetimes and session monitoring reduce the risk."
+layer: [core]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  After a successful sign-in, the service gives the browser or app a session secret, usually a cookie, so the user does not have to authenticate on every request. For web services, NIST notes that cookies are not authenticators. They are short-term secrets, and whoever presents the secret continues the session.
+
+  If an attacker copies that secret, they can often use the session from their own machine without knowing the password and without passing any second factor. The sign-in has already happened. This is why even the strongest authenticator does not, by itself, protect against session theft.
+
+  There are two main routes. Malware on the user's device, often called an infostealer, reads cookies from the browser's files or memory and sends them to the attacker. A phishing relay (see adversary-in-the-middle phishing) captures the cookie as the real service issues it. Malicious scripts injected into a web page are a third route. Phishing-resistant authentication blocks the relay route, because the relay cannot complete the sign-in. It does not stop malware that copies a cookie after a genuine sign-in.
+
+  Defences work on the session rather than on the sign-in. Newer mechanisms make the browser prove possession of a key that cannot easily be extracted, so a copied value alone is useless. Examples include the emerging device-bound session credentials specification for cookies and sender-constrained tokens (DPoP) for OAuth. Other measures are cookie settings that keep secrets away from scripts and insecure connections, session lifetimes and inactivity timeouts, and monitoring sessions for unusual use.
+
+  Session lifetimes involve a trade-off. NIST sets maximum reauthentication intervals for each assurance level. The UK NCSC cautions that rigid short timeouts do little against attackers who act quickly and can make users more prone to phishing, and it prefers reauthentication triggered by signs of risk.
+crypto: |
+  A bearer cookie is a random value, at least 64 bits from an approved generator under NIST's rules. The server checks only that the value matches a live session. Nothing ties it to the device, the TLS connection or the authenticator used to sign in, so a copy works just as well as the original.
+
+  Proof-of-possession designs change this. The client holds a private key, ideally in protected hardware, and signs a fresh challenge or request. The server checks the signature against a public key it bound to the session. A stolen session identifier without the key fails the check. RFC 9449 (DPoP) applies this to OAuth access and refresh tokens at the application layer. NIST notes that device-bound session credentials aim to do the same for browser sessions, but still requires session time limits to be enforced.
+relations: []
+claims:
+  - id: claim-session-token-theft-definition
+    predicate: definition
+    value: supported
+    statement: "Session token theft means stealing the cookie or token a service issues after authentication and using it to act as the signed-in user without the credentials. MITRE ATT&CK describes stealing web session cookies this way, and NIST treats hijacking of the session after authentication as a threat with similar impact to authenticator compromise."
+    scope: Web session cookies and similar application session secrets; OAuth access and refresh tokens are closely related.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://attack.mitre.org/techniques/T1539/
+        title: "Steal Web Session Cookie, Technique T1539 - Enterprise"
+        publisher: The MITRE Corporation (MITRE ATT&CK)
+        version: "T1539 version 1.5 (ATT&CK v19), last modified 12 May 2026"
+        locator: Technique description, first paragraph
+        note: Adversaries steal session cookies to access web applications as an authenticated user without needing credentials.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/security/
+        title: "NIST SP 800-63B-4: Threats and Security Considerations"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 6.4 Session Attacks (#session-attacks)"
+        note: Hijacking the session after authentication can have similar security impact; Sec. 5 session controls are essential, e.g. against XSS.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-session-token-theft-bypasses-authentication
+    predicate: defeats_strong_authentication
+    value: supported
+    statement: "Stealing a bearer session secret bypasses whatever authenticator was used to sign in, including MFA. NIST bases session continuity on possession of the session secret and says cookies are not authenticators. MITRE notes stolen session cookies can bypass some MFA. NIST also warns that access and refresh tokens can stay valid long after the session ends."
+    scope: Sessions maintained by bearer secrets; proof-of-possession session mechanisms are treated separately.
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/session/
+        title: "NIST SP 800-63B-4: Session Management"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 5.1 Session Bindings (#bindings), first two paragraphs; Sec. 5.1.1 Browser Cookies (#sesscookies), introductory text"
+        note: Session continuity SHALL be based on possession of a session secret, presented directly or proven cryptographically; cookies are not authenticators but are short-term session secrets.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/session/
+        title: "NIST SP 800-63B-4: Session Management"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 5.1.2 Access Tokens (#access-tokens)"
+        note: Access and refresh tokens could be valid long after the authentication session ends; their presence SHALL NOT be taken as subscriber presence without other signals.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://attack.mitre.org/techniques/T1539/
+        title: "Steal Web Session Cookie, Technique T1539 - Enterprise"
+        publisher: The MITRE Corporation (MITRE ATT&CK)
+        version: "T1539 version 1.5 (ATT&CK v19), last modified 12 May 2026"
+        locator: Technique description, second paragraph
+        note: Cookies are often valid for extended periods and can be used to bypass some multi-factor authentication protocols.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-session-token-theft-vectors
+    predicate: attack_vectors
+    value: supported
+    statement: "Session cookies can be stolen from disk, from browser memory or from network traffic. Common routes are malware that harvests browser cookies, malicious JavaScript injected into pages, and phishing relays that capture cookies as they are issued."
+    scope: Catalogue of observed techniques; prevalence is not assessed.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://attack.mitre.org/techniques/T1539/
+        title: "Steal Web Session Cookie, Technique T1539 - Enterprise"
+        publisher: The MITRE Corporation (MITRE ATT&CK)
+        version: "T1539 version 1.5 (ATT&CK v19), last modified 12 May 2026"
+        locator: "Technique description, paragraphs two to four; Procedure Examples table"
+        note: Lists cookie locations (disk, memory, network), browser cookie-stealing malware, injected JavaScript and malicious proxy frameworks; many information-stealer families appear in the procedure examples.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/security/
+        title: "NIST SP 800-63B-4: Threats and Security Considerations"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 6.4 Session Attacks (#session-attacks)"
+        note: Recommends making session secrets inaccessible to mobile code to protect against exfiltration, e.g. via XSS.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+  - id: claim-session-token-theft-phishing-resistance-scope
+    predicate: defeats_phishing_resistant_authentication
+    value: conditional
+    statement: "Phishing-resistant authentication prevents cookie theft through a phishing relay, because the relay cannot complete the sign-in. It does not prevent malware on the user's device from copying a bearer cookie after a genuine sign-in. Whether session theft succeeds against a service using phishing-resistant authentication therefore depends on how the cookie is stolen."
+    scope: Interpretation combining NIST session and phishing-resistance sections with MITRE ATT&CK mitigations.
+    assumptions:
+      - "Theft happens on the user's endpoint (malware, injected script) after a legitimate sign-in; via a look-alike-domain relay, phishing-resistant authentication blocks it."
+      - "The session secret is a bearer token with no proof-of-possession binding."
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://attack.mitre.org/techniques/T1539/
+        title: "Steal Web Session Cookie, Technique T1539 - Enterprise"
+        publisher: The MITRE Corporation (MITRE ATT&CK)
+        version: "T1539 version 1.5 (ATT&CK v19), last modified 12 May 2026"
+        locator: "Mitigations table, M1032 Multi-factor Authentication"
+        note: Hardware tokens that include the login domain in the protocol prevent cookie theft through proxy methods; device-restriction policies are listed separately for replay.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/session/
+        title: "NIST SP 800-63B-4: Session Management"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 5.1 Session Bindings (#bindings), paragraph on proof-of-possession technologies"
+        note: Proof-of-possession and protected keystores are presented as ways to reduce theft and malware exfiltration of session secrets, implying bearer secrets lack this protection.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/security/
+        title: "NIST SP 800-63B-4: Threats and Security Considerations"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 6.1 Authenticator Threats, Table 3 (#table-3), row 'Endpoint Compromise'"
+        note: Malicious code on the endpoint is a separate threat class from phishing.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+  - id: claim-session-token-theft-session-binding
+    predicate: session_binding
+    value: supported
+    statement: "NIST says proof-of-possession session mechanisms, such as the emerging device-bound session credentials, reduce theft of session secrets compared with bearer tokens, and may persist while bearer secrets should not. Session time limits must still be enforced. RFC 9449 (DPoP) applies the same idea to OAuth tokens by sender-constraining them."
+    scope: NIST SP 800-63B-4 Sec. 5.1 and IETF RFC 9449; deployment status of device-bound session credentials is not assessed (NIST calls it emerging).
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/session/
+        title: "NIST SP 800-63B-4: Session Management"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 5.1 Session Bindings (#bindings), paragraphs on persistence and proof-of-possession, and requirement list item 6"
+        note: Bearer session secrets SHOULD NOT persist across restarts; proof-of-possession secrets MAY persist but lifetime limits SHALL still be enforced; secrets must be unavailable to intermediaries.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc9449
+        title: "RFC 9449: OAuth 2.0 Demonstrating Proof of Possession (DPoP)"
+        publisher: IETF
+        version: "RFC 9449 (Standards Track, September 2023)"
+        locator: Abstract
+        note: Describes sender-constraining OAuth 2.0 tokens through application-level proof of possession, allowing detection of replayed access and refresh tokens.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-session-token-theft-cookie-attributes
+    predicate: mitigation
+    value: supported
+    statement: "NIST requires session cookies to be sent only over HTTPS and limited to the fewest practical hosts and paths. It recommends HttpOnly, the __Host- prefix, SameSite Lax or Strict, opaque values only, and keeping session secrets out of HTML5 local storage because of cross-site scripting risk."
+    scope: Browser cookies used for session maintenance under NIST SP 800-63B-4. These settings mainly limit script and network exposure; they do not stop malware that reads the browser's cookie store.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/session/
+        title: "NIST SP 800-63B-4: Session Management"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 5.1.1 Browser Cookies (#sesscookies), numbered list; Sec. 5.1 (#bindings), paragraph on HTML5 Local Storage"
+        note: SHALL be HTTPS-only and minimally scoped; SHOULD be HttpOnly, use __Host- prefix, SameSite Lax/Strict and opaque content; session secrets SHOULD NOT be placed in local storage due to XSS.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-session-token-theft-timeouts
+    predicate: mitigation
+    value: conditional
+    statement: "Session timeouts limit how long a stolen secret is useful. NIST sets an overall reauthentication limit of 24 hours (with a 1-hour inactivity timeout recommended) at AAL2, and 12 hours (with 15 minutes recommended) at AAL3. The UK NCSC cautions that attackers often act before a timeout expires and that frequent reauthentication can make users easier to phish. It prefers reauthentication triggered by risk."
+    scope: Combines NIST normative limits with NCSC guidance that partly disagrees on value; effectiveness depends on attacker speed.
+    assumptions:
+      - "The stolen secret is used after the overall or inactivity timeout would have expired; timeouts give no protection against immediate reuse."
+      - "Timeouts are enforced on the server, not only by cookie expiry, as NIST requires."
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/aal/
+        title: "NIST SP 800-63B-4: Authentication Assurance Levels"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 2.2.3 Reauthentication (#aal2reauth); Sec. 2.3.3 Reauthentication (#aal3reauth)"
+        note: AAL2 overall timeout SHOULD be no more than 24 hours, inactivity SHOULD be no more than 1 hour; AAL3 overall SHALL be no more than 12 hours, inactivity SHOULD be no more than 15 minutes.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://attack.mitre.org/techniques/T1539/
+        title: "Steal Web Session Cookie, Technique T1539 - Enterprise"
+        publisher: The MITRE Corporation (MITRE ATT&CK)
+        version: "T1539 version 1.5 (ATT&CK v19), last modified 12 May 2026"
+        locator: "Mitigations table, M1054 Software Configuration"
+        note: Minimising cookie lifetime and using non-persistent cookies reduce the impact of stolen cookies and force more frequent theft attempts.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.ncsc.gov.uk/collection/mfa-for-your-corporate-online-services/avoiding-mfa-anti-patterns
+        title: "Multi-factor authentication for your corporate online services: Avoiding MFA anti-patterns"
+        publisher: UK National Cyber Security Centre (NCSC)
+        version: "Version 2.0"
+        publication_date: "2024-09-26"
+        locator: "Section '3. Time-based re-authentication'"
+        note: Short fixed timeouts limit a stolen session credential's useful life but attackers often act quickly, cut-off can be delayed, and frequent reauthentication desensitises users; prefers detection-triggered reauthentication.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+  - id: claim-session-token-theft-monitoring
+    predicate: detection
+    value: supported
+    statement: "Session monitoring can detect the use of stolen tokens by checking usage patterns, device and browser characteristics, location and IP address during the session. NIST allows this, and says that on suspected fraud the service should reauthenticate, end the session or alert staff. NIST also requires these checks to be included in the privacy risk assessment."
+    scope: NIST SP 800-63B-4 Sec. 5.3 (permissive, not mandatory) and MITRE ATT&CK detection guidance.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/session/
+        title: "NIST SP 800-63B-4: Session Management"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 5.3 Session Monitoring (#monitoring)"
+        note: Session monitoring MAY evaluate usage, behavioural, device, geolocation and IP characteristics; on suspected fraud the RP SHOULD reauthenticate, terminate or notify; privacy risk assessment SHALL cover it.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://attack.mitre.org/techniques/T1539/
+        title: "Steal Web Session Cookie, Technique T1539 - Enterprise"
+        publisher: The MITRE Corporation (MITRE ATT&CK)
+        version: "T1539 version 1.5 (ATT&CK v19), last modified 12 May 2026"
+        locator: "Mitigations table, M1047 Audit; Detection Strategy DET0509, analytic AN1406"
+        note: Monitor for impossible travel, unusual user agents or locations, and token reuse without reauthentication.
+        stance: supports
+        retrieved_at: "2026-10-03"

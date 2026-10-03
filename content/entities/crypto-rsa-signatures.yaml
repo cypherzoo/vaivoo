@@ -1,0 +1,305 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: crypto-rsa-signatures
+type: CryptographicPrimitive
+slug: rsa-signatures
+name: RSA signatures (RSASSA-PKCS1-v1_5 and RSASSA-PSS)
+aliases: ["RSA signatures", "RSASSA-PKCS1-v1_5", "RSASSA-PSS", "RS256 (COSE/JOSE)", "PS256 (COSE/JOSE)", "PKCS #1 signatures"]
+summary: The two RSA signature schemes defined in PKCS #1 (RFC 8017) and approved in FIPS 186-5. They are widely used for certificates and some authenticators, need large keys (at least 2048 bits for NIST use), and would be broken by a large-scale quantum computer.
+layer: [crypto]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  RSA signatures let the holder of a private key sign data so that anyone with the matching public key can check it. RSA is the oldest public-key signature system still in wide use. It shows up in authentication mainly in certificates (for example the ones that secure web connections and identity documents), in tokens signed by identity providers, and in some security keys and platform authenticators; RSA is also common in TPM-based attestation.
+
+  There are two standard ways to sign with RSA, both defined in PKCS #1. The older one, PKCS1-v1_5, is deterministic: the same message and key always give the same signature. The newer one, PSS, mixes in a random "salt" and has a stronger security proof. The PKCS #1 specification requires PSS for new applications and keeps v1_5 only for compatibility, although no practical attack on v1_5 signatures is known. NIST approves both.
+
+  RSA keys and signatures are much larger than elliptic-curve ones. A 2048-bit RSA key, the minimum NIST allows for new signatures, gives about 112 bits of security; a 256-bit elliptic-curve key gives about 128. NIST's draft plans would push new signatures to at least 3072 bits after 2030, and RSA, like elliptic-curve signatures, is expected to be retired once quantum computers become a real threat.
+crypto: |
+  Primitive: n = pq with two primes of equal length; public key (n, e), private key (n, d) or its CRT form. Signing applies RSASP1 (s = m^d mod n) to an encoded message representative; verification applies RSAVP1 (m = s^e mod n) and checks the encoding (RFC 8017 Section 8). Security rests on the infeasibility of computing e-th roots modulo n, which is no harder than factoring n.
+
+  Encodings (RFC 8017):
+  - RSASSA-PKCS1-v1_5 (Section 8.2): deterministic EMSA-PKCS1-v1_5 padding that embeds a DigestInfo (hash OID + digest). Security is conjectured, not proven. FIPS 186-5 Section 5.4(h) adds strict DigestInfo parsing rules for verifiers, which guard against signature-forgery bugs from lax parsing.
+  - RSASSA-PSS (Section 8.1): probabilistic EMSA-PSS encoding with a random salt and MGF1 mask generation. Its security proof is tight in the random-oracle model. RFC 8017 recommends the same hash for the message and MGF1. FIPS 186-5 limits the salt length to 0 ≤ sLen ≤ hLen.
+
+  FIPS 186-5 constraints (Sections 5.1 and 5.4): modulus length even and ≥ 2048 bits; exactly two primes; public exponent odd with 2^16 < e < 2^256; approved hash (SHA-2, SHA-3, or SHAKE for PSS). The signature strength is capped by the weaker of the modulus and the hash. A signature is as long as the modulus: 256 bytes for 2048-bit n, 384 bytes for 3072-bit n.
+
+  COSE identifiers: RS256 (-257) = RSASSA-PKCS1-v1_5 with SHA-256 (RFC 8812, Recommended: No); PS256 (-37) = RSASSA-PSS with SHA-256, MGF1-SHA-256, 32-byte salt (RFC 8230, Recommended: Yes). Both require keys of at least 2048 bits. RFC 9864 deliberately leaves the RSA identifiers unchanged.
+
+  Quantum: NIST IR 8547 (initial public draft) lists RSA among the FIPS 186 signature algorithms vulnerable to Shor's algorithm.
+relations:
+  - predicate: uses_primitive
+    object_id: crypto-sha-2
+    claim_id: claim-rsa-cose-identifiers
+    note: RS256 and PS256 hash the message with SHA-256; FIPS 186-5 requires an approved hash function.
+  - predicate: alternative_to
+    object_id: crypto-ecdsa-p256
+    claim_id: claim-rsa-fips-approval
+    note: Both are FIPS 186-5 approved signature schemes offered as WebAuthn/COSE credential algorithms; ECDSA P-256 gives more security per key bit.
+claims:
+  - id: claim-rsa-definition
+    predicate: definition
+    value: supported
+    statement: RFC 8017 (PKCS #1 v2.2) defines two RSA signature schemes with appendix, RSASSA-PSS and RSASSA-PKCS1-v1_5. It requires RSASSA-PSS in new applications and includes RSASSA-PKCS1-v1_5 only for compatibility with existing applications, though no attacks on v1_5 are known.
+    scope: Scheme definitions in PKCS #1 v2.2; RFC 8017 is an Informational RFC.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc8017
+        title: "RFC 8017: PKCS #1: RSA Cryptography Specifications Version 2.2"
+        publisher: IETF
+        version: RFC 8017 (November 2016, Informational; obsoletes RFC 3447)
+        publication_date: "2016-11"
+        locator: Section 8 (Signature Scheme with Appendix)
+        note: Two signature schemes are specified; PSS is required in new applications for robustness and v1_5 is kept for compatibility, with no attacks known against v1_5.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc8017
+        title: "RFC 8017: PKCS #1: RSA Cryptography Specifications Version 2.2"
+        publisher: IETF
+        version: RFC 8017 (November 2016)
+        publication_date: "2016-11"
+        locator: Section 8.1 (RSASSA-PSS); Section 8.2 (RSASSA-PKCS1-v1_5)
+        note: PSS is probabilistic with a random salt and has a tight security proof relative to RSA inversion; v1_5 security is conjectured, and a gradual move to EMSA-PSS is recommended as a precaution.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-rsa-fips-approval
+    predicate: approval_status
+    value: supported
+    statement: FIPS 186-5 approves both RSASSA-PKCS1-v1_5 and RSASSA-PSS as specified in RFC 8017, with extra constraints, including exactly two prime factors, a public exponent e with 2^16 < e < 2^256, approved hash functions, a PSS salt no longer than the hash output, and strict DigestInfo checks when verifying v1_5 signatures.
+    scope: NIST approval for US federal use.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+        title: "FIPS 186-5: Digital Signature Standard (DSS)"
+        publisher: NIST
+        version: FIPS 186-5 (February 3, 2023)
+        publication_date: "2023-02-03"
+        locator: Section 5.4 (PKCS #1), items (a)-(h)
+        note: Both PKCS #1 signature schemes are approved with added constraints on key generation, hash or XOF choice, prime count, exponent range, RBG, salt length and DigestInfo parsing.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-rsa-key-parameters
+    predicate: key_parameters
+    value: supported
+    statement: FIPS 186-5 specifies RSA signature moduli of even bit length of at least 2048 bits, built from two primes of equal length. Under SP 800-131A Rev. 2, the current final NIST transition guidance, generating signatures with moduli under 2048 bits is disallowed, 2048 bits or more is acceptable, and verification with 1024 to 2047-bit moduli is allowed only for legacy use.
+    scope: NIST requirements for US federal use; other regimes may set different minimums.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+        title: "FIPS 186-5: Digital Signature Standard (DSS)"
+        publisher: NIST
+        version: FIPS 186-5 (February 3, 2023)
+        publication_date: "2023-02-03"
+        locator: Section 5.1 (RSA Key Pair Generation)
+        note: Modulus bit length is an even integer of at least 2048; p and q are each half the length of n; maximum security strength per modulus length is taken from SP 800-57 Part 1.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
+        title: "SP 800-131A Rev. 2: Transitioning the Use of Cryptographic Algorithms and Key Lengths"
+        publisher: NIST
+        version: SP 800-131A Rev. 2 (March 2019)
+        publication_date: "2019-03"
+        locator: Section 3, Table 2 (Approval Status of Algorithms Used for Digital Signature Generation and Verification)
+        note: "RSA len(n) < 2048 disallowed for generation; len(n) ≥ 2048 acceptable; verification with 1024 ≤ len(n) < 2048 is legacy use; a 2048-bit modulus meets the 112-bit federal minimum."
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-rsa-security-strength
+    predicate: security_strength
+    value: supported
+    statement: NIST treats a 2048-bit RSA modulus as providing 112 bits of security and requires at least 3072 bits for 128-bit security. The strength of an RSA signature is capped by the weaker of the modulus and the hash function.
+    scope: Classical (non-quantum) attacks. The NIST table of comparable strengths in SP 800-57 Part 1 (Table 2) could not be read; the values here come from SP 800-131A.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
+        title: "SP 800-131A Rev. 2: Transitioning the Use of Cryptographic Algorithms and Key Lengths"
+        publisher: NIST
+        version: SP 800-131A Rev. 2 (March 2019)
+        publication_date: "2019-03"
+        locator: Section 3, text following Table 2 (RSA bullet)
+        note: A modulus of 2048 bits or more is needed to meet the 112-bit minimum security strength for federal use.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar3.ipd.pdf
+        title: "SP 800-131A Rev. 3 (Initial Public Draft): Transitioning the Use of Cryptographic Algorithms and Key Lengths"
+        publisher: NIST
+        version: Initial Public Draft (October 21, 2024)
+        publication_date: "2024-10-21"
+        locator: Section 3, RSA (PKCS #1 v1.5 & PSS) signature generation bullets
+        note: 112 to under 128-bit strength corresponds to 2048 ≤ len(n) < 3072; at least 128-bit strength needs len(n) ≥ 3072.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+        title: "FIPS 186-5: Digital Signature Standard (DSS)"
+        publisher: NIST
+        version: FIPS 186-5 (February 3, 2023)
+        publication_date: "2023-02-03"
+        locator: Section 5.1, paragraphs on security strength of the RSA digital signature process
+        note: Signature strength is no greater than the minimum of the modulus strength and the hash strength.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc8230
+        title: "RFC 8230: Using RSA Algorithms with CBOR Object Signing and Encryption (COSE) Messages"
+        publisher: IETF
+        version: RFC 8230 (September 2017)
+        publication_date: "2017-09"
+        locator: Section 6.1 (Key Size Security Considerations)
+        note: Says a 2048-bit key corresponds roughly to 128-bit symmetric strength, which is higher than NIST's 112-bit rating for the same modulus.
+        stance: contradicts
+        retrieved_at: "2026-10-03"
+  - id: claim-rsa-cose-identifiers
+    predicate: algorithm_identifiers
+    value: supported
+    statement: In COSE, RS256 (-257) is RSASSA-PKCS1-v1_5 with SHA-256 and is marked Recommended "No". PS256 (-37) is RSASSA-PSS with SHA-256, MGF1 with SHA-256 and a 32-byte salt, and is marked Recommended "Yes". Both require keys of at least 2048 bits. RFC 9864 leaves these RSA identifiers unchanged.
+    scope: IANA COSE Algorithms registry as last updated 2026-08-11 and the defining RFCs.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.iana.org/assignments/cose/cose.xhtml
+        title: "CBOR Object Signing and Encryption (COSE) registry"
+        publisher: IANA
+        version: Registry last updated 2026-08-11
+        locator: COSE Algorithms table, rows RS256 and PS256
+        note: "RS256 = -257, RSASSA-PKCS1-v1_5 using SHA-256, refs RFC 8812/RFC 9053, Recommended No; PS256 = -37, RSASSA-PSS w/ SHA-256, refs RFC 8230/RFC 9053, Recommended Yes."
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc8812
+        title: "RFC 8812: COSE and JOSE Registrations for Web Authentication (WebAuthn) Algorithms"
+        publisher: IETF
+        version: RFC 8812 (August 2020, Standards Track)
+        publication_date: "2020-08"
+        locator: Section 2, Table 1; Section 5.2
+        note: Registers RS256 (-257) for WebAuthn/CTAP use; keys of 2048 bits or more MUST be used; registered as not recommended because of the RFC 7518 considerations on PKCS1-v1_5.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc8230
+        title: "RFC 8230: Using RSA Algorithms with CBOR Object Signing and Encryption (COSE) Messages"
+        publisher: IETF
+        version: RFC 8230 (September 2017, Standards Track)
+        publication_date: "2017-09"
+        locator: Section 2, Table 1 (RSASSA-PSS Algorithm Values); Section 5.1
+        note: PS256 = -37 with SHA-256, MGF1 using the same hash and salt length 32.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc9864
+        title: "RFC 9864: Fully-Specified Algorithms for JOSE and COSE"
+        publisher: IETF
+        version: RFC 9864 (October 2025, Standards Track)
+        publication_date: "2025-10"
+        locator: Section 6.1 (RSA Signing Algorithms)
+        note: RS* and PS* are not updated or deprecated; the document registers no fully specified RSA identifiers, leaving that to possible future work.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+      - url: https://www.w3.org/TR/webauthn-2/
+        title: "Web Authentication: An API for accessing Public Key Credentials - Level 2"
+        publisher: W3C
+        version: W3C Recommendation, 8 April 2021
+        publication_date: "2021-04-08"
+        locator: Section 1.3.1 (Registration), sample code
+        note: The sample relying party accepts ES256 (-7) or RS256 (-257) credentials and prefers ES256.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+  - id: claim-rsa-quantum-vulnerable
+    predicate: quantum_vulnerability
+    value: supported
+    statement: RSA signatures are vulnerable to Shor's algorithm on a cryptographically relevant quantum computer, whatever the modulus size. NIST notes that authentication stays secure as long as the algorithm is unbroken when the authentication takes place.
+    scope: Future large-scale quantum adversary; no claim on when such a computer will exist.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024); still listed as draft on CSRC at retrieval
+        publication_date: "2024-11-12"
+        locator: Section 2.1.1 (Digital Signature Algorithms)
+        note: The FIPS 186 algorithms, including RSA per RFC 8017, are vulnerable to Shor's algorithm on a cryptographically relevant quantum computer.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024)
+        publication_date: "2024-11-12"
+        locator: Section 3.1.2 (User and Machine Authentication)
+        note: Authentication is not exposed to harvest-now-decrypt-later; it stays secure while the algorithms are secure at the moment of authentication.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+  - id: claim-rsa-nist-transition-timeline
+    predicate: deprecation_timeline
+    value: conditional
+    statement: Under NIST's proposed plans, RSA signatures at 112-bit strength (2048-bit moduli) would be deprecated after 2030 and disallowed after 2035, and RSA at 128 bits or more (3072 bits and up) would be disallowed after 2035. Both documents setting out these dates are still drafts.
+    scope: NIST-approved (US federal) use. The current final guidance, SP 800-131A Rev. 2, rates 2048-bit RSA signature generation as acceptable with no end date.
+    assumptions:
+      - NIST IR 8547 and SP 800-131A Rev. 3 are finalised with the dates in their initial public drafts (as of 2026-10-03 the CSRC pages still list only the drafts, from November 2024 and October 2024).
+      - Applies to NIST approval status; other jurisdictions and sectors may set different dates.
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024)
+        publication_date: "2024-11-12"
+        locator: Section 4.1.1 (Digital Signatures), Table 2 (Quantum-vulnerable digital signature algorithms)
+        note: "RSA [FIPS186]: 112-bit deprecated after 2030, disallowed after 2035; ≥ 128-bit disallowed after 2035."
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar3.ipd.pdf
+        title: "SP 800-131A Rev. 3 (Initial Public Draft): Transitioning the Use of Cryptographic Algorithms and Key Lengths"
+        publisher: NIST
+        version: Initial Public Draft (October 21, 2024)
+        publication_date: "2024-10-21"
+        locator: Section 3, Table 3 and RSA (PKCS #1 v1.5 & PSS) bullets
+        note: Signature generation with 2048 ≤ len(n) < 3072 is acceptable through December 31, 2030 and deprecated after; len(n) ≥ 3072 is acceptable; legacy verification allowed down to 1024 bits.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://csrc.nist.gov/pubs/sp/800/131/a/r3/ipd
+        title: "SP 800-131A Rev. 3 (Initial Public Draft) landing page"
+        publisher: NIST
+        version: Page as retrieved 2026-10-03
+        locator: Header and Document History
+        note: Labelled Initial Public Draft, published October 21, 2024, comments closed December 4, 2024; history lists only the draft.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+      - url: https://csrc.nist.gov/pubs/ir/8547/ipd
+        title: "NIST IR 8547 (Initial Public Draft) landing page"
+        publisher: NIST
+        version: Page as retrieved 2026-10-03
+        locator: Header and Document History
+        note: Labelled Initial Public Draft, published November 12, 2024; history lists only the draft.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"

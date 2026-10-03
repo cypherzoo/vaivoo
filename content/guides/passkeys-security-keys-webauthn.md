@@ -36,7 +36,7 @@ Because synced keys can be exported, synced passkeys reach at most NIST AAL2 [竊
 
 ## Cryptography under the hood
 
-WebAuthn names algorithms by COSE identifiers. ECDSA on P-256 has long been signalled as ES256 (-7) and Ed25519 as EdDSA (-8). RFC 9864 (October 2025) adds fully specified identifiers and marks those two COSE registrations as deprecated [竊余(/crypto/ecdsa-p256/#claim-ecdsa-p256-cose-identifiers) [竊余(/crypto/ed25519/#claim-ed25519-cose-identifiers). Both algorithms would be broken by a large enough quantum computer [竊余(/crypto/ecdsa-p256/#claim-ecdsa-p256-quantum-vulnerable). NIST's post-quantum signature standard ML-DSA is not yet confirmed for COSE or WebAuthn [竊余(/crypto/ml-dsa/#claim-ml-dsa-cose-webauthn-support).
+WebAuthn names algorithms by COSE identifiers. ECDSA on P-256 has long been signalled as ES256 (-7) and Ed25519 as EdDSA (-8). RFC 9864 (October 2025) adds fully specified identifiers and marks those two COSE registrations as deprecated [竊余(/crypto/ecdsa-p256/#claim-ecdsa-p256-cose-identifiers) [竊余(/crypto/ed25519/#claim-ed25519-cose-identifiers). Both algorithms would be broken by a large enough quantum computer [竊余(/crypto/ecdsa-p256/#claim-ecdsa-p256-quantum-vulnerable). NIST's post-quantum signature standard ML-DSA received COSE identifiers in May 2026, but an identifier alone does not mean browsers or authenticators support it [竊余(/crypto/ml-dsa/#claim-ml-dsa-cose-webauthn-support).
 
 ## In one sentence each
 

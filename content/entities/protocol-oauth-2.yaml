@@ -1,0 +1,237 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: protocol-oauth-2
+type: Protocol
+slug: oauth-2
+name: OAuth 2.0
+aliases: ["OAuth 2.0 Authorization Framework", "RFC 6749", "OAuth2"]
+summary: "An IETF authorization framework (RFC 6749, 2012) that lets an application obtain limited access to an HTTP service on a user's behalf, using access tokens instead of the user's password. It is not an authentication protocol; current security practice is set by RFC 9700 (January 2025)."
+layer: [core]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  OAuth 2.0 solves a delegation problem: a user (the resource owner) wants to let an application (the client) use some of their data at another service without handing over their password. The client sends the user to an authorization server, the user approves, and the client receives an access token that it presents to the resource server.
+
+  OAuth 2.0 is about authorization, not authentication. The authorization server must verify who the user is before asking for approval, but RFC 6749 leaves how it does that out of scope. An access token says that a client may access something; it is not, by itself, a statement to the client about who the user is. OpenID Connect adds that missing identity layer on top of OAuth 2.0 with a signed ID Token.
+
+  RFC 6749 defines several ways to obtain tokens (grant types). The Authorization Code grant passes a short-lived code through the browser and exchanges it for tokens over a direct back channel. The Implicit grant returns the access token directly in the browser redirect. The Resource Owner Password Credentials grant has the client collect the user's password.
+
+  More than a decade of deployment exposed weaknesses in several of these options. RFC 9700, the OAuth 2.0 Security Best Current Practice published in January 2025, updates RFC 6749: authorization servers must compare redirect URIs by exact string matching, all clients should use PKCE (public clients must), the Implicit grant should not be used, and the password grant must not be used. A consolidated OAuth 2.1 specification is still an IETF working-group draft.
+crypto: |
+  Core OAuth 2.0 relies on TLS for confidentiality and server authentication. Access tokens are opaque to the client; their format and any signature are up to the authorization server.
+
+  PKCE (RFC 7636) adds a per-request secret. The client generates a random code_verifier (43 to 128 characters; at least 256 bits of entropy recommended) and sends a code_challenge in the authorization request. With the S256 method the challenge is BASE64URL(SHA-256(code_verifier)). When redeeming the authorization code, the client sends the verifier and the server recomputes the hash; an attacker who intercepted only the code cannot redeem it. S256 is mandatory to implement on servers; the "plain" method exposes the verifier and should not be used.
+
+  When OAuth is used with OpenID Connect, the ID Token is a JSON Web Token signed with JWS (default RS256), which is where public-key signatures enter the picture.
+relations:
+  - predicate: alternative_to
+    object_id: protocol-saml-2
+    note: Not a like-for-like alternative. SAML is a federated authentication protocol; OAuth 2.0 alone is authorization. OAuth 2.0 combined with OpenID Connect is the usual alternative to SAML for web SSO.
+claims:
+  - id: claim-oauth2-authorization-framework
+    predicate: defines
+    value: supported
+    statement: "OAuth 2.0 (RFC 6749) is an authorization framework that lets a third-party application obtain limited access to an HTTP service, either on behalf of a resource owner through an approval interaction or on its own behalf. It is a Standards Track RFC published October 2012 and obsoletes OAuth 1.0 (RFC 5849)."
+    scope: Purpose and document status of RFC 6749.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc6749.html
+        title: The OAuth 2.0 Authorization Framework
+        publisher: IETF (RFC Editor)
+        version: "RFC 6749, Standards Track"
+        publication_date: "2012-10"
+        locator: "Header (Obsoletes: 5849; Category: Standards Track; October 2012); Abstract"
+        note: Abstract describes an authorization framework for limited access to an HTTP service; header shows Standards Track, October 2012, obsoletes RFC 5849.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-oauth2-authentication-method-out-of-scope
+    predicate: specifies_authentication_method
+    value: not_supported
+    statement: "OAuth 2.0 does not specify how the user is authenticated. The authorization server must verify the resource owner's identity, but the method (for example password login or session cookies) is beyond the scope of RFC 6749. OAuth 2.0 alone does not convey user authentication to the client; OpenID Connect adds that layer."
+    scope: "RFC 6749 core framework. The statement that OAuth alone does not convey authentication relies on OpenID Connect Core's own description of its purpose."
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc6749.html
+        title: The OAuth 2.0 Authorization Framework
+        publisher: IETF (RFC Editor)
+        version: "RFC 6749, Standards Track"
+        publication_date: "2012-10"
+        locator: "§3.1 Authorization Endpoint, first paragraph"
+        note: The authorization server must first verify the resource owner's identity; how it authenticates them (e.g. password, session cookies) is beyond the specification's scope.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://openid.net/specs/openid-connect-core-1_0.html
+        title: OpenID Connect Core 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "§1 Introduction (#Introduction)"
+        note: Describes OIDC as an identity layer on OAuth 2.0 because OAuth itself does not define a standard way to convey End-User authentication.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-oauth2-rfc9700-bcp
+    predicate: publication_status
+    value: supported
+    statement: "RFC 9700, Best Current Practice for OAuth 2.0 Security, was published in January 2025 (BCP 240). It updates RFC 6749, RFC 6750 and RFC 6819 with current security requirements for OAuth 2.0 deployments."
+    scope: Document status at retrieval time.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc9700.html
+        title: Best Current Practice for OAuth 2.0 Security
+        publisher: IETF (RFC Editor)
+        version: "RFC 9700, BCP 240"
+        publication_date: "2025-01"
+        locator: "Document header (Updates, Category, Published); Status of This Memo"
+        note: Header lists BCP 240, updates 6749/6750/6819, category Best Current Practice, published January 2025.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-oauth2-pkce-required
+    predicate: pkce_requirement
+    value: conditional
+    statement: "Under RFC 9700, public clients must use PKCE to prevent authorization code injection and misuse, and PKCE is recommended for confidential clients (confidential OpenID Connect clients may instead rely on a properly bound nonce). Authorization servers must support PKCE and must reject a code_verifier when no code_challenge was sent. Clients should use S256, currently the only method that does not expose the verifier."
+    scope: Authorization Code grant under RFC 9700 §2.1.1; PKCE mechanism per RFC 7636.
+    assumptions:
+      - The PKCE challenge is transaction-specific and bound to the client and user agent.
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc9700.html
+        title: Best Current Practice for OAuth 2.0 Security
+        publisher: IETF (RFC Editor)
+        version: "RFC 9700, BCP 240"
+        publication_date: "2025-01"
+        locator: "§2.1.1 Authorization Code Grant"
+        note: Public clients MUST use PKCE; RECOMMENDED for confidential clients; AS MUST support PKCE, enforce code_verifier and mitigate PKCE downgrade; S256 is the only method not exposing the verifier.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.rfc-editor.org/rfc/rfc7636.html
+        title: Proof Key for Code Exchange by OAuth Public Clients
+        publisher: IETF (RFC Editor)
+        version: "RFC 7636, Standards Track"
+        publication_date: "2015-09"
+        locator: "§4.1, §4.2, §4.6, §7.1, §7.2"
+        note: Defines code_verifier (43-128 chars, 256-bit entropy recommended), S256 transform as BASE64URL(SHA256(verifier)), mandatory-to-implement S256 on servers, and that plain should not be used.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-oauth2-implicit-grant-discouraged
+    predicate: implicit_grant_deprecation
+    value: supported
+    statement: "RFC 9700 says clients should not use the Implicit grant or other response types that issue access tokens in the authorization response, because those tokens are exposed to leakage and replay and cannot be sender-constrained. Clients should use the Authorization Code grant instead. The Resource Owner Password Credentials grant must not be used."
+    scope: "RFC 9700 §2.1.2 and §2.4. The Implicit grant is a SHOULD NOT (with narrow exceptions), not an absolute prohibition; the password grant is a MUST NOT."
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc9700.html
+        title: Best Current Practice for OAuth 2.0 Security
+        publisher: IETF (RFC Editor)
+        version: "RFC 9700, BCP 240"
+        publication_date: "2025-01"
+        locator: "§2.1.2 Implicit Grant"
+        note: Tokens in the authorization response are vulnerable to leakage and replay and cannot be sender-constrained; clients SHOULD NOT use implicit unless injection and leakage are mitigated, and SHOULD use the code response type.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.rfc-editor.org/rfc/rfc9700.html
+        title: Best Current Practice for OAuth 2.0 Security
+        publisher: IETF (RFC Editor)
+        version: "RFC 9700, BCP 240"
+        publication_date: "2025-01"
+        locator: "§2.4 Resource Owner Password Credentials Grant"
+        note: The password grant MUST NOT be used because it exposes resource owner credentials to the client and trains users to enter credentials outside the authorization server.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-oauth2-exact-redirect-matching
+    predicate: redirect_uri_matching
+    value: supported
+    statement: "RFC 9700 requires authorization servers to compare redirect URIs with pre-registered URIs using exact string matching, except for the port number of localhost redirect URIs used by native apps. This helps prevent leakage of authorization codes and access tokens. Clients and servers must not expose open redirectors."
+    scope: Redirect-based flows under RFC 9700 §2.1.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc9700.html
+        title: Best Current Practice for OAuth 2.0 Security
+        publisher: IETF (RFC Editor)
+        version: "RFC 9700, BCP 240"
+        publication_date: "2025-01"
+        locator: "§2.1 Protecting Redirect-Based Flows, paragraphs 1-2"
+        note: AS MUST use exact string matching except localhost ports for native apps; prevents code and token leakage and helps detect mix-up; open redirectors MUST NOT be exposed.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-oauth2-openid-connect-layer
+    predicate: supports_openid_connect
+    value: supported
+    statement: "OpenID Connect is built on OAuth 2.0: a client requests the openid scope in an OAuth 2.0 authorization request and receives an ID Token alongside the access token. RFC 9700 accounts for this, allowing the OpenID Connect nonce as an alternative CSRF and code-injection protection for confidential OpenID Connect clients."
+    scope: Relationship between OAuth 2.0 and OpenID Connect; see the OpenID Connect entity for its own claims.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://openid.net/specs/openid-connect-core-1_0.html
+        title: OpenID Connect Core 1.0 incorporating errata set 2
+        publisher: OpenID Foundation
+        version: "Final, incorporating errata set 2, December 15, 2023"
+        locator: "Abstract; §1 Introduction (#Introduction)"
+        note: OIDC is an identity layer on OAuth 2.0, requested via the openid scope.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.rfc-editor.org/rfc/rfc9700.html
+        title: Best Current Practice for OAuth 2.0 Security
+        publisher: IETF (RFC Editor)
+        version: "RFC 9700, BCP 240"
+        publication_date: "2025-01"
+        locator: "§2.1 paragraph 3; §2.1.1 third bullet"
+        note: In OIDC flows the nonce provides CSRF protection; confidential OIDC clients MAY use nonce instead of PKCE with additional precautions.
+        stance: contextualizes
+        retrieved_at: 2026-10-03
+  - id: claim-oauth2-oauth21-draft-status
+    predicate: successor_status
+    value: supported
+    statement: "OAuth 2.1 is not yet an RFC. As of retrieval it is an active IETF OAuth working-group Internet-Draft (draft-ietf-oauth-v2-1-16, dated 3 September 2026, expiring 7 March 2027) with IESG state \"I-D Exists\"; the working group milestone targets submission to the IESG in December 2026. The draft states it would replace and obsolete RFC 6749 and RFC 6750."
+    scope: Standardisation status on the IETF Datatracker at retrieval time; drafts can change or expire.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    valid_to: "2027-03-07"
+    evidence:
+      - url: https://datatracker.ietf.org/doc/draft-ietf-oauth-v2-1/
+        title: The OAuth 2.1 Authorization Framework (draft-ietf-oauth-v2-1)
+        publisher: IETF Datatracker
+        version: "draft-ietf-oauth-v2-1-16"
+        publication_date: "2026-09-03"
+        locator: "Document metadata table (Type, Last updated, WG state, IESG state, WG milestone); draft front matter (Expires); Abstract"
+        note: Active Internet-Draft of the oauth WG, last updated 2026-09-02, WG Document, IESG state I-D Exists, milestone Dec 2026 submit to IESG; abstract says it replaces and obsoletes RFC 6749 and RFC 6750.
+        stance: supports
+        retrieved_at: 2026-10-03

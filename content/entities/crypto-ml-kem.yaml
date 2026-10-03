@@ -1,0 +1,226 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: crypto-ml-kem
+type: CryptographicPrimitive
+slug: ml-kem
+name: ML-KEM (FIPS 203)
+aliases: ["ML-KEM", "Module-Lattice-Based Key-Encapsulation Mechanism", "ML-KEM-512", "ML-KEM-768", "ML-KEM-1024", "CRYSTALS-Kyber"]
+summary: NIST's module-lattice-based post-quantum key-encapsulation mechanism (FIPS 203, August 2024), derived from CRYSTALS-Kyber. It establishes shared secret keys rather than producing signatures, so its role in authentication is indirect. Its main use is protecting the encrypted channel (for example TLS 1.3 hybrid key exchange) that logins travel over.
+layer: [crypto]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  ML-KEM lets two parties agree on a secret key over an open network, in a way that is believed to resist attackers with large quantum computers. One side publishes an "encapsulation key"; the other uses it to create a shared secret plus a short ciphertext, and sends the ciphertext back; the first side then recovers the same secret with its private "decapsulation key". The secret then protects ordinary symmetric encryption.
+
+  ML-KEM is not a signature scheme. It cannot prove who someone is, so it does not replace the RSA or elliptic-curve signatures inside passkeys, security keys or certificates; that job falls to signature standards such as ML-DSA (FIPS 204). What ML-KEM protects is the connection: passwords, one-time codes, session cookies and tokens all travel inside TLS, and today's TLS key exchange could be recorded now and decrypted later by a future quantum computer. NIST calls this the "harvest now, decrypt later" threat and says it is a reason to move key exchange to post-quantum schemes early.
+
+  In practice ML-KEM is deployed in "hybrid" form, combined with a classical elliptic-curve exchange so the connection stays secure if either part holds. The IETF published the TLS 1.3 hybrids, including the widely used X25519MLKEM768, as RFC 10024 in August 2026. ML-KEM comes in three sizes: ML-KEM-512, -768 and -1024. Keys and ciphertexts are around one to one and a half kilobytes, much larger than the 32 bytes of an X25519 share.
+crypto: |
+  Construction: a public-key encryption scheme, K-PKE, built on the Module Learning With Errors (MLWE) problem over a polynomial ring R_q with n = 256 and q = 3329. A Fujisaki–Okamoto (FO) transform turns it into a KEM believed to be IND-CCA2-secure (FIPS 203 Section 3.2; ring details in Section 4.3). It uses the NTT for fast polynomial multiplication. K-PKE is not approved as a stand-alone scheme (Section 3.3). Algorithms are ML-KEM.KeyGen, ML-KEM.Encaps and ML-KEM.Decaps (Algorithms 19 to 21). Encaps and Decaps output a 256-bit shared secret key.
+
+  Parameter sets (FIPS 203 Section 3.2; sizes from RFC 9935 Appendix B, Table 1; bytes as encapsulation key / decapsulation key / ciphertext / shared secret):
+  - ML-KEM-512: category 1; 800 / 1632 / 768 / 32; decapsulation failure rate 2^-138.8
+  - ML-KEM-768: category 3; 1184 / 2400 / 1088 / 32; failure rate 2^-164.8
+  - ML-KEM-1024: category 5; 1568 / 3168 / 1568 / 32; failure rate 2^-174.8
+  NIST IR 8547 (ipd) Table 5 gives security strengths of 128, 192 and 256 bits.
+
+  Implementation requirements (FIPS 203 Section 3.3): randomness from an approved RBG of at least 128, 192 or 256 bits of strength for the three sets; input checking before Encaps and Decaps; destruction of intermediate values; derandomised internal functions not exposed except for testing. If a combined KEM includes ML-KEM, its IND-CCA2 security is not automatic; NIST points to SP 800-227 for guidance on combined KEMs.
+
+  TLS 1.3 hybrid (RFC 10024, Standards Track, August 2026): X25519MLKEM768 (codepoint 4588 / 0x11EC, Recommended Y) sends a 1216-byte client share (ML-KEM-768 encapsulation key 1184 + X25519 32) and a 1120-byte server share (ciphertext 1088 + 32). The 64-byte shared secret is the concatenation, ML-KEM part first. SecP256r1MLKEM768 (4587) and SecP384r1MLKEM1024 (4589) are also defined, with Recommended N. The server MUST run the FIPS 203 encapsulation-key check.
+relations: []
+claims:
+  - id: claim-ml-kem-publication-status
+    predicate: publication_status
+    value: supported
+    statement: ML-KEM is specified in FIPS 203, Module-Lattice-Based Key-Encapsulation Mechanism Standard, published and effective on 13 August 2024. It is derived from the round-three version of CRYSTALS-Kyber and approved to protect sensitive, non-classified US federal systems.
+    scope: Standard status at retrieval.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
+        title: "FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard"
+        publisher: NIST
+        version: FIPS 203 (August 13, 2024)
+        publication_date: "2024-08-13"
+        locator: Announcement (Published / Effective dates); Section 1.1 (Purpose and Scope)
+        note: Published and effective August 13, 2024; derived from round-three CRYSTALS-KYBER; all three parameter sets approved for sensitive non-classified federal systems.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ml-kem-definition
+    predicate: definition
+    value: supported
+    statement: ML-KEM is a key-encapsulation mechanism, a kind of key-establishment scheme that lets two parties establish a shared secret key over a public channel. It consists of KeyGen, Encaps and Decaps and outputs a 256-bit shared secret for symmetric cryptography. It is not a digital signature scheme.
+    scope: Functional definition in FIPS 203.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
+        title: "FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard"
+        publisher: NIST
+        version: FIPS 203 (August 13, 2024)
+        publication_date: "2024-08-13"
+        locator: Section 1.1; Section 3.1 (Key-Encapsulation Mechanisms), Figure 1; Section 3.3 (Approved usage of the shared secret key)
+        note: A KEM is a key-establishment scheme with probabilistic KeyGen and Encaps and deterministic Decaps; ML-KEM's shared secret keys K and K' are always 256 bits.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024)
+        publication_date: "2024-11-12"
+        locator: Section 2.1.2 (Key Establishment)
+        note: Lists FIPS 203 ML-KEM under key establishment; signatures are covered separately by FIPS 204 and FIPS 205.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ml-kem-quantum-resistance
+    predicate: quantum_resistance
+    value: supported
+    statement: NIST states that ML-KEM is presently believed to be secure even against adversaries with a large-scale fault-tolerant quantum computer. Its security rests on the presumed hardness of the Module Learning With Errors problem, and it is believed to achieve IND-CCA2 security.
+    scope: NIST's assessment as stated in the standard; a belief based on current cryptanalysis, not a proof.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
+        title: "FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard"
+        publisher: NIST
+        version: FIPS 203 (August 13, 2024)
+        publication_date: "2024-08-13"
+        locator: Section 1.1 (Purpose and Scope); Section 3.2 (The ML-KEM Scheme)
+        note: SP 800-56A/B schemes are quantum-vulnerable; ML-KEM is an approved alternative presently believed secure against large-scale fault-tolerant quantum computers; based on MLWE; FO transform yields believed IND-CCA2 security.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ml-kem-parameter-sets
+    predicate: parameter_sets
+    value: supported
+    statement: FIPS 203 defines three parameter sets. ML-KEM-512 is in security category 1, ML-KEM-768 in category 3 and ML-KEM-1024 in category 5. NIST's draft transition report lists their security strengths as 128, 192 and 256 bits.
+    scope: Parameter sets in FIPS 203; categories as defined by NIST.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
+        title: "FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard"
+        publisher: NIST
+        version: FIPS 203 (August 13, 2024)
+        publication_date: "2024-08-13"
+        locator: Section 3.2 (Parameter sets and algorithms); Table 1 (Decapsulation failure rates)
+        note: "ML-KEM-512 category 1, ML-KEM-768 category 3, ML-KEM-1024 category 5; constants n = 256, q = 3329; failure rates 2^-138.8, 2^-164.8, 2^-174.8."
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024)
+        publication_date: "2024-11-12"
+        locator: Section 4.1.2, Table 5 (Post-quantum key-establishment schemes)
+        note: "Gives 128/192/256 bits for categories 1/3/5. The draft table misprints the second and third rows as \"ML-DSA-768\" and \"ML-DSA-1024\" under the ML-KEM [FIPS203] heading."
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ml-kem-key-ciphertext-sizes
+    predicate: key_and_ciphertext_size
+    value: supported
+    statement: "ML-KEM sizes in bytes (encapsulation key / decapsulation key / ciphertext / shared secret): ML-KEM-512 800 / 1632 / 768 / 32; ML-KEM-768 1184 / 2400 / 1088 / 32; ML-KEM-1024 1568 / 3168 / 1568 / 32."
+    scope: Encoded sizes. FIPS 203 Table 3 could not be read directly (the retrieved text stopped before Section 8); values are taken from RFC 9935 and checked against RFC 10024.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc9935
+        title: "RFC 9935: Internet X.509 PKI - Algorithm Identifiers for the Module-Lattice-Based Key-Encapsulation Mechanism (ML-KEM)"
+        publisher: IETF
+        version: RFC 9935 (March 2026, Proposed Standard)
+        publication_date: "2026-03"
+        locator: Appendix B (Parameter Set Security and Sizes), Table 1
+        note: Maps NIST levels 1/3/5 to ML-KEM-512/768/1024 with the encapsulation key, decapsulation key, ciphertext and secret sizes listed.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc10024
+        title: "RFC 10024: Post-Quantum Traditional (PQ/T) Hybrid Key Agreement Mechanisms for TLS 1.3"
+        publisher: IETF
+        version: RFC 10024 (August 2026, Standards Track)
+        publication_date: "2026-08"
+        locator: Sections 4.1 (Client Share) and 4.2 (Server Share)
+        note: Independently gives 1184-byte ML-KEM-768 encapsulation key, 1088-byte ML-KEM-768 ciphertext and 1568 bytes for ML-KEM-1024 key and ciphertext.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ml-kem-tls-hybrid
+    predicate: protocol_support
+    value: supported
+    statement: RFC 10024 (Standards Track, August 2026) defines three TLS 1.3 hybrid key-agreement groups that combine ML-KEM with ECDHE. X25519MLKEM768 (codepoint 4588) is marked Recommended. SecP256r1MLKEM768 (4587) and SecP384r1MLKEM1024 (4589) are not. The RFC obsoletes the earlier experimental Kyber draft codepoints.
+    scope: TLS 1.3 key exchange only; this protects the channel and does not authenticate the peer.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://datatracker.ietf.org/doc/rfc10024/
+        title: "RFC 10024 (was draft-ietf-tls-ecdhe-mlkem): IETF Datatracker"
+        publisher: IETF
+        version: RFC 10024, Proposed Standard (August 2026); last updated 2026-08-10
+        publication_date: "2026-08"
+        locator: Document metadata (Type; "Was draft-ietf-tls-ecdhe-mlkem-05")
+        note: The former Internet-Draft draft-ietf-tls-ecdhe-mlkem is now RFC 10024, a Proposed Standard from the TLS WG.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc10024
+        title: "RFC 10024: Post-Quantum Traditional (PQ/T) Hybrid Key Agreement Mechanisms for TLS 1.3"
+        publisher: IETF
+        version: RFC 10024 (August 2026, Standards Track)
+        publication_date: "2026-08"
+        locator: Abstract; Section 2 (Motivation); Section 7 (IANA Considerations), 7.1-7.4
+        note: X25519MLKEM768 = 4588 (0x11EC, Recommended Y); SecP256r1MLKEM768 = 4587 (N); SecP384r1MLKEM1024 = 4589 (N); X25519Kyber768Draft00 and SecP256r1Kyber768Draft00 marked 'D'.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-ml-kem-authentication-role
+    predicate: authentication_role
+    value: supported
+    statement: ML-KEM's role in authentication is indirect. It protects the confidentiality of the channel that carries authentication exchanges against "harvest now, decrypt later" attacks, while proving identity still needs a signature or other authentication mechanism. NIST notes that key establishment and authentication algorithms can be migrated on different timelines.
+    scope: Interpretation of NIST's use-case discussion; protocol-specific designs (for example KEM-based authentication) are out of scope.
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024)
+        publication_date: "2024-11-12"
+        locator: Section 3.1.2 (User and Machine Authentication); Section 3.1.3 (Network Security Protocols)
+        note: Authentication is not exposed to harvest-now-decrypt-later; for protocols like TLS, harvest-now-decrypt-later drives the key-establishment migration timeline, and the authentication algorithm may be migrated at a different time.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024)
+        publication_date: "2024-11-12"
+        locator: Section 4.1.2 (Key Establishment), text before Table 5
+        note: Because of harvest-now-decrypt-later attacks, application-specific guidance may require migration to quantum-resistant key establishment before classical schemes are generally disallowed; ML-KEM is currently the only approved PQC key-establishment scheme.
+        stance: supports
+        retrieved_at: "2026-10-03"

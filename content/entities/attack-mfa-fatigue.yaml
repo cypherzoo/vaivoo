@@ -1,0 +1,269 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: attack-mfa-fatigue
+type: Attack
+slug: mfa-fatigue
+name: MFA fatigue (push bombing)
+aliases: [MFA fatigue, Push bombing, Push fatigue, Prompt fatigue, Authentication fatigue, MFA request generation]
+summary: "An attacker who already has a user's password triggers sign-in after sign-in so the user's phone fills with approval prompts, hoping the user taps 'approve' by mistake or to make them stop. It works against simple push approval. Making the user type in a number shown on the sign-in screen, rate limits, and phishing-resistant authenticators counter it."
+layer: [core]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  Many services use a phone app for the second factor. After the password, the service sends a notification to the app, and the user taps "approve". The approval itself carries no information about which sign-in it belongs to.
+
+  An attacker with the user's password, for example from a data breach or password spraying, can start a sign-in and trigger such a prompt. If the user declines, the attacker tries again, sometimes many times in a short period, or at night. Some users eventually approve, either by accident, to stop the noise, or because they assume one of the prompts is genuine. The attacker is then signed in. Attackers sometimes combine this with a phone call or message pretending to be IT support.
+
+  The weakness is that a single tap does not prove the user is looking at the sign-in they are approving. NIST no longer accepts out-of-band methods that only ask for approval, and it does not accept picking the right number from a short list either. It requires a secret to be transferred between the sign-in screen and the device, for example typing a number shown on the sign-in page into the app. CISA recommends this "number matching" as an interim step when phishing-resistant MFA is not yet possible.
+
+  Number matching stops blind approval, but it does not make push phishing-resistant. A fake site that relays the real sign-in page can show the user the real number. Phishing-resistant authenticators such as security keys and passkeys do not send prompts that a remote attacker can trigger in this way.
+
+  Other measures include limiting how many prompts can be sent, training users to report unexpected prompts, and investigating declined prompts, which can be a sign that the password has been compromised.
+relations: []
+claims:
+  - id: claim-mfa-fatigue-definition
+    predicate: definition
+    value: supported
+    statement: "MFA fatigue, also called push bombing, is an attack in which repeated authentication requests are sent to the user until they approve one, by accident or to stop the requests. NIST lists it as a distinct authenticator threat, and CISA and MITRE ATT&CK describe the same technique."
+    scope: Definition; MITRE notes the same pattern can also use SMS messages or phone calls.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/security/
+        title: "NIST SP 800-63B-4: Threats and Security Considerations"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 6.1 Authenticator Threats, Table 3 (#table-3), row 'Authentication Fatigue'"
+        note: An attacker causes repeated authentication requests to get the subscriber to approve; example is approving a fraudulent push request to stop repeated requests.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implement-number-matching-in-mfa-applications-508c.pdf
+        title: Implementing Number Matching in MFA Applications (fact sheet)
+        publisher: US Cybersecurity and Infrastructure Security Agency (CISA)
+        publication_date: "2022-10"
+        locator: "Section 'Overview', first paragraph"
+        note: MFA fatigue (push bombing) is bombarding a user with push notifications until they approve by accident or out of annoyance.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://attack.mitre.org/techniques/T1621/
+        title: "Multi-Factor Authentication Request Generation, Technique T1621 - Enterprise"
+        publisher: The MITRE Corporation (MITRE ATT&CK)
+        version: "T1621 version 1.2 (ATT&CK v19), last modified 24 October 2025"
+        locator: Technique description, second and third paragraphs
+        note: Adversaries abuse automatic push generation and may repeat login attempts to bombard users with pushes, SMS or calls until they accept.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-mfa-fatigue-prerequisite-password
+    predicate: prerequisite
+    value: supported
+    statement: "The attack normally requires the attacker to already have the user's password, because the push is only sent after the first factor succeeds. CISA therefore treats a declined push as a possible sign that the password is compromised. MITRE notes a variant where self-service password reset is set up to send pushes, so no password is needed."
+    scope: Push-based second factor after a password; passwordless push and reset-flow variants differ.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implement-number-matching-in-mfa-applications-508c.pdf
+        title: Implementing Number Matching in MFA Applications (fact sheet)
+        publisher: US Cybersecurity and Infrastructure Security Agency (CISA)
+        publication_date: "2022-10"
+        locator: "Sections 'The Problem' (with footnote 1) and 'Best Practices', bullet 'Investigate denied push notifications'"
+        note: Attackers who have obtained the password generate many prompts; MFA checks follow the first factor, so denied requests may mean the password is compromised.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://attack.mitre.org/techniques/T1621/
+        title: "Multi-Factor Authentication Request Generation, Technique T1621 - Enterprise"
+        publisher: The MITRE Corporation (MITRE ATT&CK)
+        version: "T1621 version 1.2 (ATT&CK v19), last modified 24 October 2025"
+        locator: Technique description, second paragraph
+        note: Adversaries holding valid credentials abuse push generation; without credentials they may abuse push generation configured for self-service password reset.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-mfa-fatigue-defeats-simple-push
+    predicate: defeats_push_approval
+    value: supported
+    statement: "Simple push approval, where the user only taps to accept, is vulnerable to MFA fatigue. CISA rates push without number matching as vulnerable to push bombing and user error, and the UK NCSC says challenge-based authenticator apps are vulnerable to prompt fatigue."
+    scope: App-based push approval without a transferred secret.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implementing-phishing-resistant-mfa-508c.pdf
+        title: Implementing Phishing-Resistant MFA (fact sheet)
+        publisher: US Cybersecurity and Infrastructure Security Agency (CISA)
+        publication_date: "2022-10"
+        locator: "Table 1: MFA Forms, Strongest to Weakest, row 'Mobile application push notification without number matching'"
+        note: Listed as vulnerable to push bombing attacks as well as user error.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.ncsc.gov.uk/collection/mfa-for-your-corporate-online-services/recommended-types-of-mfa
+        title: "Multi-factor authentication for your corporate online services: Recommended types of MFA"
+        publisher: UK National Cyber Security Centre (NCSC)
+        version: "Version 2.0"
+        publication_date: "2024-09-26"
+        locator: "Section '2. Challenge-based authenticator apps', Summary"
+        note: Such apps give only partial phishing resistance because they are vulnerable to the prompt fatigue attack.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-mfa-fatigue-nist-approval-not-acceptable
+    predicate: nist_requirement
+    value: supported
+    statement: "NIST SP 800-63B-4 no longer accepts out-of-band authentication that only asks the user to approve, citing authentication fatigue attacks. An app that requests approval must also accept a secret transferred from the sign-in session, and showing the user a list of numbers to choose from is explicitly not enough."
+    scope: NIST SP 800-63B-4 out-of-band authenticator requirements.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.1.3 Out-of-Band Devices (#out-of-band), Note following Fig. 2"
+        note: Comparing secrets and approving is no longer acceptable because of authentication fatigue; transfer of the secret is required; a list of secrets to compare is insufficient as it can be guessed.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.1.3.1 Out-of-Band Authenticators (#ooba), final paragraph"
+        note: An authenticator requesting approval SHALL accept a transfer of the secret from the primary channel and send it to the verifier to associate the approval with the transaction.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/security/
+        title: "NIST SP 800-63B-4: Threats and Security Considerations"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 6.2 Threat Mitigation Strategies, Table 4 (#table-4), row 'Authentication Fatigue'"
+        note: Mitigation is to require transfer of an authentication secret rather than approval.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-mfa-fatigue-number-matching
+    predicate: mitigation
+    value: conditional
+    statement: "Number matching mitigates MFA fatigue: the user must type a number shown on the sign-in screen into the app, so they cannot approve a sign-in they cannot see, and repeated prompts stop being useful. CISA recommends it as an interim measure. It does not stop a phishing relay, which can show the victim the real number."
+    scope: Push-based MFA with number entry; CISA rates it below phishing-resistant MFA.
+    assumptions:
+      - "The user types the number shown on the sign-in screen into the app; choosing from a short list does not meet NIST's requirement."
+      - "The attacker is not relaying the real sign-in page to the victim. If they are, the attack becomes AiTM phishing (see attack-aitm-phishing)."
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implement-number-matching-in-mfa-applications-508c.pdf
+        title: Implementing Number Matching in MFA Applications (fact sheet)
+        publisher: US Cybersecurity and Infrastructure Security Agency (CISA)
+        publication_date: "2022-10"
+        locator: "Sections 'Overview' and 'Mitigation'"
+        note: Number matching forces the user to enter numbers from the login screen, so requests cannot be approved without seeing it and prompt spam is ineffective; recommended as an interim mitigation weaker than phishing-resistant MFA.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implementing-phishing-resistant-mfa-508c.pdf
+        title: Implementing Phishing-Resistant MFA (fact sheet)
+        publisher: US Cybersecurity and Infrastructure Security Agency (CISA)
+        publication_date: "2022-10"
+        locator: "Table 1: MFA Forms, Strongest to Weakest, row 'App-based authentication' (includes push with number matching)"
+        note: Resistant to push bombing but vulnerable to phishing.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.1.3 Out-of-Band Devices (#out-of-band), Note following Fig. 2"
+        note: Choosing from a presented list of secrets does not meet the transfer requirement.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+  - id: claim-mfa-fatigue-rate-limit
+    predicate: mitigation
+    value: supported
+    statement: "Limiting how many push notifications are sent is a recommended control. NIST says verifiers should set a reasonable limit on the rate or total number of pushes since the last successful sign-in, and MITRE ATT&CK recommends limits on prompts per period."
+    scope: Push-based out-of-band verifiers.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.1.3.2 Out-of-Band Verifiers (#out-of-band-verifiers), paragraph on push notifications"
+        note: Verifiers sending push notifications SHOULD limit their rate or total number since the last successful authentication.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://attack.mitre.org/techniques/T1621/
+        title: "Multi-Factor Authentication Request Generation, Technique T1621 - Enterprise"
+        publisher: The MITRE Corporation (MITRE ATT&CK)
+        version: "T1621 version 1.2 (ATT&CK v19), last modified 24 October 2025"
+        locator: "Mitigations table, M1032 Multi-factor Authentication"
+        note: Recommends code entry instead of one-click push and limits on the number of prompts sent in a period.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-mfa-fatigue-phishing-resistant-not-affected
+    predicate: defeats_webauthn
+    value: not_supported
+    statement: "MFA fatigue does not work against FIDO/WebAuthn or PKI-based authentication. These authenticators respond only to a sign-in on the user's own device and do not receive prompts that a remote attacker can trigger. CISA marks push bombing as not applicable to them."
+    scope: Phishing-resistant MFA as listed by CISA; does not cover weaker fallback methods offered alongside.
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implementing-phishing-resistant-mfa-508c.pdf
+        title: Implementing Phishing-Resistant MFA (fact sheet)
+        publisher: US Cybersecurity and Infrastructure Security Agency (CISA)
+        publication_date: "2022-10"
+        locator: "Table 1: MFA Forms, Strongest to Weakest, row 'Phishing-resistant MFA', Threat column"
+        note: Push bombing, SS7 and SIM swap attacks are listed as not applicable to FIDO/WebAuthn and PKI-based MFA.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implement-number-matching-in-mfa-applications-508c.pdf
+        title: Implementing Number Matching in MFA Applications (fact sheet)
+        publisher: US Cybersecurity and Infrastructure Security Agency (CISA)
+        publication_date: "2022-10"
+        locator: "Section 'Overview', second paragraph"
+        note: CISA strongly encourages phishing-resistant MFA to protect against MFA fatigue and phishing.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-mfa-fatigue-user-reporting
+    predicate: detection
+    value: supported
+    statement: "CISA recommends training users to recognise and report unexpected or repeated prompts, and having the security team investigate every declined push."
+    scope: Organisational practice; effectiveness is not quantified.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implement-number-matching-in-mfa-applications-508c.pdf
+        title: Implementing Number Matching in MFA Applications (fact sheet)
+        publisher: US Cybersecurity and Infrastructure Security Agency (CISA)
+        publication_date: "2022-10"
+        locator: "Section 'Best Practices for Using MFA with Number Matching'"
+        note: Train users on MFA fatigue and on reporting unknown or bulk requests; investigate denied push notifications for root cause.
+        stance: supports
+        retrieved_at: "2026-10-03"
