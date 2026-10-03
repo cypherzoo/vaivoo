@@ -1,9 +1,9 @@
-# DRAFT comparison. Cells are pulled from entity claims; no new facts are stated here.
+# Comparison. Cells are pulled from entity claims; no new facts are stated here.
 id: cmp-passkeys-and-keys
 slug: synced-vs-device-bound-passkey-vs-security-key
 title: Synced passkey vs device-bound passkey vs password + security key
 summary: Three WebAuthn setups compared on user verification, key exportability, NIST assurance level, attestation and recovery.
-status: draft
+status: published
 owner: Chris War
 intro: |
   All three use WebAuthn, so the signature is bound to the website's domain. They differ in where the private key lives, whether the user is verified on the authenticator, and how far they can go in NIST's assurance levels.
@@ -28,10 +28,18 @@ rows:
   - label: Non-exportable key
     predicates: [non_exportable_key]
   - label: Highest NIST AAL
+    help: The highest assurance level the setup can reach under NIST SP 800-63B-4.
     predicates: [max_nist_aal]
+    labels:
+      claim-synced-passkey-uv-max-nist-aal: AAL2
+      claim-device-bound-passkey-uv-max-nist-aal: AAL3 if all listed conditions are met
+      claim-sk2f-max-nist-aal: AAL3 if all listed conditions are met
   - label: Attestation available
     predicates: [attestation_available]
   - label: Secret held by the service
+    help: Can a breach of the service's database yield something that signs in?
     predicates: [no_shared_secret]
+    labels:
+      claim-passkey-no-server-side-secret: Public key only
   - label: Recovery dependency
     predicates: [recovery_dependency]

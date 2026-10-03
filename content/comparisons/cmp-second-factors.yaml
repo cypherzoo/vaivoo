@@ -1,9 +1,9 @@
-# DRAFT comparison. Cells are pulled from entity claims; no new facts are stated here.
+# Comparison. Cells are pulled from entity claims; no new facts are stated here.
 id: cmp-second-factors
 slug: password-sms-vs-totp-vs-synced-passkey
 title: Password + SMS code vs password + TOTP vs synced passkey
 summary: Three common ways to sign in to a consumer account, compared on phishing resistance, factor count, NIST assurance level, replay, server-side secrets and recovery.
-status: draft
+status: published
 owner: Chris War
 intro: |
   The first two columns add a one-time code to a password. The rows describe the code step; the password step itself is not phishing-resistant in either case (see Password authentication). The third column replaces the password with a synced passkey that requires local user verification.
@@ -25,13 +25,21 @@ rows:
     predicates: [phishing_resistance]
   - label: Counts as multi-factor (NIST)
     predicates: [mfa_qualification, multi_factor_qualification]
-  - label: NIST AAL3 / highest level
+  - label: Highest NIST AAL
+    help: The highest assurance level the setup can reach under NIST SP 800-63B-4.
     predicates: [max_nist_aal, aal3_eligible]
+    labels:
+      claim-sms-otp-aal3-eligible: AAL2 at most (not AAL3)
+      claim-totp-aal3-eligible: AAL2 at most (not AAL3)
+      claim-synced-passkey-uv-max-nist-aal: AAL2
   - label: Replay resistance
     predicates: [replay_resistance]
   - label: Secret held by the service
     help: Can a breach of the service's database yield something that signs in?
     predicates: [shared_secret_server_side, no_shared_secret]
+    labels:
+      claim-totp-shared-secret-server-side: Shared secret (TOTP seed)
+      claim-passkey-no-server-side-secret: Public key only
   - label: Restrictions in NIST guidance
     predicates: [nist_classification]
   - label: Passwordless
