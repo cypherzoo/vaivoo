@@ -22,13 +22,15 @@ const summary = reviewSummary(cells.map(c => c.claim));
       <tr><th scope="row">{row.label}{row.help && <div class="meta">{row.help}</div>}</th>
         {cmp.columns.map(col => { const cell = comparisonCell(col, row); return cell ? (
           <td>
-            <strong class={`v-${cell.claim.shown}`}>{VALUE_LABEL[cell.claim.shown]}</strong> <ReviewTag level={cell.claim.review} short />
+            {row.labels?.[cell.claim.id]
+              ? <strong>{row.labels[cell.claim.id]}</strong>
+              : <strong class={`v-${cell.claim.shown}`}>{VALUE_LABEL[cell.claim.shown]}</strong>} <ReviewTag level={cell.claim.review} short />
             <div class="meta">{cell.claim.statement}</div>
-            {cell.claim.assumptions.length > 0 && <div class="meta">Conditions: {cell.claim.assumptions.length}</div>}
+            {cell.claim.assumptions.length > 0 && <div class="meta"><em>Only if:</em><ul class="cond">{cell.claim.assumptions.map(a => <li>{a}</li>)}</ul></div>}
             <div><a href={`${cell.entity.url}#${cell.claim.id}`}>Evidence →</a></div>
           </td>) : <td class="v-unknown"><span class="meta">No claim yet</span></td>; })}
       </tr>))}
     </tbody>
   </table></div>
-  <p class="meta">Values come from scoped claims; "Conditional" means the property only holds under the stated conditions. Read the evidence before relying on a cell.</p>
+  <p class="meta">Values come from scoped claims. "Conditional" cells hold only under the conditions listed in the cell; where a row shows plain text (such as "AAL2" or "Public key only") it restates the linked claim. A cell reading "No claim yet" means Vaivoo has not researched it, not that the answer is no. Read the evidence before relying on a cell.</p>
 </Base>

@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: crypto-ml-dsa
@@ -8,10 +8,10 @@ name: ML-DSA (FIPS 204)
 aliases: ["ML-DSA", "Module-Lattice-Based Digital Signature Algorithm", "ML-DSA-44", "ML-DSA-65", "ML-DSA-87"]
 summary: NIST's module-lattice-based post-quantum digital signature standard (FIPS 204, August 2024), derived from CRYSTALS-Dilithium. It comes in three parameter sets and is believed to resist attacks by large-scale quantum computers, at the cost of much larger keys and signatures than elliptic-curve schemes.
 layer: [crypto]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   ML-DSA is a digital signature scheme built to stay secure even if large quantum computers arrive. A device signs with a private key, and anyone with the public key can verify, just as with ECDSA or Ed25519. The difference is the mathematics underneath: instead of elliptic curves, which a quantum computer could break, ML-DSA relies on hard problems over lattices.
 
@@ -45,10 +45,11 @@ claims:
     scope: Standard status at retrieval; the CSRC page lists errata planned for a future revision.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://csrc.nist.gov/pubs/fips/204/final
         title: "FIPS 204: Module-Lattice-Based Digital Signature Standard (landing page)"
@@ -73,10 +74,11 @@ claims:
     scope: NIST's assessment as stated in the standard; a belief based on current cryptanalysis, not a proof.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://csrc.nist.gov/pubs/fips/204/final
         title: "FIPS 204: Module-Lattice-Based Digital Signature Standard (landing page)"
@@ -101,10 +103,11 @@ claims:
     scope: Parameter sets in FIPS 204; categories as defined in NIST's PQC call for proposals.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf
         title: "FIPS 204: Module-Lattice-Based Digital Signature Standard"
@@ -129,10 +132,11 @@ claims:
     scope: Encoded sizes in FIPS 204; storing only the 32-byte seed for the private key is an allowed optimisation.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf
         title: "FIPS 204: Module-Lattice-Based Digital Signature Standard"
@@ -149,10 +153,11 @@ claims:
     scope: Signing procedure; verification is the same for both variants.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf
         title: "FIPS 204: Module-Lattice-Based Digital Signature Standard"
@@ -169,10 +174,11 @@ claims:
     scope: The source is an initial public draft (November 2024), not final guidance.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
         title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
@@ -197,10 +203,11 @@ claims:
     scope: COSE/JOSE algorithm registration only. Support in WebAuthn implementations and authenticators is not assessed.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc9964
         title: "RFC 9964: ML-DSA for JSON Object Signing and Encryption (JOSE) and CBOR Object Signing and Encryption (COSE)"

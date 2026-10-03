@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: attack-sim-swap
@@ -8,10 +8,10 @@ name: SIM swap and number porting
 aliases: [SIM swap, SIM swapping, SIM hijacking, Port-out fraud, Phone number takeover]
 summary: "The attacker gets the victim's phone number moved to a SIM card or provider they control, usually by deceiving or bribing mobile operator staff. From then on, SMS and voice codes go to the attacker. Authenticators that do not depend on the phone number are not affected."
 layer: [core]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   A phone number is not tied to a particular phone. The mobile operator decides which SIM card, or which operator after a port, the number belongs to. In a SIM swap, the attacker persuades the operator to move the victim's number to a SIM card they hold. In a port-out, the number is moved to another operator. Either way, the victim's phone loses service and the attacker's phone starts receiving the victim's calls and texts.
 
@@ -27,14 +27,15 @@ claims:
   - id: claim-sim-swap-definition
     predicate: definition
     value: supported
-    statement: "SIM swapping is a form of social engineering in which attackers get a mobile operator to transfer a victim's phone number to a SIM card the attacker controls. The FBI reports that this is done by impersonating the victim, by bribing operator staff, or by phishing operator staff to install malware."
+    statement: "SIM swapping is a malicious technique in which attackers cause a mobile operator to transfer a victim's phone number to a SIM card the attacker controls. The FBI reports schemes using social engineering that impersonates the victim, bribed operator insiders, or phishing of operator staff to install malware."
     scope: Definition and typical methods; number porting to another operator is covered by NIST's wording (Sec. 3.1.3.3) rather than by these two sources.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implementing-phishing-resistant-mfa-508c.pdf
         title: Implementing Phishing-Resistant MFA (fact sheet)
@@ -60,10 +61,11 @@ claims:
     scope: SMS and voice (PSTN) delivery of out-of-band secrets.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implementing-phishing-resistant-mfa-508c.pdf
         title: Implementing Phishing-Resistant MFA (fact sheet)
@@ -97,10 +99,11 @@ claims:
     scope: Accounts whose password reset or recovery accepts proof of control of a phone number.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.ic3.gov/PSA/2022/PSA220208
         title: Criminals Increasing SIM Swap Schemes to Steal Millions of Dollars from US Public
@@ -126,10 +129,11 @@ claims:
     scope: "Direct attack on the authenticator. If the service lets the phone number recover or replace these authenticators, the account remains exposed through recovery (see claim-sim-swap-account-recovery)."
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implementing-phishing-resistant-mfa-508c.pdf
         title: Implementing Phishing-Resistant MFA (fact sheet)
@@ -146,10 +150,11 @@ claims:
     scope: NIST SP 800-63B-4 PSTN out-of-band requirements; how operators expose SIM-change or porting signals is not assessed.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
@@ -166,10 +171,11 @@ claims:
     scope: NIST SP 800-63B-4; NIST may change the restricted status as threats evolve.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
@@ -186,10 +192,11 @@ claims:
     scope: Advisory guidance from US law enforcement; effectiveness is not quantified.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.ic3.gov/PSA/2022/PSA220208
         title: Criminals Increasing SIM Swap Schemes to Steal Millions of Dollars from US Public

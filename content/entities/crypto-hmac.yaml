@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: crypto-hmac
@@ -8,10 +8,10 @@ name: HMAC
 aliases: [Keyed-hash message authentication code, Keyed-Hashing for Message Authentication]
 summary: A way to combine a secret key with a cryptographic hash function to produce a message authentication code. Only someone holding the key can compute or check it.
 layer: [crypto]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   HMAC lets two parties who share a secret key check that a message came from someone holding that key and was not changed on the way. Both sides compute a short tag from the key and the message, and the tags must match.
 
@@ -32,10 +32,11 @@ claims:
     scope: RFC 2104 document status.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc2104
         title: "RFC 2104: HMAC: Keyed-Hashing for Message Authentication"
@@ -52,10 +53,11 @@ claims:
     scope: Construction definition.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc2104
         title: "RFC 2104: HMAC: Keyed-Hashing for Message Authentication"
@@ -80,10 +82,11 @@ claims:
     scope: Key guidance in RFC 2104.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc2104
         title: "RFC 2104: HMAC: Keyed-Hashing for Message Authentication"
@@ -100,10 +103,11 @@ claims:
     scope: General HMAC guidance; OTP schemes such as HOTP deliberately truncate further and compensate with throttling (see RFC 4226 entity).
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc2104
         title: "RFC 2104: HMAC: Keyed-Hashing for Message Authentication"

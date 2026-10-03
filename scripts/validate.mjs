@@ -46,7 +46,8 @@ for (const { f, doc } of entities) {
   for (const c of doc.claims) {
     if (c.status !== 'approved' && c.review_level) errors.push(`${f}: ${c.id} has review_level but is not approved`);
     if (c.status === 'approved') {
-      if (!c.evidence.some(e => e.stance === 'supports')) errors.push(`${f}: ${c.id} approved without supporting evidence`);
+      // An approved "unknown" records that sources do not settle the question, so contextual evidence is enough.
+      if (c.value === 'unknown' ? c.evidence.length === 0 : !c.evidence.some(e => e.stance === 'supports')) errors.push(`${f}: ${c.id} approved without ${c.value === 'unknown' ? 'any' : 'supporting'} evidence`);
       if (!c.reviewed_by?.length || !c.reviewed_at) errors.push(`${f}: ${c.id} approved without reviewer/date`);
       if (!c.review_level) errors.push(`${f}: ${c.id} approved without review_level (internal | external)`);
       if (c.review_level === 'external') {
@@ -86,6 +87,10 @@ for (const f of cmpFiles) {
     if (!row.label || !Array.isArray(row.predicates) || !row.predicates.length) { errors.push(`comparisons/${f}: row needs label and predicates`); continue; }
     const hit = colIds.some(id => byIdDoc.get(id)?.claims.some(cl => row.predicates.includes(cl.predicate)));
     if (!hit) errors.push(`comparisons/${f}: row "${row.label}" matches no claim in any column`);
+    for (const cid of Object.keys(row.labels || {})) {
+      const own = claimOwner.get(cid);
+      if (!own || !colIds.includes(own.entity.id) || !row.predicates.includes(own.claim.predicate)) errors.push(`comparisons/${f}: row "${row.label}" label for ${cid} does not match a claim in this row`);
+    }
   }
   if (c.status === 'published') for (const id of colIds) if (byIdDoc.get(id)?.status !== 'published') errors.push(`comparisons/${f}: published but entity "${id}" is not published`);
 }

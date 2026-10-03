@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: attack-mfa-fatigue
@@ -8,10 +8,10 @@ name: MFA fatigue (push bombing)
 aliases: [MFA fatigue, Push bombing, Push fatigue, Prompt fatigue, Authentication fatigue, MFA request generation]
 summary: "An attacker who already has a user's password triggers sign-in after sign-in so the user's phone fills with approval prompts, hoping the user taps 'approve' by mistake or to make them stop. It works against simple push approval. Making the user type in a number shown on the sign-in screen, rate limits, and phishing-resistant authenticators counter it."
 layer: [core]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   Many services use a phone app for the second factor. After the password, the service sends a notification to the app, and the user taps "approve". The approval itself carries no information about which sign-in it belongs to.
 
@@ -31,10 +31,11 @@ claims:
     scope: Definition; MITRE notes the same pattern can also use SMS messages or phone calls.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/security/
         title: "NIST SP 800-63B-4: Threats and Security Considerations"
@@ -67,10 +68,11 @@ claims:
     scope: Push-based second factor after a password; passwordless push and reset-flow variants differ.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implement-number-matching-in-mfa-applications-508c.pdf
         title: Implementing Number Matching in MFA Applications (fact sheet)
@@ -95,10 +97,11 @@ claims:
     scope: App-based push approval without a transferred secret.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implementing-phishing-resistant-mfa-508c.pdf
         title: Implementing Phishing-Resistant MFA (fact sheet)
@@ -124,10 +127,11 @@ claims:
     scope: NIST SP 800-63B-4 out-of-band authenticator requirements.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
@@ -162,10 +166,11 @@ claims:
       - "The user types the number shown on the sign-in screen into the app; choosing from a short list does not meet NIST's requirement."
       - "The attacker is not relaying the real sign-in page to the victim. If they are, the attack becomes AiTM phishing (see attack-aitm-phishing)."
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implement-number-matching-in-mfa-applications-508c.pdf
         title: Implementing Number Matching in MFA Applications (fact sheet)
@@ -198,10 +203,11 @@ claims:
     scope: Push-based out-of-band verifiers.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
@@ -226,10 +232,11 @@ claims:
     scope: Phishing-resistant MFA as listed by CISA; does not cover weaker fallback methods offered alongside.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implementing-phishing-resistant-mfa-508c.pdf
         title: Implementing Phishing-Resistant MFA (fact sheet)
@@ -254,10 +261,11 @@ claims:
     scope: Organisational practice; effectiveness is not quantified.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.cisa.gov/sites/default/files/publications/fact-sheet-implement-number-matching-in-mfa-applications-508c.pdf
         title: Implementing Number Matching in MFA Applications (fact sheet)

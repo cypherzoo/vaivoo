@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: crypto-ml-kem
@@ -8,10 +8,10 @@ name: ML-KEM (FIPS 203)
 aliases: ["ML-KEM", "Module-Lattice-Based Key-Encapsulation Mechanism", "ML-KEM-512", "ML-KEM-768", "ML-KEM-1024", "CRYSTALS-Kyber"]
 summary: NIST's module-lattice-based post-quantum key-encapsulation mechanism (FIPS 203, August 2024), derived from CRYSTALS-Kyber. It establishes shared secret keys rather than producing signatures, so its role in authentication is indirect. Its main use is protecting the encrypted channel (for example TLS 1.3 hybrid key exchange) that logins travel over.
 layer: [crypto]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   ML-KEM lets two parties agree on a secret key over an open network, in a way that is believed to resist attackers with large quantum computers. One side publishes an "encapsulation key"; the other uses it to create a shared secret plus a short ciphertext, and sends the ciphertext back; the first side then recovers the same secret with its private "decapsulation key". The secret then protects ordinary symmetric encryption.
 
@@ -39,10 +39,11 @@ claims:
     scope: Standard status at retrieval.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
         title: "FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard"
@@ -60,10 +61,11 @@ claims:
     scope: Functional definition in FIPS 203.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
         title: "FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard"
@@ -90,10 +92,11 @@ claims:
     scope: NIST's assessment as stated in the standard; a belief based on current cryptanalysis, not a proof.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
         title: "FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard"
@@ -111,10 +114,11 @@ claims:
     scope: Parameter sets in FIPS 203; categories as defined by NIST.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.203.pdf
         title: "FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard"
@@ -141,10 +145,11 @@ claims:
     scope: Encoded sizes. FIPS 203 Table 3 could not be read directly (the retrieved text stopped before Section 8); values are taken from RFC 9935 and checked against RFC 10024.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc9935
         title: "RFC 9935: Internet X.509 PKI - Algorithm Identifiers for the Module-Lattice-Based Key-Encapsulation Mechanism (ML-KEM)"
@@ -171,10 +176,11 @@ claims:
     scope: TLS 1.3 key exchange only; this protects the channel and does not authenticate the peer.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://datatracker.ietf.org/doc/rfc10024/
         title: "RFC 10024 (was draft-ietf-tls-ecdhe-mlkem): IETF Datatracker"
@@ -201,10 +207,11 @@ claims:
     scope: Interpretation of NIST's use-case discussion; protocol-specific designs (for example KEM-based authentication) are out of scope.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
         title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"

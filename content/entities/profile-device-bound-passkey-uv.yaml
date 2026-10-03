@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: profile-device-bound-passkey-uv
@@ -8,10 +8,10 @@ name: Device-bound passkey with required user verification
 aliases: ["device-bound passkey (UV required)", "single-device WebAuthn credential with user verification", "non-backup-eligible passkey with UV"]
 summary: "A deployment in which the website accepts passkeys that stay on one authenticator (a security key or a non-syncing device authenticator), and requires the authenticator to verify the user locally (PIN or biometric) on every sign-in."
 layer: [core, crypto]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 configuration:
   user_verification: required
   credential_storage: single device; the generating authenticator never allows backup (non-exportable by design)
@@ -48,10 +48,11 @@ claims:
       - The RP ID is the site's domain or a parent domain at least one level below the public suffix.
       - The user's device and browser are not compromised.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticators"
@@ -78,10 +79,11 @@ claims:
       - The authenticator honestly reports BE = 0 (the flag is self-reported; attestation is needed to verify the authenticator type).
       - The key is generated, stored and used in separate hardware or an embedded secure element, TEE or TPM that the host cannot read or reprogram (NIST Sec. 3.2.12).
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.w3.org/TR/webauthn-3/
         title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
@@ -118,10 +120,11 @@ claims:
       - Authenticators are validated to FIPS 140 Level 1 or higher overall, and verifier cryptography is FIPS 140 validated.
       - Replay resistance, authentication intent, AAL3 reauthentication limits and the other AAL3 requirements are met.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/aal/
         title: "NIST SP 800-63B-4: Authentication Assurance Levels"
@@ -148,10 +151,11 @@ claims:
       - The UV flag is set in the response and the Relying Party inspects it.
       - The activation factor meets NIST Sec. 3.2.10 (activation secrets) or Sec. 3.2.3 (biometrics), and each authentication event requires it.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticators"
@@ -176,10 +180,11 @@ claims:
     scope: Holds by configuration of this profile; WebAuthn itself also allows "preferred" and "discouraged".
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.w3.org/TR/webauthn-3/
         title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
@@ -198,10 +203,11 @@ claims:
       - The Relying Party requests a conveyance other than "none".
       - The authenticator produces a verifiable attestation statement; for "enterprise", the user agent or authenticator configuration permits it for the RP ID.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.w3.org/TR/webauthn-3/
         title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
@@ -226,10 +232,11 @@ claims:
     scope: Interpretation building on WebAuthn's guidance for single-device credentials; the strength of a given recovery process is not assessed here.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.w3.org/TR/webauthn-3/
         title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"

@@ -2,10 +2,10 @@
 title: "Passkeys, security keys and WebAuthn: related but different"
 slug: passkeys-security-keys-webauthn
 summary: "WebAuthn is the standard, a passkey is a kind of credential, and a security key is one kind of device that can hold credentials. Synced and device-bound passkeys share the same protocol but differ in assurance and recovery."
-status: draft
+status: published
 order: 3
 owner: Chris War
-last_reviewed_at: null
+last_reviewed_at: "2026-10-03"
 ---
 
 The words passkey, security key, FIDO2 and WebAuthn are often used interchangeably. They describe different layers of the same system.
@@ -32,11 +32,11 @@ When a website sets user verification to "required", the authenticator must veri
 
 ## Synced and device-bound differ in assurance and recovery
 
-Because synced keys can be exported, synced passkeys reach at most NIST AAL2 [↗](/profiles/synced-passkey-uv/#claim-synced-passkey-uv-max-nist-aal), and their security is bounded by the passkey provider's account recovery [↗](/profiles/synced-passkey-uv/#claim-synced-passkey-uv-recovery-dependency). Device-bound passkeys can reach AAL3, but only if the key is held in genuinely isolated hardware; the BE flag alone does not prove that [↗](/profiles/device-bound-passkey-uv/#claim-device-bound-passkey-uv-max-nist-aal). Losing the device means losing the credential, so a second authenticator or a recovery process is needed [↗](/profiles/device-bound-passkey-uv/#claim-device-bound-passkey-uv-recovery-dependency).
+Because synced keys can be exported, synced passkeys reach at most NIST AAL2 [↗](/profiles/synced-passkey-uv/#claim-synced-passkey-uv-max-nist-aal), and their security depends partly on the passkey provider's account, sync service and key-recovery process [↗](/profiles/synced-passkey-uv/#claim-synced-passkey-uv-recovery-dependency). Device-bound passkeys can reach AAL3, but only if the key is held in genuinely isolated hardware; the BE flag alone does not prove that [↗](/profiles/device-bound-passkey-uv/#claim-device-bound-passkey-uv-max-nist-aal). Losing the device means losing the credential, so a second authenticator or a recovery process is needed [↗](/profiles/device-bound-passkey-uv/#claim-device-bound-passkey-uv-recovery-dependency).
 
 ## Cryptography under the hood
 
-WebAuthn names algorithms by COSE identifiers. ECDSA on P-256 has long been signalled as ES256 (-7) and Ed25519 as EdDSA (-8). RFC 9864 (October 2025) adds fully specified identifiers and marks those two COSE registrations as deprecated [↗](/crypto/ecdsa-p256/#claim-ecdsa-p256-cose-identifiers) [↗](/crypto/ed25519/#claim-ed25519-cose-identifiers). Both algorithms would be broken by a large enough quantum computer [↗](/crypto/ecdsa-p256/#claim-ecdsa-p256-quantum-vulnerable). NIST's post-quantum signature standard ML-DSA received COSE identifiers in May 2026, but an identifier alone does not mean browsers or authenticators support it [↗](/crypto/ml-dsa/#claim-ml-dsa-cose-webauthn-support).
+WebAuthn names algorithms by COSE identifiers. ECDSA on P-256 has long been signalled as ES256 (-7) and Ed25519 as EdDSA (-8). RFC 9864 (October 2025) adds fully specified identifiers and marks those two COSE registrations as deprecated [↗](/crypto/ecdsa-p256/#claim-ecdsa-p256-cose-identifiers) [↗](/crypto/ed25519/#claim-ed25519-cose-identifiers). Both algorithms would be broken by a large enough quantum computer [↗](/crypto/ecdsa-p256/#claim-ecdsa-p256-quantum-vulnerable) [↗](/crypto/ed25519/#claim-ed25519-quantum-vulnerable). NIST's post-quantum signature standard ML-DSA received COSE identifiers in May 2026, but an identifier alone does not mean browsers or authenticators support it [↗](/crypto/ml-dsa/#claim-ml-dsa-cose-webauthn-support).
 
 ## In one sentence each
 

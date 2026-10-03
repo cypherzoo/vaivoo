@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: idsys-finnish-trust-network
@@ -8,10 +8,10 @@ name: Finnish Trust Network
 aliases: [FTN, Luottamusverkosto, Tunnistuspalvelun tarjoajien luottamusverkosto, Finnish trust network for strong electronic identification]
 summary: Finland's statutory network of registered strong electronic identification providers (bank IDs, mobile certificates, the DVV citizen certificate and broker services), supervised by Traficom.
 layer: [nordic-eu]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   The Finnish Trust Network is not a single eID. It is a network created by law. Its members are the providers of strong electronic identification that have notified the Finnish Transport and Communications Agency (Traficom) and meet the requirements of the Act on Strong Electronic Identification and Electronic Trust Services (617/2009). The network has operated since 1 May 2017.
 
@@ -39,10 +39,11 @@ claims:
     scope: Consolidated Finnish text on Finlex at retrieval, including amendments by 811/2026 in force 1.10.2026. The English translation is marked by Traficom as not up to date.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.finlex.fi/fi/lainsaadanto/2009/617
         title: Laki vahvasta sähköisestä tunnistamisesta ja sähköisistä luottamuspalveluista 617/2009
@@ -67,10 +68,11 @@ claims:
     scope: Finnish providers of strong electronic identification. Other authorities have parallel roles, for example the Data Protection Ombudsman and the Financial Supervisory Authority.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.finlex.fi/fi/lainsaadanto/2009/617
         title: Laki vahvasta sähköisestä tunnistamisesta ja sähköisistä luottamuspalveluista 617/2009
@@ -95,10 +97,11 @@ claims:
     scope: Types of service named by the regulator. The register lists specific providers and was not analysed row by row.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.kyberturvallisuuskeskus.fi/en/our-activities/regulation-and-supervision/electronic-identification
         title: Electronic identification - Traficom (NCSC-FI)
@@ -122,10 +125,11 @@ claims:
     scope: Legal minimum for every service in the network. The level of each specific means is shown in Traficom's register, which was not analysed.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.finlex.fi/fi/lainsaadanto/2009/617
         title: Laki vahvasta sähköisestä tunnistamisesta ja sähköisistä luottamuspalveluista 617/2009
@@ -150,10 +154,11 @@ claims:
     scope: Requirement as summarised by the regulator, based on section 8 a of the Act.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.kyberturvallisuuskeskus.fi/en/our-activities/regulation-and-supervision/electronic-identification
         title: Electronic identification - Traficom (NCSC-FI)
@@ -171,10 +176,11 @@ claims:
     assumptions:
       - The Commission overview is complete for Finland as of its 2026-02-02 update.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/48762251/Overview+of+pre-notified+and+notified+eID+schemes+under+eIDAS
         title: Overview of pre-notified and notified eID schemes under eIDAS - eID User Community
@@ -207,10 +213,11 @@ claims:
     scope: Interfaces between means providers and brokers. Traficom says the profiles can also be applied between a broker and an online service.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.finlex.fi/fi/lainsaadanto/2009/617
         title: Laki vahvasta sähköisestä tunnistamisesta ja sähköisistä luottamuspalveluista 617/2009
@@ -235,10 +242,11 @@ claims:
     scope: Wholesale price between means providers and brokers under section 12 c. Retail prices to online services are not regulated by this provision.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.finlex.fi/fi/lainsaadanto/2009/617
         title: Laki vahvasta sähköisestä tunnistamisesta ja sähköisistä luottamuspalveluista 617/2009
@@ -255,10 +263,11 @@ claims:
     scope: Amendment 811/2026 (4.9.2026), in force 1.10.2026. Whether any broker offers this yet was not checked.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     valid_from: 2026-10-01
     evidence:
       - url: https://www.finlex.fi/fi/lainsaadanto/2009/617
@@ -272,15 +281,16 @@ claims:
   - id: claim-ftn-pki-citizen-certificate
     predicate: uses_pki_certificates
     value: conditional
-    statement: Some network means are certificate-based. DVV's citizen certificate is a certificate on the ID card chip used for identification and electronic signatures, and DVV says its certificates meet eIDAS and Act 617/2009 at a high standard. Bank-code and mobile means are not described as certificate-based in the sources reviewed.
+    statement: "Some network means are certificate-based. DVV's citizen certificate is stored on the ID-card chip and is used for identification and electronic signatures; DVV states that its certificates meet eIDAS and Act 617/2009 requirements at a high standard. The technical design of bank-code means and mobile certificates was not reviewed."
     scope: Applies to the DVV citizen certificate and other certificate-based means. Mobile certificates are certificate-based by name, but their technical design was not reviewed.
     assumptions:
       - Only means explicitly described as certificate-based are counted; bank online codes are not assumed to use user certificates.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://dvv.fi/en/citizen-certificate-and-electronic-identity
         title: Citizen Certificate and electronic identity

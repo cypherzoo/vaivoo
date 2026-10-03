@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: crypto-ed25519
@@ -8,10 +8,10 @@ name: Ed25519 (EdDSA)
 aliases: ["Ed25519", "EdDSA with Ed25519", "Edwards25519 signatures"]
 summary: The Edwards-curve Digital Signature Algorithm (EdDSA) on the edwards25519 curve. It is defined in RFC 8032 and approved in FIPS 186-5, gives about 128-bit classical security, and signs deterministically with 32-byte public keys and 64-byte signatures.
 layer: [crypto]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   Ed25519 is a digital signature scheme. A device signs with its private key, and anyone with the public key can check the signature. It does the same job as ECDSA with P-256 but was designed to be simpler to implement safely and to produce small keys and signatures.
 
@@ -39,10 +39,11 @@ claims:
     scope: IETF specification and NIST approval for US federal use.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
         title: "FIPS 186-5: Digital Signature Standard (DSS)"
@@ -75,10 +76,11 @@ claims:
     scope: Classical (non-quantum) attacks.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc8032
         title: "RFC 8032: Edwards-Curve Digital Signature Algorithm (EdDSA)"
@@ -103,10 +105,11 @@ claims:
     scope: PureEdDSA Ed25519 as specified in RFC 8032.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc8032
         title: "RFC 8032: Edwards-Curve Digital Signature Algorithm (EdDSA)"
@@ -131,10 +134,11 @@ claims:
     scope: Signature generation; key generation still needs good randomness.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc8032
         title: "RFC 8032: Edwards-Curve Digital Signature Algorithm (EdDSA)"
@@ -159,10 +163,11 @@ claims:
     scope: COSE algorithm identifiers as stated in the RFCs; the live IANA registry page was not retrieved.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc9053
         title: "RFC 9053: CBOR Object Signing and Encryption (COSE): Initial Algorithms"
@@ -187,10 +192,11 @@ claims:
     scope: Future large-scale quantum adversary; no claim on when such a computer will exist.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc8032
         title: "RFC 8032: Edwards-Curve Digital Signature Algorithm (EdDSA)"
@@ -217,10 +223,11 @@ claims:
       - NIST IR 8547 is finalized with the dates in the November 2024 initial public draft (as of 2026-10-03 the CSRC page still lists only the draft).
       - Applies to NIST approval status; other jurisdictions and sectors may set different dates.
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
         title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"

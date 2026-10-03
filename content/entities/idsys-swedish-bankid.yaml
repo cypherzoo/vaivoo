@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: idsys-swedish-bankid
@@ -8,10 +8,10 @@ name: Swedish BankID
 aliases: [BankID (Sweden), Svenskt BankID, Mobilt BankID, BankID på fil, BankID på kort]
 summary: Sweden's most widely used electronic ID, issued by Swedish banks and run by Finansiell ID-Teknik BID AB, used to identify and sign at companies and public authorities.
 layer: [nordic-eu]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   Swedish BankID is a personal electronic ID used in Sweden to identify yourself and sign online, at banks, companies and public authorities. It is run by Finansiell ID-Teknik BID AB. The company was set up in September 2002 by a group of major Swedish banks, and the first BankID was issued in 2003. Swedish BankID is a different scheme from Norwegian BankID.
 
@@ -37,10 +37,11 @@ claims:
     scope: Operator and origin. Who owns the company today was not checked; the operator's history page only says SEB bought 18.3% in January 2008.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.digg.se/digitala-tjanster/e-legitimering/om-e-legitimering/godkanda-e-legitimationer-och-intygsfunktioner
         title: Godkända e-legitimationer och intygsfunktioner
@@ -64,10 +65,11 @@ claims:
     scope: Issuance to private individuals as described by the operator. The banks' own proofing procedures were not reviewed.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.bankid.com/en/individuals/get-bankid
         title: Get BankID - BankID
@@ -83,10 +85,11 @@ claims:
     scope: Forms and platform requirements as published at retrieval. Requirements change often.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://developers.bankid.com/getting-started/introduction
         title: Introduction - BankID Developers
@@ -110,10 +113,11 @@ claims:
     scope: Swedish national approval by Digg at retrieval. This is separate from EU notification; see claim-swedish-bankid-eidas-notification.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.digg.se/digitala-tjanster/e-legitimering/om-e-legitimering/godkanda-e-legitimationer-och-intygsfunktioner
         title: Godkända e-legitimationer och intygsfunktioner
@@ -140,10 +144,11 @@ claims:
       - "The Commission overview annotation 'Freja eID (Notified)' may mean only Freja appeared in the Official Journal notice 2022/C 78 I/02; that notice was not retrieved."
       - Digg's list may reflect a later notification or a supplement that the Commission page has not yet reflected.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/48762251/Overview+of+pre-notified+and+notified+eID+schemes+under+eIDAS
         title: Overview of pre-notified and notified eID schemes under eIDAS - eID User Community
@@ -176,10 +181,11 @@ claims:
     scope: Operator developer documentation at retrieval. RP API 5.0 and 5.1 are discontinued according to the operator's news index.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://developers.bankid.com/api-references/auth--sign/overview
         title: API overview - BankID Developers
@@ -209,10 +215,11 @@ claims:
     scope: Two-device (QR) flow. Same-device logins use autostart instead.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://developers.bankid.com/how-to-guides/qr-code
         title: QR code - BankID Developers
@@ -235,10 +242,11 @@ claims:
     scope: All BankID forms. This is an interpretation of what the sources reviewed do and do not claim.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://developers.bankid.com/how-to-guides/qr-code
         title: QR code - BankID Developers
@@ -254,10 +262,11 @@ claims:
     scope: Auth and sign signatures per developer documentation. Algorithms and key storage for user keys are not stated in the pages reviewed.
     assumptions: []
     claim_type: vendor_claim
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://developers.bankid.com/how-to-guides/verifying-signatures
         title: Verifying signatures - BankID Developers

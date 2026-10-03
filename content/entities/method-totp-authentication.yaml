@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: method-totp-authentication
@@ -8,10 +8,10 @@ name: TOTP authentication
 aliases: [Time-based one-time password, TOTP, authenticator-app codes]
 summary: "Signing in with a short code computed from a shared secret and the current time. It proves the user holds the secret, but the code is not bound to the website."
 layer: [core, crypto]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   At enrollment, the service and the user's authenticator (a phone app or a small hardware token) agree on a secret key, often by scanning a QR code. Both sides also agree on a time step, normally 30 seconds, and a starting time.
 
@@ -38,10 +38,11 @@ claims:
     scope: Algorithm definition only; provisioning and user interface are out of scope of the RFC.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc6238
         title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
@@ -58,10 +59,11 @@ claims:
     scope: Algorithm definition.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc6238
         title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
@@ -86,10 +88,11 @@ claims:
     scope: RFC 6238 defaults; deployments may choose other values.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc6238
         title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
@@ -114,10 +117,11 @@ claims:
     scope: Hash functions named in RFC 6238.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc6238
         title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
@@ -142,10 +146,11 @@ claims:
     scope: Verifier policy guidance in RFC 6238; exact window is a deployment choice.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc6238
         title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
@@ -178,10 +183,11 @@ claims:
     scope: TOTP as an authentication mechanism, whether single-factor or multi-factor OTP; surrounding controls not assessed.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
@@ -216,10 +222,11 @@ claims:
       - "The verifier records successful validations (for example, the last accepted time step per credential) and rejects any second use of the same OTP while it is still valid."
       - The OTP is collected over an authenticated protected channel.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc6238
         title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
@@ -252,10 +259,11 @@ claims:
     scope: All TOTP deployments (inherent to the symmetric design).
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc6238
         title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
@@ -276,14 +284,15 @@ claims:
   - id: claim-totp-rate-limiting-required
     predicate: rate_limiting_required
     value: supported
-    statement: "TOTP verifiers must rate-limit failed attempts, because the truncated code is short enough to brute-force. NIST makes this a SHALL for OTP outputs under 64 bits, with at most 100 consecutive failures per authenticator by default."
+    statement: "TOTP verifiers must rate-limit failed attempts because the truncated code is short enough to brute-force. NIST makes this a SHALL for OTP outputs under 64 bits and, unless otherwise specified for the authenticator, requires disabling the authenticator after no more than 100 consecutive failed attempts; deployments may impose lower limits."
     scope: Verifier requirement; the exact limit is a deployment choice within the NIST upper bound.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
         title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
@@ -319,10 +328,11 @@ claims:
       - "Multi-factor case: the authenticator requires a password or biometric activation factor on every use, meeting the Sec. 3.1.5 requirements."
       - At least one authenticator in the event is replay-resistant, as required at AAL2.
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/aal/
         title: "NIST SP 800-63B-4: Authentication Assurance Levels"
@@ -347,10 +357,11 @@ claims:
     scope: NIST SP 800-63B-4 AAL3.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://pages.nist.gov/800-63-4/sp800-63b/aal/
         title: "NIST SP 800-63B-4: Authentication Assurance Levels"

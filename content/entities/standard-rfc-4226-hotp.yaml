@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: standard-rfc-4226-hotp
@@ -8,10 +8,10 @@ name: RFC 4226 (HOTP)
 aliases: [HOTP specification, "RFC 4226", HMAC-based one-time password]
 summary: "Informational IETF RFC (December 2005) that defines HOTP, an event-counter one-time password algorithm built on HMAC-SHA-1 with dynamic truncation."
 layer: [core, crypto]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   RFC 4226 defines HOTP, the HMAC-based one-time password algorithm. A token and a server share a secret key and a counter. Each new code is computed from the key and the current counter value, and the counter moves forward with every use.
 
@@ -28,10 +28,11 @@ claims:
     scope: Document status as shown on the RFC itself.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc4226
         title: "RFC 4226: HOTP: An HMAC-Based One-Time Password Algorithm"
@@ -48,10 +49,11 @@ claims:
     scope: Algorithm definition.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc4226
         title: "RFC 4226: HOTP: An HMAC-Based One-Time Password Algorithm"
@@ -76,10 +78,11 @@ claims:
     scope: Normative parameters of RFC 4226.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc4226
         title: "RFC 4226: HOTP: An HMAC-Based One-Time Password Algorithm"
@@ -104,10 +107,11 @@ claims:
     scope: Server-side security requirements of RFC 4226.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc4226
         title: "RFC 4226: HOTP: An HMAC-Based One-Time Password Algorithm"

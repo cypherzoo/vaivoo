@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: idsys-eudi-wallet
@@ -8,10 +8,10 @@ name: European Digital Identity Wallet (EUDI Wallet)
 aliases: [EUDI Wallet, EU Digital Identity Wallet, EUDIW]
 summary: The EU-wide digital identity wallet set up by the amended eIDAS Regulation. Each Member State must provide at least one wallet for identifying, authenticating, sharing attributes and signing, with person identification data at level of assurance high.
 layer: [nordic-eu, core]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   The European Digital Identity Wallet is not a single app. It is a legal and technical framework under which each EU Member State provides at least one wallet, built to common specifications. The legal basis is Regulation (EU) No 910/2014 (eIDAS) as amended by Regulation (EU) 2024/1183 of 11 April 2024, which the Commission calls the European Digital Identity Regulation. The Commission has adopted implementing regulations covering, among other things, PID and attestations, integrity and core functions, notifications, certification, protocols and interfaces, and registration of relying parties. Some of these were amended again in 2026.
 
@@ -37,10 +37,11 @@ claims:
     scope: Core legal acts for the wallet. EUR-Lex metadata gives 2024-05-20 as the first entry into force of 2024/1183, but the body text could not be retrieved. Amending acts 2026/1730, 2026/1731 and 2026/1735 are noted but not analysed.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eur-lex.europa.eu/eli/reg/2024/1183/oj/eng
         title: Regulation (EU) 2024/1183 of the European Parliament and of the Council of 11 April 2024 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
@@ -68,15 +69,32 @@ claims:
   - id: claim-eudi-wallet-member-state-obligation
     predicate: member_state_provision_deadline
     value: supported
-    statement: Each Member State must provide at least one European Digital Identity Wallet within 24 months after the relevant implementing acts enter into force. The Commission summarises this as "by 2026".
-    scope: Obligation as paraphrased by the ARF and the Commission. The exact calendar deadline was not derived from the Regulation text, which could not be retrieved.
+    statement: "Each Member State must provide at least one European Digital Identity Wallet within 24 months after the relevant implementing acts enter into force. The Commission summarises the rollout deadline as the end of 2026."
+    scope: "Obligation under Article 5a(1) of Regulation (EU) No 910/2014 as amended by Regulation (EU) 2024/1183; the calendar deadline depends on when the relevant implementing acts entered into force."
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
+      - url: https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32024R1183
+        title: "Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 (European Digital Identity Framework)"
+        publisher: "Official Journal of the European Union (EUR-Lex)"
+        version: "OJ L, 30 April 2024"
+        locator: "Article 5a(1) as inserted by Regulation (EU) 2024/1183"
+        note: "Each Member State must provide at least one European Digital Identity Wallet within 24 months of the entry into force of the relevant implementing acts. Added at internal review."
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://digital-strategy.ec.europa.eu/en/faqs/qa-digital-identity
+        title: "Questions and answers: Digital Identity"
+        publisher: "European Commission"
+        version: "Web page"
+        locator: "Q&A on the European Digital Identity Wallet rollout"
+        note: "The Commission states the rollout deadline for EU Digital Identity Wallets as the end of 2026. Added at internal review."
+        stance: supports
+        retrieved_at: "2026-10-03"
       - url: https://eudi.dev/latest/main/03-roles-within-the-eudi-wallet-ecosystem/
         title: 3 Roles within the EUDI Wallet ecosystem - Architecture and Reference Framework
         publisher: European Commission (DG CNECT)
@@ -100,10 +118,11 @@ claims:
     scope: Legal requirement as cited by the ARF. LoA applies to the PID only; other attestations have attestation-specific "levels of security".
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eudi.dev/latest/main/02-eudi-wallet-functionalities/
         title: 2 EUDI Wallet functionalities - Architecture and Reference Framework
@@ -128,10 +147,11 @@ claims:
     scope: As stated in the ARF, citing the Regulation. Acceptance obligations on other relying parties are not covered here.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eudi.dev/latest/main/03-roles-within-the-eudi-wallet-ecosystem/
         title: 3 Roles within the EUDI Wallet ecosystem - Architecture and Reference Framework
@@ -144,17 +164,26 @@ claims:
   - id: claim-eudi-wallet-free-of-charge
     predicate: free_of_charge
     value: conditional
-    statement: Qualified electronic signatures through the wallet are free by default for natural persons (Article 5a(5)(g)), and Member States may limit this to non-professional use. The Commission says the wallet will be entirely free of charge to users.
-    scope: QES free-of-charge is cited to a specific article by the ARF. The general free-of-charge statement comes from a Commission video transcript, not from legal text retrieved here.
+    statement: "For natural persons, issuance, use and revocation of the wallet must be free of charge. Qualified electronic signatures must also be offered through the wallet by default and free of charge, although Member States may limit free QES use to non-professional purposes."
+    scope: "Free-of-charge rules in Article 5a(13) and Article 5a(5)(g) of Regulation (EU) No 910/2014 as amended by Regulation (EU) 2024/1183; national implementation may add detail."
     assumptions:
       - Free-of-charge use of the wallet itself is taken from Commission communication; the exact legal provision was not read in the Regulation text.
       - QES free-of-charge may be limited to non-professional purposes by Member States.
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
+      - url: https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32024R1183
+        title: "Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 (European Digital Identity Framework)"
+        publisher: "Official Journal of the European Union (EUR-Lex)"
+        version: "OJ L, 30 April 2024"
+        locator: "Article 5a(13) and Article 5a(5)(g) as inserted by Regulation (EU) 2024/1183"
+        note: "Issuance, use and revocation of the wallet must be free of charge to natural persons; qualified electronic signatures are by default free of charge, and Member States may limit this to non-professional use. Added at internal review."
+        stance: supports
+        retrieved_at: "2026-10-03"
       - url: https://eudi.dev/latest/main/02-eudi-wallet-functionalities/
         title: 2 EUDI Wallet functionalities - Architecture and Reference Framework
         publisher: European Commission (DG CNECT)
@@ -178,10 +207,11 @@ claims:
     scope: ARF v3.0.0 (informative). Binding requirements sit in the implementing acts.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eudi.dev/latest/main/05-data-model-and-data-exchange-protocols/
         title: 5 Data model and data exchange protocols - Architecture and Reference Framework
@@ -198,10 +228,11 @@ claims:
     scope: ARF v3.0.0. PID Providers may agree other issuance protocols bilaterally with the Wallet Provider if these meet the implementing acts.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eudi.dev/latest/main/05-data-model-and-data-exchange-protocols/
         title: 5 Data model and data exchange protocols - Architecture and Reference Framework
@@ -218,10 +249,11 @@ claims:
     scope: Pseudonymous authentication (ARF use case A) is required; use cases B to D still need further specification.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eudi.dev/latest/main/02-eudi-wallet-functionalities/
         title: 2 EUDI Wallet functionalities - Architecture and Reference Framework
@@ -246,10 +278,11 @@ claims:
     scope: Per ARF v3.0.0 and CIR 2025/848. The ARF notes that the wallet's duty to validate registration certificates starts 24 months after an amendment to CIR 2024/2982 enters into force.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://eudi.dev/latest/main/03-roles-within-the-eudi-wallet-ecosystem/
         title: 3 Roles within the EUDI Wallet ecosystem - Architecture and Reference Framework
@@ -266,10 +299,11 @@ claims:
     scope: Current rollout. The Commission pages reviewed describe the target ("by 2026"), not a per-country status.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EUDIGITALIDENTITYWALLET/pages/694487738/EU+Digital+Identity+Wallet+Home
         title: EU Digital Identity Wallet Home

@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: crypto-sha-2
@@ -8,10 +8,10 @@ name: SHA-2 hash functions (FIPS 180-4)
 aliases: ["SHA-2", "SHA-256", "SHA-384", "SHA-512", "SHA-224", "SHA-512/256", "Secure Hash Standard"]
 summary: The family of cryptographic hash functions specified in NIST FIPS 180-4 (SHA-224, SHA-256, SHA-384, SHA-512, SHA-512/224, SHA-512/256). SHA-2 sits underneath most authentication cryptography, from HMAC-based one-time passwords to RSA and ECDSA signatures, and NIST does not expect quantum computers to force a move away from SHA-256 and larger.
 layer: [crypto]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   A hash function turns any amount of data into a short, fixed-size fingerprint. A good cryptographic hash makes it practically impossible to find two inputs with the same fingerprint, or to work backwards from a fingerprint to an input. SHA-2 is the family of hash functions that NIST standardised for this job. Its best-known member, SHA-256, produces a 256-bit (32-byte) fingerprint.
 
@@ -41,10 +41,11 @@ claims:
     scope: Standard status at retrieval.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://csrc.nist.gov/pubs/fips/180-4/upd1/final
         title: "FIPS 180-4: Secure Hash Standard (SHS) (landing page)"
@@ -70,10 +71,11 @@ claims:
     scope: Algorithm properties in FIPS 180-4.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf
         title: "FIPS 180-4: Secure Hash Standard (SHS)"
@@ -91,10 +93,11 @@ claims:
     scope: Classical security strengths. SP 800-107 Rev. 1 is still listed as final, but NIST has announced that it will be withdrawn.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-107r1.pdf
         title: "SP 800-107 Rev. 1: Recommendation for Applications Using Approved Hash Algorithms"
@@ -129,10 +132,11 @@ claims:
     scope: NIST approval for US federal use; the 224-bit retirement is from an initial public draft.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
         title: "SP 800-131A Rev. 2: Transitioning the Use of Cryptographic Algorithms and Key Lengths"
@@ -159,10 +163,11 @@ claims:
     scope: NIST (US federal) approval status; the post-2030 non-signature retirement is in an initial public draft.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
         title: "SP 800-131A Rev. 2: Transitioning the Use of Cryptographic Algorithms and Key Lengths"
@@ -194,14 +199,15 @@ claims:
   - id: claim-sha2-authentication-use
     predicate: used_in_authentication
     value: supported
-    statement: SHA-2 is used throughout authentication protocols. TOTP may use HMAC-SHA-256 or HMAC-SHA-512 instead of HMAC-SHA-1. The common COSE signature identifiers used by WebAuthn and CTAP, such as RS256, PS256 and ESP256, all hash with SHA-256. FIPS 186-5 requires approved hash functions for RSA and ECDSA signatures.
+    statement: "SHA-2 is used throughout authentication standards. TOTP may use HMAC-SHA-256 or HMAC-SHA-512 instead of HMAC-SHA-1. COSE signature identifiers RS256, PS256 and ESP256 all specify SHA-256, and WebAuthn and CTAP use COSE algorithm identifiers for credential algorithm negotiation. FIPS 186-5 requires approved hash functions for RSA and ECDSA signatures."
     scope: Selected authentication standards; not an exhaustive list of where SHA-2 appears.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc6238
         title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
@@ -242,14 +248,15 @@ claims:
   - id: claim-sha2-quantum-impact
     predicate: quantum_resistance
     value: supported
-    statement: NIST considers SHA-2 far less exposed to known quantum attacks than RSA or elliptic-curve cryptography. Its draft transition report puts SHA-256 in post-quantum security category 2 for collision resistance and category 5 for preimage resistance, and proposes no quantum-driven retirement of SHA-256 or larger. Grover's algorithm gives at most a square-root speedup on brute-force search, and NIST expects it to help attackers less than that in practice.
+    statement: "NIST considers SHA-2 significantly less vulnerable to known quantum attacks than RSA or elliptic-curve cryptography. Its draft transition report places SHA-256 in post-quantum security category 2 for collision resistance and category 5 for preimage resistance, and proposes no quantum-driven retirement of SHA-256 or larger. Grover's algorithm provides a theoretical square-root speedup for unstructured search; the cited NIST discussion of smaller practical gains is specifically about brute-force key search against AES."
     scope: NIST's current assessment; the main sources are initial public drafts. That Grover's algorithm halves preimage security in bits is a common reading of the square-root speedup, not a figure NIST states for hashes in these documents.
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
         title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"

@@ -1,4 +1,4 @@
-# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+# Internally reviewed by Chris War (2026-10-03); external review pending.
 schema_version: "1.1"
 taxonomy_version: "1.0.0"
 id: crypto-rsa-signatures
@@ -6,12 +6,12 @@ type: CryptographicPrimitive
 slug: rsa-signatures
 name: RSA signatures (RSASSA-PKCS1-v1_5 and RSASSA-PSS)
 aliases: ["RSA signatures", "RSASSA-PKCS1-v1_5", "RSASSA-PSS", "RS256 (COSE/JOSE)", "PS256 (COSE/JOSE)", "PKCS #1 signatures"]
-summary: The two RSA signature schemes defined in PKCS #1 (RFC 8017) and approved in FIPS 186-5. They are widely used for certificates and some authenticators, need large keys (at least 2048 bits for NIST use), and would be broken by a large-scale quantum computer.
+summary: "The two RSA signature schemes defined in PKCS #1 (RFC 8017) and approved in FIPS 186-5. They are widely used for certificates and some authenticators, need large keys (at least 2048 bits for NIST use), and would be broken by a large-scale quantum computer."
 layer: [crypto]
-status: draft
+status: published
 owner: Chris War
-last_verified_at: null
-next_review_at: null
+last_verified_at: "2026-10-03"
+next_review_at: "2027-04-03"
 body: |
   RSA signatures let the holder of a private key sign data so that anyone with the matching public key can check it. RSA is the oldest public-key signature system still in wide use. It shows up in authentication mainly in certificates (for example the ones that secure web connections and identity documents), in tokens signed by identity providers, and in some security keys and platform authenticators; RSA is also common in TPM-based attestation.
 
@@ -43,14 +43,15 @@ claims:
   - id: claim-rsa-definition
     predicate: definition
     value: supported
-    statement: RFC 8017 (PKCS #1 v2.2) defines two RSA signature schemes with appendix, RSASSA-PSS and RSASSA-PKCS1-v1_5. It requires RSASSA-PSS in new applications and includes RSASSA-PKCS1-v1_5 only for compatibility with existing applications, though no attacks on v1_5 are known.
-    scope: Scheme definitions in PKCS #1 v2.2; RFC 8017 is an Informational RFC.
+    statement: "RFC 8017 (PKCS #1 v2.2) defines two RSA signature schemes: probabilistic RSASSA-PSS and deterministic RSASSA-PKCS1-v1_5. It requires PSS for new applications and retains PKCS1-v1_5 for compatibility."
+    scope: "Scheme definitions and application guidance in RFC 8017 (PKCS #1 v2.2)."
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.rfc-editor.org/rfc/rfc8017
         title: "RFC 8017: PKCS #1: RSA Cryptography Specifications Version 2.2"
@@ -77,18 +78,19 @@ claims:
     scope: NIST approval for US federal use.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
         title: "FIPS 186-5: Digital Signature Standard (DSS)"
         publisher: NIST
         version: FIPS 186-5 (February 3, 2023)
         publication_date: "2023-02-03"
-        locator: Section 5.4 (PKCS #1), items (a)-(h)
-        note: Both PKCS #1 signature schemes are approved with added constraints on key generation, hash or XOF choice, prime count, exponent range, RBG, salt length and DigestInfo parsing.
+        locator: "Section 5.4 (PKCS #1), items (a)-(h)"
+        note: "Both PKCS #1 signature schemes are approved with added constraints on key generation, hash or XOF choice, prime count, exponent range, RBG, salt length and DigestInfo parsing."
         stance: supports
         retrieved_at: "2026-10-03"
   - id: claim-rsa-key-parameters
@@ -98,10 +100,11 @@ claims:
     scope: NIST requirements for US federal use; other regimes may set different minimums.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
         title: "FIPS 186-5: Digital Signature Standard (DSS)"
@@ -128,10 +131,11 @@ claims:
     scope: Classical (non-quantum) attacks. The NIST table of comparable strengths in SP 800-57 Part 1 (Table 2) could not be read; the values here come from SP 800-131A.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
         title: "SP 800-131A Rev. 2: Transitioning the Use of Cryptographic Algorithms and Key Lengths"
@@ -147,7 +151,7 @@ claims:
         publisher: NIST
         version: Initial Public Draft (October 21, 2024)
         publication_date: "2024-10-21"
-        locator: Section 3, RSA (PKCS #1 v1.5 & PSS) signature generation bullets
+        locator: "Section 3, RSA (PKCS #1 v1.5 & PSS) signature generation bullets"
         note: 112 to under 128-bit strength corresponds to 2048 ≤ len(n) < 3072; at least 128-bit strength needs len(n) ≥ 3072.
         stance: supports
         retrieved_at: "2026-10-03"
@@ -176,10 +180,11 @@ claims:
     scope: IANA COSE Algorithms registry as last updated 2026-08-11 and the defining RFCs.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: B
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://www.iana.org/assignments/cose/cose.xhtml
         title: "CBOR Object Signing and Encryption (COSE) registry"
@@ -232,10 +237,11 @@ claims:
     scope: Future large-scale quantum adversary; no claim on when such a computer will exist.
     assumptions: []
     claim_type: fact
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
         title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
@@ -264,10 +270,11 @@ claims:
       - NIST IR 8547 and SP 800-131A Rev. 3 are finalised with the dates in their initial public drafts (as of 2026-10-03 the CSRC pages still list only the drafts, from November 2024 and October 2024).
       - Applies to NIST approval status; other jurisdictions and sectors may set different dates.
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-03"
     evidence:
       - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
         title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
@@ -283,7 +290,7 @@ claims:
         publisher: NIST
         version: Initial Public Draft (October 21, 2024)
         publication_date: "2024-10-21"
-        locator: Section 3, Table 3 and RSA (PKCS #1 v1.5 & PSS) bullets
+        locator: "Section 3, Table 3 and RSA (PKCS #1 v1.5 & PSS) bullets"
         note: Signature generation with 2048 ≤ len(n) < 3072 is acceptable through December 31, 2030 and deprecated after; len(n) ≥ 3072 is acceptable; legacy verification allowed down to 1024 bits.
         stance: supports
         retrieved_at: "2026-10-03"
