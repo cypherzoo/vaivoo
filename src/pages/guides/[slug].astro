@@ -1,0 +1,19 @@
+---
+import Base from '../../layouts/Base.astro';
+export function getStaticPaths() {
+  const preview = process.env.PREVIEW_DRAFTS === '1';
+  return Object.values(import.meta.glob('../../../content/guides/*.md', { eager: true }))
+    .filter(m => m.frontmatter.status === 'published' || (preview && m.frontmatter.status !== 'archived'))
+    .map(m => ({ params: { slug: m.frontmatter.slug }, props: { mod: m } }));
+}
+const { mod } = Astro.props;
+const f = mod.frontmatter;
+const Content = mod.Content;
+---
+<Base title={f.title} description={f.summary}>
+  <p class="meta">Guide {f.status !== 'published' && <span class="pill">{f.status}</span>} · Last reviewed: {f.last_reviewed_at ?? 'not yet reviewed'}</p>
+  <h1>{f.title}</h1>
+  <p><strong>{f.summary}</strong></p>
+  <article class="guide"><Content /></article>
+  <p class="meta">Every factual statement links to a sourced claim (↗). Claims marked "not yet verified" on their entity page have not been approved by a reviewer. <a href="/corrections/">Report a correction</a></p>
+</Base>
