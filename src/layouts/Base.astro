@@ -11,8 +11,8 @@ const { title, description = 'Source-backed reference on digital authentication 
   <meta name="description" content={description} />
   <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
   <style is:global>
-    :root { --bg:#fbfbf9; --fg:#1c1c1a; --muted:#5f5f5a; --line:#e2e1dc; --accent:#2b5bd7; --warn:#a15c00; --ok:#1d7a46; }
-    @media (prefers-color-scheme: dark) { :root { --bg:#141413; --fg:#ecebe6; --muted:#a3a29b; --line:#2e2d2a; --accent:#8fb0ff; --warn:#f0b35a; --ok:#6fd39a; } }
+    :root { --bg:#fbfbf9; --fg:#1c1c1a; --muted:#5f5f5a; --line:#e2e1dc; --accent:#2b5bd7; --warn:#a15c00; --ok:#1d7a46; --bad:#b3261e; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#141413; --fg:#ecebe6; --muted:#a3a29b; --line:#2e2d2a; --accent:#8fb0ff; --warn:#f0b35a; --ok:#6fd39a; --bad:#ff8a80; } }
     * { box-sizing: border-box; }
     body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui, -apple-system, Segoe UI, sans-serif; }
     a { color: var(--accent); }
@@ -26,9 +26,12 @@ const { title, description = 'Source-backed reference on digital authentication 
     th, td { text-align:left; vertical-align:top; padding:8px; border-bottom:1px solid var(--line); }
     .meta { color:var(--muted); font-size:.9rem; }
     .pill { display:inline-block; padding:1px 8px; border:1px solid var(--line); border-radius:999px; font-size:.8rem; }
-    .v-supported { color:var(--ok); } .v-conditional, .v-unknown { color:var(--warn); }
+    .v-supported { color:var(--ok); } .v-conditional, .v-unknown { color:var(--warn); } .v-not_supported { color:var(--bad); }
     .banner { background:var(--warn); color:var(--bg); padding:6px 16px; text-align:center; font-size:.9rem; }
     .table-wrap { overflow-x:auto; }
+    table.cmp th[scope=row] { width:22%; }
+    table.cmp td { min-width:150px; }
+    article.guide a[href*="#claim-"] { text-decoration:none; font-size:.85em; vertical-align:super; }
   </style>
 </head>
 <body>
@@ -38,7 +41,7 @@ const { title, description = 'Source-backed reference on digital authentication 
     <nav>
       <a href="/methods/">Methods</a><a href="/profiles/">Profiles</a><a href="/standards/">Standards</a>
       <a href="/crypto/">Cryptography</a><a href="/identity-systems/">Identity systems</a>
-      <a href="/search/">Search</a><a href="/methodology/">Methodology</a>
+      <a href="/compare/">Compare</a><a href="/guides/">Guides</a><a href="/search/">Search</a><a href="/methodology/">Methodology</a>
     </nav>
   </header>
   <main data-pagefind-body><slot /></main>
