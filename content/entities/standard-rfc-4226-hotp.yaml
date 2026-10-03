@@ -1,0 +1,127 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: standard-rfc-4226-hotp
+type: Standard
+slug: rfc-4226-hotp
+name: RFC 4226 (HOTP)
+aliases: [HOTP specification, "RFC 4226", HMAC-based one-time password]
+summary: "Informational IETF RFC (December 2005) that defines HOTP, an event-counter one-time password algorithm built on HMAC-SHA-1 with dynamic truncation."
+layer: [core, crypto]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  RFC 4226 defines HOTP, the HMAC-based one-time password algorithm. A token and a server share a secret key and a counter. Each new code is computed from the key and the current counter value, and the counter moves forward with every use.
+
+  The RFC covers more than the formula. It also sets out security requirements for deployments, including throttling of failed attempts at the server, a bounded look-ahead window for counter resynchronisation, and how to generate and store shared secrets.
+
+  HOTP is the building block that TOTP (RFC 6238) reuses, with the counter replaced by a time-step count. It was written by members of the Open Authentication initiative and published as an Informational RFC.
+relations:
+  - { predicate: uses_primitive, object_id: crypto-hmac, claim_id: claim-rfc4226-defines-hotp }
+claims:
+  - id: claim-rfc4226-publication-status
+    predicate: publication_status
+    value: supported
+    statement: RFC 4226 was published in December 2005 as an Informational RFC. It does not specify an Internet standard of any kind.
+    scope: Document status as shown on the RFC itself.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc4226
+        title: "RFC 4226: HOTP: An HMAC-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 4226 (December 2005)
+        locator: Document header; Status of This Memo; Abstract
+        note: "Header shows Category: Informational, December 2005; memo says it does not specify an Internet standard; abstract describes a joint OATH effort."
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-rfc4226-defines-hotp
+    predicate: defines
+    value: supported
+    statement: "HOTP(K, C) = Truncate(HMAC-SHA-1(K, C)), where C is an 8-byte counter. Dynamic truncation takes 4 bytes at an offset given by the low 4 bits of the last MAC byte, keeps 31 bits, and reduces modulo 10^Digit."
+    scope: Algorithm definition.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc4226
+        title: "RFC 4226: HOTP: An HMAC-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 4226 (December 2005)
+        locator: Section 5.2 (Description); Section 5.3 (Generating an HOTP Value)
+        note: HOTP uses an increasing counter and static symmetric key with HMAC-SHA-1; dynamic truncation extracts a 31-bit value then reduces it modulo 10^Digit.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc4226
+        title: "RFC 4226: HOTP: An HMAC-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 4226 (December 2005)
+        locator: Section 5.1 (Notation and Symbols)
+        note: C is an 8-byte counter that must be synchronized between client and server; K is a unique shared secret per generator.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-rfc4226-min-digits-and-secret-length
+    predicate: key_parameters
+    value: supported
+    statement: Implementations MUST produce at least a 6-digit code (7 or more digits SHOULD be considered for higher security). The shared secret MUST be at least 128 bits, and 160 bits is RECOMMENDED.
+    scope: Normative parameters of RFC 4226.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc4226
+        title: "RFC 4226: HOTP: An HMAC-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 4226 (December 2005)
+        locator: Section 5.3 (Generating an HOTP Value)
+        note: Implementations MUST extract at least a 6-digit code, possibly 7 or 8; Digit 7 or more SHOULD be considered depending on security needs.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc4226
+        title: "RFC 4226: HOTP: An HMAC-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 4226 (December 2005)
+        locator: "Section 4 (Algorithm Requirements), R4 and R6"
+        note: R4 says HOTP value must be at least 6 digits; R6 requires a shared secret of at least 128 bits and recommends 160 bits.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-rfc4226-throttling
+    predicate: rate_limiting_required
+    value: supported
+    statement: Because truncation makes brute force feasible, RFC 4226 recommends that the server throttle or lock out after a limited number of failed attempts, or add increasing delays. Lockout or delay MUST apply across login sessions.
+    scope: Server-side security requirements of RFC 4226.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc4226
+        title: "RFC 4226: HOTP: An HMAC-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 4226 (December 2005)
+        locator: Section 7.3 (Throttling at the Server)
+        note: Recommends a low throttling parameter T or increasing delay per failure; delay or lockout MUST span login sessions to stop parallel guessing.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc4226
+        title: "RFC 4226: HOTP: An HMAC-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 4226 (December 2005)
+        locator: Section 6 (Security Considerations)
+        note: "Approximates adversary success as Sec = s*v/10^Digit, tunable via look-ahead window s, throttling T and digit count."
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
