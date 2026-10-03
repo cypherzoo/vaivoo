@@ -1,0 +1,223 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: regulation-eidas-2
+type: Regulation
+slug: eidas-2
+name: eIDAS 2 (Regulation (EU) 2024/1183)
+aliases: [eIDAS 2, eIDAS 2.0, Regulation (EU) 2024/1183, European Digital Identity Framework Regulation]
+summary: The 2024 EU regulation that amends eIDAS (910/2014) to create the European Digital Identity Framework, including the European Digital Identity Wallet and duties to accept it.
+layer: [nordic-eu]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  Regulation (EU) 2024/1183 of 11 April 2024 amends the original eIDAS Regulation, (EU) No 910/2014, to set up the European Digital Identity Framework. It was published in the Official Journal on 30 April 2024 and entered into force on 20 May 2024. It is an amending act: the rules apply as part of eIDAS as amended.
+
+  The main new element is the European Digital Identity Wallet (see the EUDI Wallet entry). Each Member State must provide at least one wallet within 24 months after the relevant implementing acts enter into force. A wallet can be provided by the state, under a state mandate, or independently but recognised by the state. Issuing, using and revoking a wallet must be free for natural persons, and the source code of the wallet's application software must be open source, with limited exceptions.
+
+  The Regulation also says who must accept the wallet. Public sector bodies that require electronic identification for an online service must accept it. Larger private relying parties that are required to use strong user authentication, for example in banking, energy, transport, health or telecoms, must accept it within 36 months of the implementing acts, but only when the user chooses to use it. Micro and small enterprises are exempt. Very large online platforms that require login must also accept it at the user's request.
+
+  eIDAS keeps three levels of assurance: low, substantial and high. The detailed criteria are in Commission Implementing Regulation (EU) 2015/1502. The wallet itself must meet the requirements for level high.
+
+  Norway, Iceland and Liechtenstein apply EU internal-market law only after it is added to the EEA Agreement. At retrieval, EFTA's EEA-Lex lists 2024/1183 as under scrutiny for incorporation, with no Joint Committee Decision yet.
+relations: []
+claims:
+  - id: claim-eidas2-entry-into-force
+    predicate: entry_into_force
+    value: supported
+    statement: Regulation (EU) 2024/1183 was adopted on 11 April 2024 and published in OJ L on 30 April 2024. It entered into force on 20 May 2024, the twentieth day after publication, and amends Regulation (EU) No 910/2014.
+    scope: Date the amending act entered into force. Many obligations apply later, depending on implementing acts.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
+        title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
+        publisher: Publications Office of the EU (EUR-Lex)
+        publication_date: 2024-04-30
+        locator: "OJ header (L series 2024/1183, 30.4.2024); title; Article 2 'Entry into force'"
+        note: Act of 11 April 2024 amending 910/2014; enters into force on the twentieth day after OJ publication.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX:32024R1183
+        title: Regulation - EU - 2024/1183 - EUR-Lex (document information)
+        publisher: Publications Office of the EU (EUR-Lex)
+        locator: "Section 'Dates' (Date of document; Date of effect; Date of end of validity)"
+        note: Date of document 11/04/2024, date of effect 20/05/2024 (entry into force, publication + 20 days), no end date; modifies 32014R0910.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eidas2-wallet-provision-deadline
+    predicate: member_state_provision_deadline
+    value: supported
+    statement: Under Article 5a(1), each Member State must provide at least one European Digital Identity Wallet within 24 months of the entry into force of the implementing acts in Article 5a(23) and Article 5c(6). The Regulation required the Commission to adopt both sets of acts by 21 November 2024.
+    scope: Text of 910/2014 as amended by 2024/1183. The calendar deadline depends on when those implementing acts entered into force, which was not checked in the Official Journal here.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
+        title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
+        publisher: Publications Office of the EU (EUR-Lex)
+        publication_date: 2024-04-30
+        locator: "Article 1, inserted Article 5a, paragraphs 1 and 23; inserted Article 5c, paragraph 6"
+        note: Each Member State provides at least one wallet within 24 months of entry into force of the 5a(23) and 5c(6) implementing acts; both are due 'by 21 November 2024'.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eidas2-wallet-provision-models
+    predicate: wallet_provision_models
+    value: supported
+    statement: Under Article 5a(2), wallets may be provided directly by a Member State, under a Member State mandate, or independently of a Member State but recognised by it. Under Article 5a(3), the source code of the wallet's application software must be open source, though Member States may keep specific components other than those installed on user devices undisclosed for duly justified reasons.
+    scope: Legal text of Article 5a(2)-(3).
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
+        title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
+        publisher: Publications Office of the EU (EUR-Lex)
+        publication_date: 2024-04-30
+        locator: "Article 1, inserted Article 5a, paragraphs 2 and 3"
+        note: Lists three ways to provide wallets and the open-source licensing requirement, with a justified exception for components not installed on user devices.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eidas2-free-of-charge
+    predicate: free_of_charge
+    value: supported
+    statement: Under Article 5a(13), issuing, using and revoking European Digital Identity Wallets must be free of charge for all natural persons.
+    scope: Natural persons only. Charges to relying parties or legal persons are not covered by this paragraph.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
+        title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
+        publisher: Publications Office of the EU (EUR-Lex)
+        publication_date: 2024-04-30
+        locator: "Article 1, inserted Article 5a, paragraph 13"
+        note: Issuance, use and revocation of wallets are free of charge to all natural persons.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eidas2-public-sector-acceptance
+    predicate: public_sector_acceptance_obligation
+    value: supported
+    statement: Under Article 5f(1), where Member States require electronic identification and authentication to access an online public sector service, they must also accept European Digital Identity Wallets provided under the Regulation.
+    scope: Online services of public sector bodies. The timing depends on when wallets are provided.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
+        title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
+        publisher: Publications Office of the EU (EUR-Lex)
+        publication_date: 2024-04-30
+        locator: "Article 1, inserted Article 5f 'Cross-border reliance on European Digital Identity Wallets', paragraph 1"
+        note: Public-sector online services that require eID and authentication must also accept compliant wallets.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eidas2-private-rp-acceptance
+    predicate: private_relying_party_acceptance_obligation
+    value: conditional
+    statement: Under Article 5f(2), private relying parties required by Union or national law, or by contract, to use strong user authentication for online identification must accept wallets at the user's voluntary request. This applies in sectors such as transport, energy, banking, financial services, social security, health, drinking water, postal services, digital infrastructure, education and telecoms. The duty starts no later than 36 months after the Article 5a(23) and 5c(6) implementing acts enter into force. Micro and small enterprises are exempt.
+    scope: Private relying parties covered by Article 5f(2). The calendar date depends on when the implementing acts entered into force.
+    assumptions:
+      - Applies only where strong user authentication for online identification is required by law or contract.
+      - Applies only on the user's voluntary request; micro and small enterprises (Recommendation 2003/361/EC) are excluded.
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
+        title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
+        publisher: Publications Office of the EU (EUR-Lex)
+        publication_date: 2024-04-30
+        locator: "Article 1, inserted Article 5f, paragraph 2"
+        note: Sets the acceptance duty for private relying parties, the sector list, the 36-month timing, the voluntary-use condition and the micro/small enterprise exemption.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eidas2-vlop-acceptance
+    predicate: vlop_acceptance_obligation
+    value: conditional
+    statement: Under Article 5f(3), providers of very large online platforms (Article 33 of the Digital Services Act) that require user authentication must accept and facilitate the wallet for user authentication. This applies only at the user's voluntary request and for the minimum data needed for the service.
+    scope: VLOPs designated under Regulation (EU) 2022/2065. No separate date is given in paragraph 3.
+    assumptions:
+      - Applies only where the platform requires user authentication, and only on the user's voluntary request.
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
+        title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
+        publisher: Publications Office of the EU (EUR-Lex)
+        publication_date: 2024-04-30
+        locator: "Article 1, inserted Article 5f, paragraph 3"
+        note: VLOPs that require authentication must accept the wallet at the user's voluntary request, limited to minimum necessary data.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eidas2-assurance-levels
+    predicate: assurance_level
+    value: supported
+    statement: eIDAS as amended keeps the levels of assurance low, substantial and high, with technical specifications in Commission Implementing Regulation (EU) 2015/1502. Article 5a(5)(d) requires wallets to meet the Article 8 requirements for level high, in particular for identity proofing and verification, and for managing electronic identification means and authentication.
+    scope: Article 8(3) as replaced by 2024/1183 and Article 5a(5)(d). Changes to the 2015/1502 annex after 2024 were not checked.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202401183
+        title: Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework
+        publisher: Publications Office of the EU (EUR-Lex)
+        publication_date: 2024-04-30
+        locator: "Article 1, point (8) (Article 8(3) replaced); inserted Article 5a, paragraph 5, point (d)"
+        note: Article 8(3) refers to implementing acts specifying assurance levels low, substantial and high. Wallets must meet Article 8 requirements for level high.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32015R1502
+        title: Commission Implementing Regulation (EU) 2015/1502 of 8 September 2015 on minimum technical specifications and procedures for assurance levels for electronic identification means
+        publisher: Publications Office of the EU (EUR-Lex)
+        publication_date: 2015-09-09
+        locator: "Title and recital 3"
+        note: Sets minimum technical specifications and procedures for assurance levels under Article 8(3) of 910/2014; takes ISO/IEC 29115 into account but differs from it.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-eidas2-eea-incorporation
+    predicate: eea_incorporated
+    value: not_supported
+    statement: At retrieval, Regulation (EU) 2024/1183 had not been incorporated into the EEA Agreement. EFTA's EEA-Lex lists it as an adopted EU act under scrutiny for incorporation by Iceland, Liechtenstein and Norway, with no Joint Committee Decision. Its obligations do not yet bind Norway through the EEA Agreement.
+    scope: Status in the EEA EFTA states (including Norway) on 2026-10-03. EEA-Lex says it is for information only and may not be current.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.efta.int/eea-lex/32024r1183
+        title: Factsheet - 32024R1183 (EEA-Lex)
+        publisher: European Free Trade Association (EFTA)
+        locator: "Section 'Legal status'; 'Area (EEA Agreement)'; 'History'; disclaimer"
+        note: Status is 'Adopted EU legal act under scrutiny for incorporation into the EEA Agreement'. Area XI.IV Information Society Services. History lists only the EU adoption (11.04.2024) and EU compliance date (20.05.2024). EEA-Lex disclaims completeness.
+        stance: supports
+        retrieved_at: 2026-10-03

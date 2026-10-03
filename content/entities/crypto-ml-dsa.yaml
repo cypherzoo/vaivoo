@@ -192,9 +192,9 @@ claims:
         retrieved_at: "2026-10-03"
   - id: claim-ml-dsa-cose-webauthn-support
     predicate: protocol_support
-    value: unknown
-    statement: We could not verify whether final COSE algorithm identifiers for ML-DSA have been registered, or whether WebAuthn Level 3 names any ML-DSA algorithm. The IETF draft for ML-DSA in JOSE and COSE requests values -48, -49 and -50, still marked TBD.
-    scope: COSE/JOSE identifiers and WebAuthn support at retrieval; IANA registry and full WebAuthn text were not retrievable.
+    value: supported
+    statement: "ML-DSA has standard COSE algorithm identifiers: RFC 9964 (May 2026) registers ML-DSA-44, ML-DSA-65 and ML-DSA-87 as -48, -49 and -50. COSE identifiers are how WebAuthn names signature algorithms, but having an identifier does not mean browsers or authenticators support it."
+    scope: COSE/JOSE algorithm registration only. Support in WebAuthn implementations and authenticators is not assessed.
     assumptions: []
     claim_type: fact
     status: proposed
@@ -202,11 +202,19 @@ claims:
     reviewed_by: []
     reviewed_at: null
     evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc9964
+        title: "RFC 9964: ML-DSA for JSON Object Signing and Encryption (JOSE) and CBOR Object Signing and Encryption (COSE)"
+        publisher: IETF
+        version: RFC 9964 (Proposed Standard, May 2026)
+        locator: Section 8.1.1 (COSE Algorithms registrations, 8.1.1.1 to 8.1.1.3)
+        note: Registers ML-DSA-44 as -48, ML-DSA-65 as -49 and ML-DSA-87 as -50 in the IANA COSE Algorithms registry.
+        stance: supports
+        retrieved_at: "2026-10-03"
       - url: https://www.ietf.org/archive/id/draft-ietf-cose-dilithium-11.txt
         title: "ML-DSA for JOSE and COSE (draft-ietf-cose-dilithium-11)"
         publisher: IETF COSE Working Group
-        version: Internet-Draft -11 (15 November 2025, expires 19 May 2026)
+        version: Internet-Draft -11 (15 November 2025)
         locator: Section 8.1.1 (New COSE Algorithms)
-        note: Asks IANA for ML-DSA-44/65/87 with "Value TBD (requested assignment -48/-49/-50)"; a work in progress, not an RFC.
+        note: Earlier draft that requested -48/-49/-50 as TBD values; superseded by RFC 9964.
         stance: contextualizes
         retrieved_at: "2026-10-03"

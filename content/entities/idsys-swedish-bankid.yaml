@@ -1,0 +1,268 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: idsys-swedish-bankid
+type: IdentitySystem
+slug: swedish-bankid
+name: Swedish BankID
+aliases: [BankID (Sweden), Svenskt BankID, Mobilt BankID, BankID på fil, BankID på kort]
+summary: Sweden's most widely used electronic ID, issued by Swedish banks and run by Finansiell ID-Teknik BID AB, used to identify and sign at companies and public authorities.
+layer: [nordic-eu]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  Swedish BankID is a personal electronic ID used in Sweden to identify yourself and sign online, at banks, companies and public authorities. It is run by Finansiell ID-Teknik BID AB. The company was set up in September 2002 by a group of major Swedish banks, and the first BankID was issued in 2003. Swedish BankID is a different scheme from Norwegian BankID.
+
+  You get BankID from your bank, not from the operator. You need a Swedish personal identity number, you must be a customer of an issuing bank, and you must be identified with a valid ID document. The bank sets the age limit. The operator lists the banks that issue it.
+
+  BankID comes in three forms: Mobile BankID (an app on a phone or tablet), BankID on file (software on a computer) and BankID on card (a smart card). Sweden's Agency for Digital Government (Digg) has approved all three under its trust framework for Swedish e-ID at Swedish level of assurance 3. Digg says level 3 corresponds to the eIDAS level "substantial". Digg also lists the three forms as notified to the EU at level substantial, but the European Commission's own overview marks only Freja eID as notified among the Swedish means. A reviewer should resolve this.
+
+  Services connect to BankID through the operator's web API (the "RP API"). A service first needs an agreement with a bank that resells BankID, and a client certificate ordered from that bank. When the user is on another device, the service shows an animated QR code. The code changes every second, and the operator says this makes remote fraud harder. Other e-IDs used in Sweden, such as Freja, are not covered here.
+crypto: |
+  Animated QR code: each QR frame carries the string "bankid.qrStartToken.time.qrAuthCode". The qrAuthCode is HMAC-SHA256 over the number of seconds since the order started, keyed with a qrStartSecret. The service backend receives the secret from the BankID API and must not send it to the browser. The operator says the code should be regenerated every second and that an order is valid for 30 seconds.
+
+  PKI: relying parties authenticate to the API with an organisation certificate. They create a key pair and certificate request with the operator's Keygen tool and get the certificate issued by their bank. Signatures returned by the service include the user's certificate, the intermediate CA certificates and an OCSP response. The operator says it has already verified them, and documents how a relying party can re-verify the chain to its self-signed root. In the sample proof of identity for the digital ID card check, the signature is XAdES (ETSI TS 103 171 B-B) with RSA-SHA256. The sources reviewed do not say where users' private keys are stored on phones, computers or cards, or which algorithms user keys use.
+relations:
+  - predicate: regulated_by
+    object_id: regulation-eidas-2
+    claim_id: claim-swedish-bankid-eidas-notification
+    note: eIDAS notification and cross-border recognition fall under Regulation (EU) No 910/2014 as amended by (EU) 2024/1183; Digg cites 2024/1183 for the recognition duty.
+claims:
+  - id: claim-swedish-bankid-operator
+    predicate: operated_by
+    value: supported
+    statement: Swedish BankID is operated by Finansiell ID-Teknik BID AB. The company was set up in September 2002 by a consortium of major Swedish banks, and the first BankID was issued in 2003.
+    scope: Operator and origin. Who owns the company today was not checked; the operator's history page only says SEB bought 18.3% in January 2008.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.digg.se/digitala-tjanster/e-legitimering/om-e-legitimering/godkanda-e-legitimationer-och-intygsfunktioner
+        title: Godkända e-legitimationer och intygsfunktioner
+        publisher: Myndigheten för digital förvaltning (Digg)
+        version: Last updated 2026-09-22
+        locator: "Table 'Godkända e-legitimationer på tillitsnivå 3', rows 'BankID på fil', 'BankID på kort', 'Mobilt BankID' (column 'Utfärdare')"
+        note: (Swedish) Names Finansiell ID-Teknik BID AB as issuer of all three BankID forms.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.bankid.com/en/about-us/history
+        title: Our history - BankID
+        publisher: Finansiell ID-Teknik BID AB (bankid.com)
+        locator: "Opening section and 'The first eID is issued'; 'Almost everyone know us' (SEB shareholding)"
+        note: A consortium of major Swedish banks set up Finansiell ID-Teknik BID in September 2002; the first BankID was issued in 2003; SEB bought 18.3% in 2008.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-swedish-bankid-issued-by-banks
+    predicate: identity_proofing_by_issuing_bank
+    value: supported
+    statement: Users get Swedish BankID from their bank. They need a Swedish personal identity number, must be a customer of an issuing bank, and must be identified with a valid ID document. The bank sets the age limit, usually 13 or 18.
+    scope: Issuance to private individuals as described by the operator. The banks' own proofing procedures were not reviewed.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.bankid.com/en/individuals/get-bankid
+        title: Get BankID - BankID
+        publisher: Finansiell ID-Teknik BID AB (bankid.com)
+        locator: "Sections 'Who can get a BankID', 'Order BankID from your bank', 'Digital verification of your identity' and list 'BankID is available here'"
+        note: Requires a Swedish personal number, a customer relationship with an issuing bank and a valid ID document; banks set the age limit; ten issuing banks are listed; some banks support remote ID verification by reading the passport or ID card chip.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-swedish-bankid-authenticator-forms
+    predicate: authenticator_forms
+    value: supported
+    statement: Swedish BankID comes as Mobile BankID (an app on iOS 16+ or Android 9+), BankID on file (computer software) and BankID on card (smart card). BankID on file and card run on Windows and macOS.
+    scope: Forms and platform requirements as published at retrieval. Requirements change often.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://developers.bankid.com/getting-started/introduction
+        title: Introduction - BankID Developers
+        publisher: Finansiell ID-Teknik BID AB (developers.bankid.com)
+        locator: "Section 'Client platforms and system requirements' (Mobile BankID; BankID on file and card)"
+        note: Mobile BankID on iOS 16+ and Android 9+; BankID on file and card on Windows 10+ and macOS 10.15+.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.digg.se/digitala-tjanster/e-legitimering/om-e-legitimering/godkanda-e-legitimationer-och-intygsfunktioner
+        title: Godkända e-legitimationer och intygsfunktioner
+        publisher: Myndigheten för digital förvaltning (Digg)
+        version: Last updated 2026-09-22
+        locator: "Table 'Godkända e-legitimationer på tillitsnivå 3'"
+        note: (Swedish) Lists three approved BankID forms, 'BankID på fil', 'BankID på kort' and 'Mobilt BankID', all obtained privately.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-swedish-bankid-assurance-level
+    predicate: assurance_level
+    value: supported
+    statement: Digg has approved all three BankID forms under the Trust Framework for Swedish e-ID (Tillitsramverket för Svensk e-legitimation) at Swedish level of assurance 3. Digg states that level 3 corresponds to eIDAS level "substantial". BankID is not listed at level 4.
+    scope: Swedish national approval by Digg at retrieval. This is separate from EU notification; see claim-swedish-bankid-eidas-notification.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.digg.se/digitala-tjanster/e-legitimering/om-e-legitimering/godkanda-e-legitimationer-och-intygsfunktioner
+        title: Godkända e-legitimationer och intygsfunktioner
+        publisher: Myndigheten för digital förvaltning (Digg)
+        version: Last updated 2026-09-22
+        locator: "Tables 'Godkända e-legitimationer på tillitsnivå 3' and 'Godkända e-legitimationer på tillitsnivå 4'"
+        note: (Swedish) The three BankID forms appear at level 3, each with a reviewed attestation function. The level 4 table lists only AB Svenska Pass, EFOS and Sverige-id.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.digg.se/digitala-tjanster/e-legitimering/om-e-legitimering/tillitsnivaer-for-e-legitimering
+        title: Tillitsnivåer för e-legitimering
+        publisher: Myndigheten för digital förvaltning (Digg)
+        version: Last updated 2026-09-22
+        locator: "Sections 'Svenska tillitsnivåer' and 'Tillitsnivåer enligt eIDAS'"
+        note: (Swedish) The Swedish framework has levels 2 to 4. eIDAS 'substantial' corresponds to Swedish level 3, and 'high' is comparable to level 4.
+        stance: contextualizes
+        retrieved_at: 2026-10-03
+  - id: claim-swedish-bankid-eidas-notification
+    predicate: eidas_notified
+    value: conditional
+    statement: Sweden's eID scheme "Swedish eID (Svensk elegitimation)" is NOTIFIED under eIDAS, with BankID listed among its means. However, the Commission's page marks only Freja eID as "(Notified)". Digg lists BankID on file, BankID on card and Mobile BankID as notified at level substantial. The two primary sources disagree on whether BankID itself is notified.
+    scope: eIDAS cross-border notification status at retrieval. Scheme-level status is clear; whether BankID as a means is notified is disputed between sources.
+    assumptions:
+      - "The Commission overview annotation 'Freja eID (Notified)' may mean only Freja appeared in the Official Journal notice 2022/C 78 I/02; that notice was not retrieved."
+      - Digg's list may reflect a later notification or a supplement that the Commission page has not yet reflected.
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/48762251/Overview+of+pre-notified+and+notified+eID+schemes+under+eIDAS
+        title: Overview of pre-notified and notified eID schemes under eIDAS - eID User Community
+        publisher: European Commission (eID User Community)
+        version: Last updated 2026-02-02
+        locator: "Table row 'Sweden' (columns Title of the scheme, Level of assurance, eID means under the scheme, Status, Date, OJEU)"
+        note: "Lists The Kingdom of Sweden, scheme 'Swedish eID (Svensk elegitimation)', LoA Substantial and High, means 'BankID / Freja eID (Notified) / EFOS', status NOTIFIED, 14 Dec 2020, OJEU 2022/C 78 I/02."
+        stance: contextualizes
+        retrieved_at: 2026-10-03
+      - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/346031450/Sweden
+        title: Sweden - eID User Community
+        publisher: European Commission (eID User Community)
+        version: Last updated 2022-03-08 (page version 14)
+        locator: "Details table (rows 'eID means under the scheme', 'Date of Opinion of the CN', 'Date of Publication to the official journal')"
+        note: Same means list with only Freja eID marked notified; pre-notification 14 Dec 2020; Cooperation Network opinion 27 Sept 2021; Official Journal publication 18 Feb 2022.
+        stance: contradicts
+        retrieved_at: 2026-10-03
+      - url: https://www.digg.se/digitala-tjanster/e-legitimering/om-e-legitimering/godkanda-e-legitimationer-och-intygsfunktioner
+        title: Godkända e-legitimationer och intygsfunktioner
+        publisher: Myndigheten för digital förvaltning (Digg)
+        version: Last updated 2026-09-22
+        locator: "Section 'E-legitimationer som är anmälda enligt eIDAS', table 'Godkända e-legitimationer för användning i utländska e-tjänster (eIDAS)'"
+        note: (Swedish) Lists BankID på fil, BankID på kort and Mobilt BankID (issuer Finansiell ID-Teknik BID AB) as notified to the EU at level substantial, plus Freja+ obtained via ATG agents.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-swedish-bankid-rp-integration
+    predicate: relying_party_integration
+    value: supported
+    statement: Relying parties need an agreement with a reseller bank and an organisation certificate ordered from that bank. With these they call the BankID RP API (version 6) for /auth, /sign, /payment, phone variants, /collect and /cancel. The API needs HTTP/1.1 and TLS 1.2 or 1.3.
+    scope: Operator developer documentation at retrieval. RP API 5.0 and 5.1 are discontinued according to the operator's news index.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://developers.bankid.com/api-references/auth--sign/overview
+        title: API overview - BankID Developers
+        publisher: Finansiell ID-Teknik BID AB (developers.bankid.com)
+        locator: "Sections 'You need an agreement and a certificate', 'Endpoints with descriptions' and 'Breaking changes resulting in new versions'"
+        note: API reachable only with a valid certificate from the agreement bank; lists endpoints; v6.0 (May 2023) requires HTTP/1.1 and TLS 1.2/1.3.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://developers.bankid.com/getting-started/order-certificate/request-a-certificate
+        title: Request a certificate - BankID Developers
+        publisher: Finansiell ID-Teknik BID AB (developers.bankid.com)
+        locator: "Sections 'BankID Keygen', 'Enter information' and 'Send request'"
+        note: The organisation generates a private key and a PKCS#10 request with Keygen, sends only the request to its bank, and builds a PKCS#12 file from the issued certificate.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://developers.bankid.com/getting-started/introduction
+        title: Introduction - BankID Developers
+        publisher: Finansiell ID-Teknik BID AB (developers.bankid.com)
+        locator: Opening paragraph and the list under it
+        note: An agreement with a reseller bank is needed, plus a certificate from that bank, a backend and a frontend.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-swedish-bankid-animated-qr
+    predicate: animated_qr_code
+    value: supported
+    statement: When the user is on another device, the service must show an animated QR code. The code is regenerated every second, and each frame includes an HMAC-SHA256 code over the elapsed seconds, keyed with a secret that stays on the service backend. The operator says this makes remote fraud more difficult.
+    scope: Two-device (QR) flow. Same-device logins use autostart instead.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://developers.bankid.com/how-to-guides/qr-code
+        title: QR code - BankID Developers
+        publisher: Finansiell ID-Teknik BID AB (developers.bankid.com)
+        locator: "Sections 'Animation and timings' and 'QR code generation'"
+        note: Update the QR code every second and do not pre-generate it; an order is valid for 30 seconds; qrAuthCode = HMAC-SHA256(qrStartSecret, time); keep qrStartSecret off the frontend; animation makes remote fraud harder.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://developers.bankid.com/api-references/auth--sign/overview
+        title: API overview - BankID Developers
+        publisher: Finansiell ID-Teknik BID AB (developers.bankid.com)
+        locator: "Section 'When to use QR code and autostart'"
+        note: Autostart is used when the app is on the same device; an animated QR code must be shown when the service runs on another device.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-swedish-bankid-phishing-resistance
+    predicate: phishing_resistance
+    value: unknown
+    statement: No primary source reviewed says Swedish BankID is phishing-resistant. The operator presents the animated QR code as making remote fraud more difficult, not impossible. It does not say the protocol binds the login to the relying party's origin.
+    scope: All BankID forms. This is an interpretation of what the sources reviewed do and do not claim.
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://developers.bankid.com/how-to-guides/qr-code
+        title: QR code - BankID Developers
+        publisher: Finansiell ID-Teknik BID AB (developers.bankid.com)
+        locator: "Section 'Animation and timings'"
+        note: Wording is limited to making remote fraud more difficult; no phishing-resistance claim.
+        stance: contextualizes
+        retrieved_at: 2026-10-03
+  - id: claim-swedish-bankid-pki
+    predicate: uses_pki_certificates
+    value: supported
+    statement: BankID uses X.509 PKI. Relying parties hold organisation certificates for API access. Signatures returned to relying parties include the user's certificate, intermediate CA certificates and an OCSP response, which can be verified up to the operator's self-signed root.
+    scope: Auth and sign signatures per developer documentation. Algorithms and key storage for user keys are not stated in the pages reviewed.
+    assumptions: []
+    claim_type: vendor_claim
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://developers.bankid.com/how-to-guides/verifying-signatures
+        title: Verifying signatures - BankID Developers
+        publisher: Finansiell ID-Teknik BID AB (developers.bankid.com)
+        locator: "Section 'Auth and sign' (list 'To verify a signature' and 'How to verify')"
+        note: The service already verifies signatures and certificates. For re-verification it lists the user and intermediate CA certificates in the signature, the OCSP response, and a self-signed root available on request; steps include checking the OCSP nonce against the signature digest.
+        stance: supports
+        retrieved_at: 2026-10-03

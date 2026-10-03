@@ -1,0 +1,227 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: protocol-saml-2
+type: Protocol
+slug: saml-2
+name: SAML 2.0 Web Browser SSO
+aliases: ["SAML 2.0", "SAML", "Security Assertion Markup Language 2.0", "SAML V2.0 Web Browser SSO Profile"]
+summary: "An OASIS standard (March 2005) for federated single sign-on. A service provider sends the user's browser to an identity provider, which authenticates the user and returns a signed XML assertion saying who the user is and how and when they were authenticated."
+layer: [core]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  SAML (Security Assertion Markup Language) 2.0 is a set of OASIS specifications for exchanging security statements, called assertions, between organisations. Its most common use is web single sign-on: a user who visits a service provider (SP) is sent to an identity provider (IdP), signs in there, and comes back with an assertion that the SP accepts instead of running its own login.
+
+  The Web Browser SSO Profile describes this flow. The SP issues an AuthnRequest, the browser carries it to the IdP, the IdP identifies the user, and the IdP returns a Response containing at least one assertion with an authentication statement. The Response travels back through the browser, usually as an HTML form POST, or is fetched by the SP directly using an artifact.
+
+  SAML does not say how the IdP authenticates the user. The profile leaves that "outside the scope" of SAML: the IdP may ask for a password, a security key, a national eID, or reuse an existing session. What SAML carries is the result, including an AuthnContext element that names the kind of authentication used, so the SP can decide whether it is strong enough.
+
+  Because the assertion passes through the user's browser, the SP must check it carefully: the signature, the intended recipient URL, the audience, the time window, the link to its own request, and that the same assertion has not been used before. Weak handling of XML signatures has historically been the biggest source of SAML vulnerabilities, in particular XML Signature Wrapping, where an attacker moves signed content around so the signature still verifies but the application reads attacker-supplied data.
+crypto: |
+  Integrity and origin of SAML messages rest on XML Signature (XML-DSig). An IdP signs the assertion (or the whole Response) with its private key, and the SP verifies it with the IdP's public key, normally obtained from SAML metadata or another pre-established trust relationship. A PKI is recommended but not mandated.
+
+  When the Response is delivered through the browser with the HTTP POST binding, the assertions must be signed. With the HTTP Artifact binding, the SP retrieves the message over a back channel that must be mutually authenticated, integrity protected and confidential, so signing is optional there. XML Encryption can additionally hide assertion contents from the browser.
+
+  XML-DSig verification is complex: the verifier resolves references, applies transforms and canonicalisation, and only then checks the signature value. If the code that verifies the signature and the code that reads the assertion look at different elements, an attacker can wrap a forged assertion around a genuinely signed one. Robust implementations process only the exact element that was covered by the verified signature.
+relations:
+  - predicate: alternative_to
+    object_id: protocol-openid-connect
+    note: Both are federation protocols that convey an identity provider's authentication result to a relying party; OpenID Connect uses JSON/JWS tokens on top of OAuth 2.0, SAML uses signed XML assertions.
+claims:
+  - id: claim-saml-publication-status
+    predicate: publication_status
+    value: supported
+    statement: "SAML V2.0 is an OASIS Standard. The core (assertions and protocols) and profiles documents are dated 15 March 2005; the other documents of the set (bindings, metadata, security considerations) are cited by OASIS as March 2005."
+    scope: Document status of the SAML V2.0 specification set as shown on the OASIS documents at retrieval time. Errata composites published later are not assessed.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf
+        title: Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0
+        publisher: OASIS
+        version: "OASIS Standard, 15 March 2005 (saml-profiles-2.0-os)"
+        publication_date: "2005-03-15"
+        locator: "Title page and Status section; page footer \"saml-profiles-2.0-os 15 March 2005\""
+        note: Title page marks the document an OASIS Standard dated 15 March 2005, produced by the Security Services Technical Committee.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf
+        title: Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0
+        publisher: OASIS
+        version: "OASIS Standard, 15 March 2005 (saml-core-2.0-os)"
+        publication_date: "2005-03-15"
+        locator: "Title page; page footer \"saml-core-2.0-os 15 March 2005\""
+        note: The core specification carries the same OASIS Standard designation and date.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html
+        title: Security Assertion Markup Language (SAML) V2.0 Technical Overview
+        publisher: OASIS
+        version: "Committee Draft 02, 25 March 2008"
+        publication_date: "2008-03-25"
+        locator: "References section ([SAMLBind], [SAMLCore], [SAMLMeta], [SAMLSec] entries)"
+        note: Lists saml-bindings-2.0-os, saml-core-2.0-os, saml-metadata-2.0-os and saml-sec-consider-2.0-os as OASIS SSTC, March 2005.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-saml-web-sso-definition
+    predicate: defines
+    value: supported
+    statement: "The SAML 2.0 Web Browser SSO Profile defines how a service provider sends an AuthnRequest through the user's browser to an identity provider, which returns a Response containing at least one assertion with an authentication statement that the service provider uses to establish a security context for the user."
+    scope: Web Browser SSO Profile (urn:oasis:names:tc:SAML:2.0:profiles:SSO:browser) using the HTTP Redirect, POST and Artifact bindings.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf
+        title: Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0
+        publisher: OASIS
+        version: "OASIS Standard, 15 March 2005 (saml-profiles-2.0-os)"
+        publication_date: "2005-03-15"
+        locator: "§4.1 Web Browser SSO Profile (introduction); §4.1.2 Profile Overview; §4.1.4.2 <Response> Usage"
+        note: Describes the SP-to-IdP AuthnRequest, IdP response with assertions, and the requirement that the assertion set contain at least one AuthnStatement reflecting authentication of the principal to the IdP.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-saml-authentication-method-out-of-scope
+    predicate: specifies_authentication_method
+    value: not_supported
+    statement: "SAML does not specify how the identity provider authenticates the user. The Web Browser SSO Profile leaves identification of the principal to means outside its scope, and the identity provider may use any method subject to the service provider's requested authentication context. SAML is therefore a federation protocol, not an authenticator."
+    scope: "Web Browser SSO Profile. The \"federation protocol, not an authenticator\" framing is an editorial interpretation of the cited text."
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf
+        title: Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0
+        publisher: OASIS
+        version: "OASIS Standard, 15 March 2005 (saml-profiles-2.0-os)"
+        publication_date: "2005-03-15"
+        locator: "§4.1 (introductory text); §4.1.2 step 4 \"Identity Provider identifies Principal\""
+        note: The user is assumed to authenticate to the IdP by means outside the scope of SAML; step 4 identifies the principal by means outside the profile, possibly reusing an existing session.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf
+        title: Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0
+        publisher: OASIS
+        version: "OASIS Standard, 15 March 2005 (saml-profiles-2.0-os)"
+        publication_date: "2005-03-15"
+        locator: "§4.1.3.4 Identity Provider Identifies Principal"
+        note: The IdP may use any means to authenticate the user agent, subject to RequestedAuthnContext; ForceAuthn obliges fresh authentication instead of reusing a session.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-saml-authn-context
+    predicate: conveys_authentication_context
+    value: supported
+    statement: "Every SAML authentication statement carries a required AuthnContext element describing the context of the authentication event, by an authentication context class reference, a declaration (or declaration reference), or both. The service provider can request a context with RequestedAuthnContext."
+    scope: What the assertion can express; it does not guarantee the identity provider's statement is accurate, nor that the service provider checks it.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf
+        title: Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0
+        publisher: OASIS
+        version: "OASIS Standard, 15 March 2005 (saml-core-2.0-os)"
+        publication_date: "2005-03-15"
+        locator: "§2.7.2 Element <AuthnStatement> (AuthnContext [Required]); §2.7.2.2 Element <AuthnContext>"
+        note: AuthnStatement asserts the subject was authenticated by a particular means at a particular time; AuthnContext is required and holds a class reference and/or a declaration.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf
+        title: Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0
+        publisher: OASIS
+        version: "OASIS Standard, 15 March 2005 (saml-profiles-2.0-os)"
+        publication_date: "2005-03-15"
+        locator: "§4.1.3.4 Identity Provider Identifies Principal"
+        note: IdP authentication choice is subject to requirements in the AuthnRequest's RequestedAuthnContext element.
+        stance: contextualizes
+        retrieved_at: 2026-10-03
+  - id: claim-saml-post-assertion-signing
+    predicate: assertion_signing_required
+    value: conditional
+    statement: "When the Response is delivered through the browser with the HTTP POST binding, the enclosed assertions must be signed with XML Signature. With the HTTP Artifact binding signing is optional, because the artifact must be dereferenced over a mutually authenticated, integrity-protected and confidential channel. Service providers must verify any signatures present."
+    scope: Web Browser SSO Profile message integrity; depends on the binding used.
+    assumptions:
+      - The service provider holds the identity provider's correct verification key (e.g. from metadata).
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf
+        title: Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0
+        publisher: OASIS
+        version: "OASIS Standard, 15 March 2005 (saml-profiles-2.0-os)"
+        publication_date: "2005-03-15"
+        locator: "§4.1.3.5; §4.1.4.3 <Response> Message Processing Rules (first bullet); §4.1.4.4; §4.1.4.5 POST-Specific Processing Rules"
+        note: Assertions MUST be signed with HTTP POST and MAY be signed with Artifact; artifact resolution must be mutually authenticated, integrity protected and confidential; SP must verify signatures present.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-saml-bearer-replay
+    predicate: replay_mitigation
+    value: conditional
+    statement: "SAML Web SSO assertions are bearer tokens. The profile requires the service provider to check the Recipient URL, the NotOnOrAfter delivery window, the InResponseTo link to its own request and the Audience, and, with the POST binding, to keep a cache of used assertion IDs so bearer assertions are not replayed. Protection depends on the service provider performing these checks."
+    scope: Replay and misdirection of assertions at the service provider; does not cover theft of the IdP session or the user's credentials.
+    assumptions:
+      - The service provider implements all processing rules in §4.1.4.3 and §4.1.4.5.
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf
+        title: Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0
+        publisher: OASIS
+        version: "OASIS Standard, 15 March 2005 (saml-profiles-2.0-os)"
+        publication_date: "2005-03-15"
+        locator: "§4.1.4.2 <Response> Usage (bearer SubjectConfirmation, Recipient, NotOnOrAfter, InResponseTo, AudienceRestriction); §4.1.4.3; §4.1.4.5"
+        note: Bearer confirmation is mandated with Recipient and NotOnOrAfter; SP must verify these and InResponseTo; with POST the SP must track used IDs for the validity window to prevent replay.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-saml-xml-signature-wrapping
+    predicate: xml_signature_wrapping_risk
+    value: supported
+    statement: "SAML relies on XML Signature, whose verification is considerably more complex than traditional signature formats. Academic analysis showed that XML Signature Wrapping lets an attacker insert forged assertion content while the original signature still verifies; 11 of 14 analysed SAML frameworks were found vulnerable in 2012. Correct implementations must ensure the application processes only the content covered by the verified signature."
+    scope: Implementation-level risk in service providers' signature verification and assertion processing; not a flaw in the cryptographic signature algorithm itself. Findings date from 2012 and do not describe current implementations.
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.usenix.org/conference/usenixsecurity12/technical-sessions/presentation/somorovsky
+        title: "On Breaking SAML: Be Whoever You Want to Be"
+        publisher: USENIX Association (21st USENIX Security Symposium)
+        version: "Proceedings of USENIX Security 12, pp. 397-412"
+        publication_date: "2012-08"
+        locator: "Abstract"
+        note: XML Signature verification is more complex than PKCS#7-style formats; XSW attacks circumvent integrity protection under a weak adversary model; 11 of 14 analysed SAML frameworks had critical XSW flaws; countermeasures derived from information flow between verification and processing components.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html
+        title: Security Assertion Markup Language (SAML) V2.0 Technical Overview
+        publisher: OASIS
+        version: "Committee Draft 02, 25 March 2008"
+        publication_date: "2008-03-25"
+        locator: "§4.6 Security in SAML"
+        note: Non-normative overview stating that responses delivered via the browser must be signed with XML Signature for integrity, and that trust typically relies on a pre-existing PKI-based relationship.
+        stance: contextualizes
+        retrieved_at: 2026-10-03

@@ -1,0 +1,271 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: crypto-sha-2
+type: CryptographicPrimitive
+slug: sha-2
+name: SHA-2 hash functions (FIPS 180-4)
+aliases: ["SHA-2", "SHA-256", "SHA-384", "SHA-512", "SHA-224", "SHA-512/256", "Secure Hash Standard"]
+summary: The family of cryptographic hash functions specified in NIST FIPS 180-4 (SHA-224, SHA-256, SHA-384, SHA-512, SHA-512/224, SHA-512/256). SHA-2 sits underneath most authentication cryptography, from HMAC-based one-time passwords to RSA and ECDSA signatures, and NIST does not expect quantum computers to force a move away from SHA-256 and larger.
+layer: [crypto]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  A hash function turns any amount of data into a short, fixed-size fingerprint. A good cryptographic hash makes it practically impossible to find two inputs with the same fingerprint, or to work backwards from a fingerprint to an input. SHA-2 is the family of hash functions that NIST standardised for this job. Its best-known member, SHA-256, produces a 256-bit (32-byte) fingerprint.
+
+  In authentication, SHA-2 is almost everywhere but rarely visible. Digital signatures (RSA, ECDSA) sign a SHA-2 hash of the data rather than the data itself; the COSE algorithm names RS256, PS256 and ES256 all mean "with SHA-256". One-time password apps may use HMAC with SHA-256 or SHA-512 instead of the original SHA-1. Key derivation and random number generation also commonly use SHA-2.
+
+  Its predecessor, SHA-1, is no longer allowed by NIST for creating new digital signatures, because collisions are much easier to find. NIST's draft rules would also retire the shortest SHA-2 variants (224-bit output) after 2030. SHA-256 and longer remain acceptable for all uses. Quantum computers are not expected to break SHA-2 the way they would break RSA or elliptic curves: NIST considers SHA-256 to meet its post-quantum security categories.
+crypto: |
+  Construction: all SHA-2 functions are iterative one-way hash functions that process the message in fixed-size blocks (FIPS 180-4 Section 1). SHA-224 and SHA-256 work on 32-bit words and 512-bit blocks; SHA-384, SHA-512, SHA-512/224 and SHA-512/256 work on 64-bit words and 1024-bit blocks.
+
+  Properties (FIPS 180-4 Figure 1; SP 800-107 Rev. 1 Table 1), as message limit / block / word / digest in bits, then collision / preimage strength in bits:
+  - SHA-224: < 2^64 / 512 / 32 / 224; 112 / 224
+  - SHA-256: < 2^64 / 512 / 32 / 256; 128 / 256
+  - SHA-384: < 2^128 / 1024 / 64 / 384; 192 / 384
+  - SHA-512: < 2^128 / 1024 / 64 / 512; 256 / 512
+  - SHA-512/224: < 2^128 / 1024 / 64 / 224; 112 / 224
+  - SHA-512/256: < 2^128 / 1024 / 64 / 256; 128 / 256
+  (SHA-1 for comparison: 160-bit digest, collision strength < 80 bits.)
+
+  Which strength matters depends on use. For digital signatures over data that has not been preprocessed, the relevant figure is generally collision resistance (SP 800-107 Rev. 1 Section 5.2). For HMAC, preimage resistance and the key matter more. SP 800-107 Rev. 1 notes that SHA-1 still gives the 112 bits of preimage resistance HMAC needs for 112-bit security, even though it is unfit for signatures.
+
+  Quantum: Grover's algorithm gives roughly a square-root speedup for brute-force search (SP 800-131A Rev. 3 ipd, Appendix A, discussed for AES). NIST IR 8547 (ipd) Table 7 still places SHA-256 in post-quantum category 2 for collisions and category 5 for preimages, and says NIST-approved symmetric primitives with at least 128-bit classical security meet at least category 1.
+claims:
+  - id: claim-sha2-publication-status
+    predicate: publication_status
+    value: supported
+    statement: The SHA-2 family is specified in FIPS 180-4, Secure Hash Standard, published in August 2015. In March 2023 NIST announced that it would revise FIPS 180-4; at retrieval no successor was listed.
+    scope: Standard status at retrieval.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://csrc.nist.gov/pubs/fips/180-4/upd1/final
+        title: "FIPS 180-4: Secure Hash Standard (SHS) (landing page)"
+        publisher: NIST
+        version: Page as retrieved 2026-10-03
+        locator: Date Published; Planning Note (03/07/2023); Document History
+        note: Published August 2015 (supersedes the March 2012 edition); planning note says NIST has decided to revise FIPS 180-4; history lists only 08/04/15 final.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf
+        title: "FIPS 180-4: Secure Hash Standard (SHS)"
+        publisher: NIST
+        version: FIPS 180-4 (August 2015)
+        publication_date: "2015-08"
+        locator: Section 1 (Introduction)
+        note: Specifies SHA-1, SHA-224, SHA-256, SHA-384, SHA-512, SHA-512/224 and SHA-512/256 as iterative one-way hash functions.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-sha2-output-sizes
+    predicate: parameter_sets
+    value: supported
+    statement: "The SHA-2 functions have these digest sizes: SHA-224 224 bits, SHA-256 256 bits, SHA-384 384 bits, SHA-512 512 bits, SHA-512/224 224 bits, SHA-512/256 256 bits. SHA-224 and SHA-256 use 512-bit blocks and 32-bit words; the others use 1024-bit blocks and 64-bit words."
+    scope: Algorithm properties in FIPS 180-4.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf
+        title: "FIPS 180-4: Secure Hash Standard (SHS)"
+        publisher: NIST
+        version: FIPS 180-4 (August 2015)
+        publication_date: "2015-08"
+        locator: Section 1, Figure 1 (Secure Hash Algorithm Properties)
+        note: Lists the message size limit, block size, word size and message digest size for each algorithm.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-sha2-security-strength
+    predicate: security_strength
+    value: supported
+    statement: NIST gives SHA-256 128 bits of collision resistance and 256 bits of preimage resistance, SHA-384 192 and 384 bits, and SHA-512 256 and 512 bits. SHA-224 and SHA-512/224 give 112 bits of collision resistance. For digital signatures, the relevant strength is generally the collision resistance.
+    scope: Classical security strengths. SP 800-107 Rev. 1 is still listed as final, but NIST has announced that it will be withdrawn.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-107r1.pdf
+        title: "SP 800-107 Rev. 1: Recommendation for Applications Using Approved Hash Algorithms"
+        publisher: NIST
+        version: SP 800-107 Rev. 1 (August 2012)
+        publication_date: "2012-08"
+        locator: Section 4.2, Table 1 (Strengths of the Security Properties of the Approved Hash Algorithms); Section 5.2 (Digital Signatures)
+        note: "Collision / preimage strengths: SHA-1 < 80 / 160; SHA-224 112 / 224; SHA-256 128 / 256; SHA-384 192 / 384; SHA-512 256 / 512; SHA-512/224 112 / 224; SHA-512/256 128 / 256. Signature strength is generally the collision strength."
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024)
+        publication_date: "2024-11-12"
+        locator: Section 4.1.3, Table 7 (Hash functions and XOFs)
+        note: Restates the same collision and preimage strengths for SHA-1 and SHA-2 alongside their post-quantum security categories.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://csrc.nist.gov/pubs/sp/800/107/r1/final
+        title: "SP 800-107 Rev. 1 (landing page)"
+        publisher: NIST
+        version: Page as retrieved 2026-10-03
+        locator: Planning Note (12/20/2022)
+        note: NIST has decided to withdraw SP 800-107 Rev. 1 once a replacement CMVP Implementation Guidance is published; supplementary material moved to the hash functions project page.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"
+  - id: claim-sha2-approval-status
+    predicate: approval_status
+    value: supported
+    statement: Under SP 800-131A Rev. 2, the current final NIST transition guidance, all six SHA-2 functions are acceptable for all hash function applications. NIST's October 2024 draft revision would deprecate the 224-bit variants (SHA-224, SHA-512/224) for applying protection through 2030 and disallow them afterwards, leaving SHA-256, SHA-384, SHA-512 and SHA-512/256 acceptable for all uses.
+    scope: NIST approval for US federal use; the 224-bit retirement is from an initial public draft.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
+        title: "SP 800-131A Rev. 2: Transitioning the Use of Cryptographic Algorithms and Key Lengths"
+        publisher: NIST
+        version: SP 800-131A Rev. 2 (March 2019)
+        publication_date: "2019-03"
+        locator: Section 9, Table 8 (Approval Status of Hash Functions)
+        note: SHA-224, SHA-256, SHA-384, SHA-512, SHA-512/224 and SHA-512/256 are acceptable for all hash function applications.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar3.ipd.pdf
+        title: "SP 800-131A Rev. 3 (Initial Public Draft): Transitioning the Use of Cryptographic Algorithms and Key Lengths"
+        publisher: NIST
+        version: Initial Public Draft (October 21, 2024)
+        publication_date: "2024-10-21"
+        locator: Section 10, approval status table for hash functions (captioned Table 12, referred to in the text as Table 13)
+        note: 224-bit hash functions deprecated for applying protection through December 31, 2030 and disallowed after; all other SHA-2 and SHA-3 functions acceptable for all applications.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-sha2-sha1-signature-deprecation
+    predicate: deprecation_timeline
+    value: supported
+    statement: NIST disallows SHA-1 for generating digital signatures, except where NIST protocol-specific guidance explicitly allows it, and permits SHA-1 signature verification only for legacy use. SHA-2 (or SHA-3) is the approved replacement. NIST's draft revision would drop the protocol exception and also retire SHA-1 for non-signature uses after 2030.
+    scope: NIST (US federal) approval status; the post-2030 non-signature retirement is in an initial public draft.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
+        title: "SP 800-131A Rev. 2: Transitioning the Use of Cryptographic Algorithms and Key Lengths"
+        publisher: NIST
+        version: SP 800-131A Rev. 2 (March 2019)
+        publication_date: "2019-03"
+        locator: Section 9, Table 8 and following text (SHA-1 for digital signature generation / verification)
+        note: SHA-1 signature generation disallowed except where NIST protocol-specific guidance allows; verification is legacy use; non-signature uses not needing collision resistance remain acceptable.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar3.ipd.pdf
+        title: "SP 800-131A Rev. 3 (Initial Public Draft): Transitioning the Use of Cryptographic Algorithms and Key Lengths"
+        publisher: NIST
+        version: Initial Public Draft (October 21, 2024)
+        publication_date: "2024-10-21"
+        locator: Section 10, hash function approval table and SHA-1 bullets
+        note: SHA-1 disallowed for signature generation (no exception stated), legacy use for verification, deprecated through 2030 and disallowed after for other protection.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-107r1.pdf
+        title: "SP 800-107 Rev. 1: Recommendation for Applications Using Approved Hash Algorithms"
+        publisher: NIST
+        version: SP 800-107 Rev. 1 (August 2012)
+        publication_date: "2012-08"
+        locator: Section 5.2 (Digital Signatures) and 5.2.1 (Full-length Message Digests)
+        note: Because SHA-1 collision strength is below 80 bits, SHA-1 shall not be used in new digital signature applications needing at least 80 bits of security.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-sha2-authentication-use
+    predicate: used_in_authentication
+    value: supported
+    statement: SHA-2 is used throughout authentication protocols. TOTP may use HMAC-SHA-256 or HMAC-SHA-512 instead of HMAC-SHA-1. The common COSE signature identifiers used by WebAuthn and CTAP, such as RS256, PS256 and ESP256, all hash with SHA-256. FIPS 186-5 requires approved hash functions for RSA and ECDSA signatures.
+    scope: Selected authentication standards; not an exhaustive list of where SHA-2 appears.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.rfc-editor.org/rfc/rfc6238
+        title: "RFC 6238: TOTP: Time-Based One-Time Password Algorithm"
+        publisher: IETF
+        version: RFC 6238 (May 2011, Informational)
+        publication_date: "2011-05"
+        locator: Section 1.2 (Background); Appendix B (Test Vectors)
+        note: TOTP implementations MAY use HMAC-SHA-256 or HMAC-SHA-512; test vectors are given for SHA1, SHA256 and SHA512 modes.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc8812
+        title: "RFC 8812: COSE and JOSE Registrations for Web Authentication (WebAuthn) Algorithms"
+        publisher: IETF
+        version: RFC 8812 (August 2020)
+        publication_date: "2020-08"
+        locator: Abstract; Section 2, Table 1
+        note: Registers RSASSA-PKCS1-v1_5 with SHA-256/384/512 (RS256 etc.) for use by WebAuthn and CTAP implementations.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://www.rfc-editor.org/rfc/rfc9864
+        title: "RFC 9864: Fully-Specified Algorithms for JOSE and COSE"
+        publisher: IETF
+        version: RFC 9864 (October 2025)
+        publication_date: "2025-10"
+        locator: Section 2.1, Table 1 (ECDSA Algorithm Values)
+        note: ESP256 (-9) is ECDSA using the P-256 curve and SHA-256.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+        title: "FIPS 186-5: Digital Signature Standard (DSS)"
+        publisher: NIST
+        version: FIPS 186-5 (February 3, 2023)
+        publication_date: "2023-02-03"
+        locator: Section 5.1 (RSA Key Pair Generation)
+        note: Approved hash functions shall be used during key pair and signature generation.
+        stance: supports
+        retrieved_at: "2026-10-03"
+  - id: claim-sha2-quantum-impact
+    predicate: quantum_resistance
+    value: supported
+    statement: NIST considers SHA-2 far less exposed to known quantum attacks than RSA or elliptic-curve cryptography. Its draft transition report puts SHA-256 in post-quantum security category 2 for collision resistance and category 5 for preimage resistance, and proposes no quantum-driven retirement of SHA-256 or larger. Grover's algorithm gives at most a square-root speedup on brute-force search, and NIST expects it to help attackers less than that in practice.
+    scope: NIST's current assessment; the main sources are initial public drafts. That Grover's algorithm halves preimage security in bits is a common reading of the square-root speedup, not a figure NIST states for hashes in these documents.
+    assumptions: []
+    claim_type: interpretation
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8547.ipd.pdf
+        title: "NIST IR 8547 (Initial Public Draft): Transition to Post-Quantum Cryptography Standards"
+        publisher: NIST
+        version: Initial Public Draft (November 12, 2024)
+        publication_date: "2024-11-12"
+        locator: Section 4.1.3 (Symmetric Cryptography), Table 7 (Hash functions and XOFs); Table 1 (Post-Quantum Security Categories)
+        note: Symmetric standards including hash functions are significantly less vulnerable to known quantum attacks; approved primitives with at least 128-bit classical security meet at least category 1; SHA-256 is category 2 (collision) and category 5 (preimage); only 112-bit primitives face 2030 disallowance.
+        stance: supports
+        retrieved_at: "2026-10-03"
+      - url: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar3.ipd.pdf
+        title: "SP 800-131A Rev. 3 (Initial Public Draft): Transitioning the Use of Cryptographic Algorithms and Key Lengths"
+        publisher: NIST
+        version: Initial Public Draft (October 21, 2024)
+        publication_date: "2024-10-21"
+        locator: Appendix A (Continued Use of AES)
+        note: Grover gives roughly a square-root speedup for brute-force search, but its serial nature limits the real-world gain; NIST will issue guidance if hash functions or other symmetric primitives ever need a quantum-driven transition.
+        stance: contextualizes
+        retrieved_at: "2026-10-03"

@@ -1,0 +1,211 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: standard-ctap2
+type: Standard
+slug: ctap
+name: Client to Authenticator Protocol (CTAP)
+aliases: ["CTAP", "CTAP2", "CTAP 2.3", "FIDO2 CTAP", "FIDO Client to Authenticator Protocol"]
+summary: "FIDO Alliance specification for how a computer or phone (the client platform) talks to an external authenticator such as a security key or another phone, over USB, NFC, Bluetooth or the hybrid transport. It is the device-side half of FIDO2; WebAuthn is the web-side half. The latest Proposed Standard is version 2.3 (26 February 2026)."
+layer: [core, crypto]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  When a website uses WebAuthn, the browser often needs to reach an authenticator that is not built into the device: a USB security key, an NFC card, or a phone. CTAP is the protocol for that conversation. It defines the commands (such as authenticatorMakeCredential to create a credential and authenticatorGetAssertion to sign in), how they are encoded (CBOR for CTAP2), and how they travel over each transport.
+
+  The specification covers two protocol generations. CTAP1/U2F is the older APDU-style protocol from the U2F specifications. CTAP2 is the current one, and CTAP2 authenticators are also called FIDO2 or WebAuthn authenticators. Both share the USB HID, NFC and Bluetooth Low Energy transports. A hybrid transport lets a phone act as the authenticator for a nearby computer: the computer shows a QR code, and Bluetooth advertisements prove that the phone is physically close while messages travel through a tunnel service or a local link.
+
+  Many security keys have no keyboard or fingerprint sensor. CTAP lets the user type a PIN on the computer instead (clientPIN). The PIN is never sent in the clear: the platform and authenticator first agree on a shared key, and the authenticator then hands back a short-lived pinUvAuthToken that the platform uses to authorise commands. Authenticators with built-in user verification, such as a fingerprint sensor, can issue the same kind of token. The authenticator limits wrong PIN attempts and locks after too many.
+
+  Credentials can be discoverable (historically called resident keys): the authenticator stores enough state to find the right credential given only the website's RP ID, which enables sign-in without typing a username. Non-discoverable credentials need the website to send the credential ID.
+crypto: |
+  CTAP itself does not define the credential signature; that is the WebAuthn/COSE key pair created on the authenticator. CTAP's own cryptography protects the PIN and the user-verification token between platform and authenticator.
+
+  PIN/UV Auth Protocol One: the authenticator holds an ephemeral P-256 key-agreement key. Platform and authenticator perform ECDH on P-256 and derive the shared secret as SHA-256 of the x-coordinate. Data such as the PIN hash is encrypted with AES-256-CBC using an all-zero IV, and commands are authenticated with HMAC-SHA-256 truncated to 16 bytes. pinUvAuthTokens are 16 or 32 random bytes.
+
+  PIN/UV Auth Protocol Two, intended to help FIPS certification: the same ECDH on P-256, but the shared secret is two separate HKDF-SHA-256 outputs, one labelled as an HMAC key and one as an AES key. Encryption uses AES-256-CBC with a random 16-byte IV, authentication uses full HMAC-SHA-256, and pinUvAuthTokens are always 32 bytes.
+
+  The hybrid transport uses a QR code carrying a P-256 public key and a shared secret: the public key authenticates the client platform, and knowledge of the secret authenticates the connecting authenticator.
+relations:
+  - predicate: depends_on
+    object_id: standard-webauthn
+    note: CTAP is part of FIDO2 alongside W3C WebAuthn and reuses WebAuthn concepts (RP ID, public key credential source, authenticator data, discoverable credentials).
+  - predicate: uses_primitive
+    object_id: crypto-hmac
+    claim_id: claim-ctap-pin-uv-auth-protocol
+    note: Both PIN/UV auth protocols authenticate commands with HMAC-SHA-256.
+claims:
+  - id: claim-ctap-publication-status
+    predicate: publication_status
+    value: supported
+    statement: "The latest published version of CTAP is 2.3, a FIDO Alliance Proposed Standard dated 26 February 2026. It succeeds the 2.2 Proposed Standard (14 July 2025). A 2.3.1 Working Draft dated 29 May 2026 is also listed, and the 2.1 Proposed Standard (15 June 2021) remains published."
+    scope: Status on the FIDO Alliance specifications download page and document front matter at retrieval time. Working Drafts are not final and the IPR commitment does not apply to them.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://fidoalliance.org/specs/fido-v2.3-ps-20260226/fido-client-to-authenticator-protocol-v2.3-ps-20260226.html
+        title: Client to Authenticator Protocol (CTAP)
+        publisher: FIDO Alliance
+        version: "Proposed Standard, February 26, 2026 (v2.3)"
+        publication_date: "2026-02-26"
+        locator: "Document front matter (\"Proposed Standard, February 26, 2026\", This version, Previous Versions); Status of This Document"
+        note: Front matter labels the document a Proposed Standard dated 26 February 2026; previous version listed is the 2.2 PS of 14 July 2025.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://fidoalliance.org/specifications/download/
+        title: FIDO Alliance Specifications download page
+        publisher: FIDO Alliance
+        locator: "Entry \"Client to Authenticator Protocol (CTAP)\"; IPR status table and explanation"
+        note: Lists 2.3.1 Working Draft (2026-05-29), 2.3, 2.2 and 2.1 Proposed Standards; explains spec stages and that the patent Promise applies at Proposed Standard stage.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-ctap-definition
+    predicate: defines
+    value: supported
+    statement: "CTAP defines an application-layer protocol between a client platform and a roaming authenticator, plus bindings of that protocol to specific transports. It is specified in three parts: the authenticator API (commands such as authenticatorMakeCredential and authenticatorGetAssertion), the message encoding, and transport-specific bindings."
+    scope: Purpose and structure of CTAP 2.3.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://fidoalliance.org/specs/fido-v2.3-ps-20260226/fido-client-to-authenticator-protocol-v2.3-ps-20260226.html
+        title: Client to Authenticator Protocol (CTAP)
+        publisher: FIDO Alliance
+        version: "Proposed Standard, February 26, 2026 (v2.3)"
+        publication_date: "2026-02-26"
+        locator: "Abstract; §3 Protocol Structure; §6 Authenticator API (§6.1, §6.2)"
+        note: Abstract describes an application layer protocol for platform-to-roaming-authenticator communication with transport bindings; §3 lists the three parts.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-ctap-relation-webauthn
+    predicate: relation_to_webauthn
+    value: supported
+    statement: "CTAP is part of the FIDO2 project together with W3C WebAuthn. A website calls the WebAuthn API in the browser, and the client platform then uses CTAP commands to talk to the authenticator. CTAP2 authenticators are also called FIDO2 or WebAuthn authenticators, and CTAP2 authenticators should also implement CTAP1/U2F for backward compatibility."
+    scope: Architectural relationship as described in CTAP 2.3 §1.1 and §4.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://fidoalliance.org/specs/fido-v2.3-ps-20260226/fido-client-to-authenticator-protocol-v2.3-ps-20260226.html
+        title: Client to Authenticator Protocol (CTAP)
+        publisher: FIDO Alliance
+        version: "Proposed Standard, February 26, 2026 (v2.3)"
+        publication_date: "2026-02-26"
+        locator: "§1.1 Relationship to Other Specifications; §4 Protocol Overview, steps 1-4"
+        note: CTAP is part of FIDO2 and related to WebAuthn; defines CTAP1/U2F and CTAP2; RP calls navigator.credentials.create()/get() and the platform invokes authenticator commands; CTAP2 authenticators SHOULD also implement CTAP1/U2F.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-ctap-transports
+    predicate: protocol_support
+    value: supported
+    statement: "CTAP defines bindings for USB HID, NFC and Bluetooth Low Energy, shared by CTAP1 and CTAP2, and a hybrid transport that connects authenticators with cameras, typically phones, to a client platform. In hybrid, Bluetooth LE advertisements prove physical proximity while messages travel over a tunnel service or a local link."
+    scope: Transport bindings in CTAP 2.3 §1.1 and §11.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://fidoalliance.org/specs/fido-v2.3-ps-20260226/fido-client-to-authenticator-protocol-v2.3-ps-20260226.html
+        title: Client to Authenticator Protocol (CTAP)
+        publisher: FIDO Alliance
+        version: "Proposed Standard, February 26, 2026 (v2.3)"
+        publication_date: "2026-02-26"
+        locator: "§1.1 (shared transports); §11 Transport-specific Bindings (§11.2 USB HID); §11.5 Hybrid transports; §11.5.1 QR-initiated Transactions"
+        note: CTAP1 and CTAP2 share USB HID, NFC and BLE; hybrid decouples proximity proof (BLE advertisements) from message transport (tunnel service or local); QR code carries a public key and shared secret.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-ctap-pin-uv-auth-protocol
+    predicate: pin_uv_auth_protocol
+    value: supported
+    statement: "CTAP's PIN/UV auth protocols establish a shared secret by ECDH on P-256 and use it to encrypt PIN data (AES-256-CBC) and authenticate commands (HMAC-SHA-256). Protocol One derives the key with SHA-256, uses an all-zero IV and truncates the HMAC to 16 bytes; Protocol Two derives separate HMAC and AES keys with HKDF-SHA-256, uses a random IV and full HMAC output, and is intended to aid FIPS certification."
+    scope: CTAP 2.3 §6.5.4, §6.5.6, §6.5.7. Protects the platform-authenticator link for PIN and pinUvAuthToken; not the WebAuthn credential signature.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://fidoalliance.org/specs/fido-v2.3-ps-20260226/fido-client-to-authenticator-protocol-v2.3-ps-20260226.html
+        title: Client to Authenticator Protocol (CTAP)
+        publisher: FIDO Alliance
+        version: "Proposed Standard, February 26, 2026 (v2.3)"
+        publication_date: "2026-02-26"
+        locator: "§6.5.6 PIN/UV Auth Protocol One (ecdh, kdf, encrypt, authenticate)"
+        note: P-256 key agreement key; shared secret is SHA-256 of the x-coordinate; AES-256-CBC with all-zero IV; HMAC-SHA-256 truncated to 16 bytes; token 16 or 32 bytes.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://fidoalliance.org/specs/fido-v2.3-ps-20260226/fido-client-to-authenticator-protocol-v2.3-ps-20260226.html
+        title: Client to Authenticator Protocol (CTAP)
+        publisher: FIDO Alliance
+        version: "Proposed Standard, February 26, 2026 (v2.3)"
+        publication_date: "2026-02-26"
+        locator: "§6.5.7 PIN/UV Auth Protocol Two"
+        note: Intended to aid FIPS CMVP certification; two HKDF-SHA-256 derivations (HMAC key, AES key); random 16-byte IV; full HMAC-SHA-256; 32-byte token.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-ctap-clientpin-limits
+    predicate: pin_retry_limit
+    value: supported
+    statement: "For clientPIN, authenticators must enforce a minimum PIN length of 4 code points (they may require more) and allow no more than 8 PIN retries (a correct PIN resets the counter); when the PIN retry counter reaches zero, both clientPIN and built-in user verification are disabled until the authenticator is reset. PINs must be stored with security at least equal to that of private keys. clientPIN can provide user verification but does not by itself assert user presence."
+    scope: Baseline requirements in CTAP 2.3; authenticators may set stricter limits. Whether a given authenticator meets them is a certification question not assessed here.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://fidoalliance.org/specs/fido-v2.3-ps-20260226/fido-client-to-authenticator-protocol-v2.3-ps-20260226.html
+        title: Client to Authenticator Protocol (CTAP)
+        publisher: FIDO Alliance
+        version: "Proposed Standard, February 26, 2026 (v2.3)"
+        publication_date: "2026-02-26"
+        locator: "§6.5.1 PIN Composition Requirements; §6.5.2.3 PIN-Entry and User Verification Retries Counters"
+        note: Minimum 4 code points, max 63 bytes; PIN storage as secure as private keys; no more than 8 PIN retries; at zero both ClientPin and built-in UV are disabled until reset.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://fidoalliance.org/specs/fido-v2.3-ps-20260226/fido-client-to-authenticator-protocol-v2.3-ps-20260226.html
+        title: Client to Authenticator Protocol (CTAP)
+        publisher: FIDO Alliance
+        version: "Proposed Standard, February 26, 2026 (v2.3)"
+        publication_date: "2026-02-26"
+        locator: "§5 Terminology, \"Built-in User Verification method\" and \"Evidence of user interaction\""
+        note: clientPin is not a built-in UV method; platform-mediated interactions such as clientPin may provide UV but are not considered to assert user presence (NFC tap is a special case).
+        stance: contextualizes
+        retrieved_at: 2026-10-03
+  - id: claim-ctap-discoverable-credentials
+    predicate: key_storage_location
+    value: conditional
+    statement: "A discoverable credential (historically called a resident key) is one the authenticator can find given only the RP ID, without the website supplying a credential ID; it always requires client-side stored state, and is created only when the rk option is true. Non-discoverable (server-side) credentials need the Relying Party to send the credential ID in allowList. CTAP notes that \"resident\" wrongly conflated discoverability with stateful storage."
+    scope: Credential discoverability under CTAP 2.3 §6.1.3. Where the private key physically resides for non-discoverable credentials is authenticator-specific.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://fidoalliance.org/specs/fido-v2.3-ps-20260226/fido-client-to-authenticator-protocol-v2.3-ps-20260226.html
+        title: Client to Authenticator Protocol (CTAP)
+        publisher: FIDO Alliance
+        version: "Proposed Standard, February 26, 2026 (v2.3)"
+        publication_date: "2026-02-26"
+        locator: "§6.1.3 Discoverable credentials"
+        note: Defines discoverable vs server-side credentials, rk option, client-side state requirement, credProtect effects, and the note on the historical "resident key" term.
+        stance: supports
+        retrieved_at: 2026-10-03

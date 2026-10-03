@@ -1,0 +1,299 @@
+# DRAFT. All claims are proposed, not approved: do not publish until reviewed.
+schema_version: "1.1"
+taxonomy_version: "1.0.0"
+id: idsys-finnish-trust-network
+type: IdentitySystem
+slug: finnish-trust-network
+name: Finnish Trust Network
+aliases: [FTN, Luottamusverkosto, Tunnistuspalvelun tarjoajien luottamusverkosto, Finnish trust network for strong electronic identification]
+summary: Finland's statutory network of registered strong electronic identification providers (bank IDs, mobile certificates, the DVV citizen certificate and broker services), supervised by Traficom.
+layer: [nordic-eu]
+status: draft
+owner: Christian
+last_verified_at: null
+next_review_at: null
+body: |
+  The Finnish Trust Network is not a single eID. It is a network created by law. Its members are the providers of strong electronic identification that have notified the Finnish Transport and Communications Agency (Traficom) and meet the requirements of the Act on Strong Electronic Identification and Electronic Trust Services (617/2009). The network has operated since 1 May 2017.
+
+  There are two roles. Identification means providers give users their eIDs, for example online banking codes from banks, mobile certificates from telecom operators, and the citizen certificate on the police-issued ID card from the Digital and Population Data Services Agency (DVV). Identification broker services sell identification to online services. A means provider must give brokers access to its eID on reasonable, non-discriminatory terms, at a price capped by law. An online service can therefore sign one contract with a broker instead of one with every eID provider.
+
+  Under Finnish law, strong electronic identification must meet eIDAS level of assurance substantial or high. The means must use at least two authentication factors plus dynamic authentication. Traficom's National Cyber Security Centre (NCSC-FI) supervises providers, can prohibit services that do not comply, and keeps a public register of providers. Traficom recommends OpenID Connect and SAML 2.0 profiles for the interfaces between network members.
+
+  On EU notification, the Commission's overview lists one Finnish scheme, the "Citizen Certificate" on the ID card, notified at level high in 2025. No Finnish bank or mobile-certificate scheme appears in that overview. From 1 October 2026, an amendment lets brokers also relay logins based on the European Digital Identity Wallet.
+crypto: |
+  Some means in the network are based on certificates. Traficom describes a certificate as a signed electronic document that holds the holder's public key, and the Act sets out what identification certificates must contain. DVV's citizen certificate sits on the chip of the police-issued ID card and is used both to log in and to sign. Every means must use dynamic authentication: an electronic proof, created with cryptography or similar techniques, that changes with each login. The sources reviewed do not give the algorithms or key sizes used by individual bank or mobile-certificate means.
+relations:
+  - predicate: uses_protocol
+    object_id: protocol-openid-connect
+    claim_id: claim-ftn-rp-integration
+    note: Traficom Recommendation 213/2023 S sets an OIDC profile for interfaces between means providers and brokers (a SAML 2.0 profile, 212/2023 S, also exists).
+  - predicate: regulated_by
+    object_id: regulation-eidas-2
+    claim_id: claim-ftn-eudi-wallet-relay
+    note: Finnish law defines strong identification by eIDAS LoA and, from 1.10.2026, refers to the EUDI Wallet as defined in eIDAS as amended by (EU) 2024/1183.
+claims:
+  - id: claim-ftn-legal-basis
+    predicate: legal_basis
+    value: supported
+    statement: The Finnish Trust Network is set up by the Act on Strong Electronic Identification and Electronic Trust Services (617/2009). Section 2(10) defines it as the network of identification service providers that have notified Traficom. Under section 12a, a provider joins it by making the section 10 notification. Traficom says the network has operated since 1 May 2017.
+    scope: Consolidated Finnish text on Finlex at retrieval, including amendments by 811/2026 in force 1.10.2026. The English translation is marked by Traficom as not up to date.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.finlex.fi/fi/lainsaadanto/2009/617
+        title: Laki vahvasta sähköisestä tunnistamisesta ja sähköisistä luottamuspalveluista 617/2009
+        publisher: Finlex (Ministry of Justice, Finland)
+        version: Consolidated text incl. amendment 811/2026
+        locator: "Section 2 point 10; section 12 a (29.3.2019/412), first paragraph"
+        note: (Finnish) The trust network is the network of identification service providers that have notified Traficom; a provider joins by making the section 10 notification.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.kyberturvallisuuskeskus.fi/en/our-activities/regulation-and-supervision/electronic-identification
+        title: Electronic identification - Traficom (NCSC-FI)
+        publisher: Finnish Transport and Communications Agency Traficom (NCSC-FI)
+        version: Page last updated 2026-09-03
+        locator: "Section 'Trust network'"
+        note: Providers that notified under 617/2009 and meet its requirements have formed a trust network since 1 May 2017.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-ftn-supervision-register
+    predicate: supervised_by
+    value: supported
+    statement: Traficom (through NCSC-FI) supervises strong electronic identification providers. Providers must notify before starting, attach a conformity assessment report valid for up to two years, and report changes and disturbances. Traficom keeps a public register and can prohibit a service from being offered as strong identification if it does not meet the requirements.
+    scope: Finnish providers of strong electronic identification. Other authorities have parallel roles, for example the Data Protection Ombudsman and the Financial Supervisory Authority.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.finlex.fi/fi/lainsaadanto/2009/617
+        title: Laki vahvasta sähköisestä tunnistamisesta ja sähköisistä luottamuspalveluista 617/2009
+        publisher: Finlex (Ministry of Justice, Finland)
+        version: Consolidated text incl. amendment 811/2026
+        locator: "Section 10 (23.11.2018/1009); section 12 (23.11.2018/1009); section 42 a (4.9.2026/811), first paragraph"
+        note: (Finnish) Providers based in Finland must notify Traficom in writing before starting. Traficom keeps a public register and must prohibit non-compliant services, and its task is to supervise compliance with the Act.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.kyberturvallisuuskeskus.fi/en/our-activities/regulation-and-supervision/electronic-identification
+        title: Electronic identification - Traficom (NCSC-FI)
+        publisher: Finnish Transport and Communications Agency Traficom (NCSC-FI)
+        version: Page last updated 2026-09-03
+        locator: "Sections 'Supervision of identification services', 'Register of identification service providers' and 'Identification service register'"
+        note: Lists the notification, audit, prohibition, change and disturbance duties. The register (xlsx dated 16 June 2026) covers providers that notified and meet the requirements.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-ftn-authenticator-forms
+    predicate: authenticator_forms
+    value: supported
+    statement: Strong electronic identification services in Finland include online banking codes from banks, mobile certificates from telecom operators, DVV's citizen certificate on the police-issued ID card (and certain other certificates on organisation cards), and registered identification broker services.
+    scope: Types of service named by the regulator. The register lists specific providers and was not analysed row by row.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.kyberturvallisuuskeskus.fi/en/our-activities/regulation-and-supervision/electronic-identification
+        title: Electronic identification - Traficom (NCSC-FI)
+        publisher: Finnish Transport and Communications Agency Traficom (NCSC-FI)
+        version: Page last updated 2026-09-03
+        locator: "Section 'Strong electronic identification services' (bullet list 'Strong electronic identification services include')"
+        note: Lists bank codes, operator mobile certificates, the DVV citizen certificate on the ID card plus some organisation-card certificates, and registered broker services.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://dvv.fi/en/citizen-certificate-and-electronic-identity
+        title: Citizen Certificate and electronic identity
+        publisher: Digital and Population Data Services Agency (DVV)
+        locator: "Intro under 'The Citizen Certificate and electronic identity'; section 'Citizen Certificate and ordering an ID card'"
+        note: The citizen certificate sits on the ID card chip and is used to log in to official e-services and to sign. ID cards are applied for at the police.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-ftn-assurance-level
+    predicate: assurance_level
+    value: supported
+    statement: Under section 2(1) of Act 617/2009, strong electronic identification must meet eIDAS level of assurance substantial (Article 8(2)(b)) or high (Article 8(2)(c)). Traficom says Finland uses these two levels.
+    scope: Legal minimum for every service in the network. The level of each specific means is shown in Traficom's register, which was not analysed.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.finlex.fi/fi/lainsaadanto/2009/617
+        title: Laki vahvasta sähköisestä tunnistamisesta ja sähköisistä luottamuspalveluista 617/2009
+        publisher: Finlex (Ministry of Justice, Finland)
+        version: Consolidated text incl. amendment 811/2026
+        locator: "Section 2 (4.9.2026/811), point 1"
+        note: (Finnish) Strong identification is defined as electronic identification meeting the eIDAS Article 8(2)(b) substantial or 8(2)(c) high level.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.kyberturvallisuuskeskus.fi/en/our-activities/regulation-and-supervision/electronic-identification
+        title: Electronic identification - Traficom (NCSC-FI)
+        publisher: Finnish Transport and Communications Agency Traficom (NCSC-FI)
+        version: Page last updated 2026-09-03
+        locator: "Sections 'Strong electronic identification services' and 'Cross-border identification and the eIDAS Regulation'"
+        note: The assurance level may be substantial or high; Finland uses these two eIDAS levels.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-ftn-authentication-factors
+    predicate: multi_factor_dynamic_authentication
+    value: supported
+    statement: Every strong electronic identification means must use at least two different authentication factors (knowledge, possession, inherence) and dynamic authentication, meaning a cryptographic or similar proof that changes with each login.
+    scope: Requirement as summarised by the regulator, based on section 8 a of the Act.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.kyberturvallisuuskeskus.fi/en/our-activities/regulation-and-supervision/electronic-identification
+        title: Electronic identification - Traficom (NCSC-FI)
+        publisher: Finnish Transport and Communications Agency Traficom (NCSC-FI)
+        version: Page last updated 2026-09-03
+        locator: "Section 'Identification means'"
+        note: At least two of knowledge, possession and inherence factors plus a dynamic authentication mechanism, which changes with each authentication and may use cryptography.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-ftn-eidas-notification
+    predicate: eidas_notified
+    value: conditional
+    statement: The Commission's overview lists one Finnish scheme, "Citizen Certificate" (means, the ID card), as NOTIFIED at level high, with publication on 25 Apr 2025 (OJ C/2025/2448). No Finnish bank-ID or mobile-certificate scheme appears in the overview, so the trust network as a whole is not notified.
+    scope: eIDAS notification status at retrieval. It covers only the DVV citizen certificate; other network means are national-only unless notified later.
+    assumptions:
+      - The Commission overview is complete for Finland as of its 2026-02-02 update.
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/48762251/Overview+of+pre-notified+and+notified+eID+schemes+under+eIDAS
+        title: Overview of pre-notified and notified eID schemes under eIDAS - eID User Community
+        publisher: European Commission (eID User Community)
+        version: Last updated 2026-02-02
+        locator: "Table row 'Finland' (the only Finland row)"
+        note: Finland, scheme 'Citizen Certificate', LoA High, means 'ID card', status NOTIFIED, 25 Apr 2025, OJEU C/2025/2448.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://ec.europa.eu/digital-building-blocks/sites/spaces/EIDCOMMUNITY/pages/832143382/Finland
+        title: Finland - eID User Community
+        publisher: European Commission (eID User Community)
+        version: Last updated 2026-01-26 (page version 3)
+        locator: "Details table (rows 'Date of Pre-notification', 'Date of Opinion of the CN', 'Date of Publication to the official journal')"
+        note: Pre-notified 27 Aug 2024; Cooperation Network Opinion No. 1/2025 on 30 Jan 2025; published 25 Apr 2025.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.kyberturvallisuuskeskus.fi/en/our-activities/regulation-and-supervision/electronic-identification
+        title: Electronic identification - Traficom (NCSC-FI)
+        publisher: Finnish Transport and Communications Agency Traficom (NCSC-FI)
+        version: Page last updated 2026-09-03
+        locator: "Section 'Cross-border identification and the eIDAS Regulation'"
+        note: Providers at substantial or high may choose to apply for EU notification; cross-border events are relayed through a national node run by DVV.
+        stance: contextualizes
+        retrieved_at: 2026-10-03
+  - id: claim-ftn-rp-integration
+    predicate: relying_party_integration
+    value: supported
+    statement: Online services usually get strong identification from a registered broker service rather than contracting with every eID provider. Means providers must give brokers access within one month of a request, on reasonable and non-discriminatory terms. Traficom publishes OpenID Connect (213/2023 S) and SAML 2.0 (212/2023 S) profiles for interfaces in the network.
+    scope: Interfaces between means providers and brokers. Traficom says the profiles can also be applied between a broker and an online service.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.finlex.fi/fi/lainsaadanto/2009/617
+        title: Laki vahvasta sähköisestä tunnistamisesta ja sähköisistä luottamuspalveluista 617/2009
+        publisher: Finlex (Ministry of Justice, Finland)
+        version: Consolidated text incl. amendment 811/2026
+        locator: "Section 12 a, paragraphs 2 and 3"
+        note: (Finnish) A means provider must offer brokers access on lawful, reasonable and non-discriminatory terms and grant it within one month. Providers must cooperate on interoperable interfaces based on widely known standards.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.kyberturvallisuuskeskus.fi/en/our-activities/regulation-and-supervision/electronic-identification
+        title: Electronic identification - Traficom (NCSC-FI)
+        publisher: Finnish Transport and Communications Agency Traficom (NCSC-FI)
+        version: Page last updated 2026-09-03
+        locator: "Section 'Trust network'; 'Recommendation 212/2023 S' and 'Recommendation 213/2023 S'"
+        note: The network lets services get identification centrally from a broker. The SAML 2.0 and OIDC profiles define the means-provider-to-broker interface.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-ftn-regulated-price
+    predicate: regulated_wholesale_price
+    value: supported
+    statement: A broker pays a means provider at most 3 euro cents per relayed identification event for access. No other access fee may be charged, and Traficom reviews the level every year.
+    scope: Wholesale price between means providers and brokers under section 12 c. Retail prices to online services are not regulated by this provision.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://www.finlex.fi/fi/lainsaadanto/2009/617
+        title: Laki vahvasta sähköisestä tunnistamisesta ja sähköisistä luottamuspalveluista 617/2009
+        publisher: Finlex (Ministry of Justice, Finland)
+        version: Consolidated text incl. amendment 811/2026
+        locator: "Section 12 c (29.3.2019/412)"
+        note: (Finnish) Access compensation is at most 3 cents per relayed event, covers all identity data and interfaces, no other fee is allowed, and Traficom assesses the level yearly.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-ftn-eudi-wallet-relay
+    predicate: eudi_wallet_relay
+    value: supported
+    statement: From 1 October 2026, a new section 12 e lets broker services relay identification events based on the European Digital Identity Wallet to relying parties, even though the wallet and its provider are not subject to the Finnish Act.
+    scope: Amendment 811/2026 (4.9.2026), in force 1.10.2026. Whether any broker offers this yet was not checked.
+    assumptions: []
+    claim_type: fact
+    status: proposed
+    review_tier: C
+    reviewed_by: []
+    reviewed_at: null
+    valid_from: 2026-10-01
+    evidence:
+      - url: https://www.finlex.fi/fi/lainsaadanto/2009/617
+        title: Laki vahvasta sähköisestä tunnistamisesta ja sähköisistä luottamuspalveluista 617/2009
+        publisher: Finlex (Ministry of Justice, Finland)
+        version: Consolidated text incl. amendment 811/2026
+        locator: "Section 12 e (4.9.2026/811) and the note under it"
+        note: (Finnish) Brokers may relay EUDI-wallet-based identification events to relying parties even though the Act does not apply to the wallet; added by 811/2026, in force 1.10.2026.
+        stance: supports
+        retrieved_at: 2026-10-03
+  - id: claim-ftn-pki-citizen-certificate
+    predicate: uses_pki_certificates
+    value: conditional
+    statement: Some network means are certificate-based. DVV's citizen certificate is a certificate on the ID card chip used for identification and electronic signatures, and DVV says its certificates meet eIDAS and Act 617/2009 at a high standard. Bank-code and mobile means are not described as certificate-based in the sources reviewed.
+    scope: Applies to the DVV citizen certificate and other certificate-based means. Mobile certificates are certificate-based by name, but their technical design was not reviewed.
+    assumptions:
+      - Only means explicitly described as certificate-based are counted; bank online codes are not assumed to use user certificates.
+    claim_type: fact
+    status: proposed
+    review_tier: B
+    reviewed_by: []
+    reviewed_at: null
+    evidence:
+      - url: https://dvv.fi/en/citizen-certificate-and-electronic-identity
+        title: Citizen Certificate and electronic identity
+        publisher: Digital and Population Data Services Agency (DVV)
+        locator: "Intro paragraph; paragraph before 'Terms and conditions'"
+        note: Citizen certificate on the ID card chip for login and signing. DVV's identification and signature certificates meet 910/2014 and 617/2009, DVV provides identification at a high standard, and Traficom supervises the CA.
+        stance: supports
+        retrieved_at: 2026-10-03
+      - url: https://www.kyberturvallisuuskeskus.fi/en/our-activities/regulation-and-supervision/electronic-identification
+        title: Electronic identification - Traficom (NCSC-FI)
+        publisher: Finnish Transport and Communications Agency Traficom (NCSC-FI)
+        version: Page last updated 2026-09-03
+        locator: "Subsection 'Certificate' under 'Identification means'"
+        note: Some means are certificate-based; a certificate holds a public key, name, issue date, expiry and serial number.
+        stance: contextualizes
+        retrieved_at: 2026-10-03
