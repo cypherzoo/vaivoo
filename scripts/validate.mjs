@@ -61,6 +61,51 @@ for (const { f, doc } of entities) {
   }
 }
 
+// ---------- Comparisons: cells come only from existing entity claims ----------
+const SECTION = { Method: 'methods', DeploymentProfile: 'profiles', Authenticator: 'authenticators', Credential: 'credentials', Protocol: 'protocols', Standard: 'standards', Factor: 'factors', Signal: 'signals', Process: 'processes', IdentitySystem: 'identity-systems', Attack: 'attacks', Provider: 'providers', Product: 'products', UseCase: 'use-cases', CryptographicPrimitive: 'crypto', KeyProtection: 'key-protection', Regulation: 'regulations' };
+const byIdDoc = new Map(entities.map(e => [e.doc.id, e.doc]));
+const claimOwner = new Map(entities.flatMap(e => e.doc.claims.map(c => [c.id, { entity: e.doc, claim: c }])));
+const cmpDir = path.join(root, 'content/comparisons');
+const cmpFiles = fs.existsSync(cmpDir) ? fs.readdirSync(cmpDir).filter(f => /\.ya?ml$/.test(f)) : [];
+const slugs2 = new Set();
+for (const f of cmpFiles) {
+  let c; try { c = yaml.load(fs.readFileSync(path.join(cmpDir, f), 'utf8'), { schema: yaml.JSON_SCHEMA }); } catch (e) { errors.push(`comparisons/${f}: YAML parse error: ${e.message}`); continue; }
+  for (const k of ['id', 'slug', 'title', 'summary', 'status', 'columns', 'rows']) if (!c?.[k]) errors.push(`comparisons/${f}: missing ${k}`);
+  if (!c?.columns || !c?.rows) continue;
+  if (!['draft', 'in_review', 'published', 'archived'].includes(c.status)) errors.push(`comparisons/${f}: bad status ${c.status}`);
+  if (slugs2.has(c.slug)) errors.push(`comparisons/${f}: duplicate slug ${c.slug}`); slugs2.add(c.slug);
+  const colIds = c.columns.flatMap(col => [col.entity, ...(col.fallback_entities || [])]);
+  for (const id of colIds) if (!byIdDoc.has(id)) errors.push(`comparisons/${f}: unknown entity "${id}"`);
+  for (const row of c.rows) {
+    if (!row.label || !Array.isArray(row.predicates) || !row.predicates.length) { errors.push(`comparisons/${f}: row needs label and predicates`); continue; }
+    const hit = colIds.some(id => byIdDoc.get(id)?.claims.some(cl => row.predicates.includes(cl.predicate)));
+    if (!hit) errors.push(`comparisons/${f}: row "${row.label}" matches no claim in any column`);
+  }
+  if (c.status === 'published') for (const id of colIds) if (byIdDoc.get(id)?.status !== 'published') errors.push(`comparisons/${f}: published but entity "${id}" is not published`);
+}
+
+// ---------- Guides: every inline claim link must resolve to the right entity page ----------
+const guideDir = path.join(root, 'content/guides');
+const guideFiles = fs.existsSync(guideDir) ? fs.readdirSync(guideDir).filter(f => f.endsWith('.md')) : [];
+let guideClaims = 0;
+for (const f of guideFiles) {
+  const src = fs.readFileSync(path.join(guideDir, f), 'utf8');
+  const m = src.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  if (!m) { errors.push(`guides/${f}: missing front matter`); continue; }
+  let fm; try { fm = yaml.load(m[1], { schema: yaml.JSON_SCHEMA }); } catch (e) { errors.push(`guides/${f}: front matter error: ${e.message}`); continue; }
+  for (const k of ['title', 'slug', 'summary', 'status']) if (!fm?.[k]) errors.push(`guides/${f}: missing ${k}`);
+  if (fm?.slug && path.basename(f, '.md') !== fm.slug) errors.push(`guides/${f}: filename must equal slug`);
+  const links = [...m[2].matchAll(/\]\(\/([a-z-]+)\/([a-z0-9-]+)\/#(claim-[a-z0-9-]+)\)/g)];
+  if (!links.length) errors.push(`guides/${f}: no claim citations`);
+  for (const [, section, slug, cid] of links) {
+    guideClaims++;
+    const own = claimOwner.get(cid);
+    if (!own) { errors.push(`guides/${f}: cites unknown claim ${cid}`); continue; }
+    if (SECTION[own.entity.type] !== section || own.entity.slug !== slug) errors.push(`guides/${f}: ${cid} belongs to /${SECTION[own.entity.type]}/${own.entity.slug}/, not /${section}/${slug}/`);
+    if (fm?.status === 'published' && (own.claim.status !== 'approved' || own.entity.status !== 'published')) errors.push(`guides/${f}: published but cites unapproved/unpublished ${cid}`);
+  }
+}
+
 if (errors.length) { console.error(`✗ ${errors.length} problem(s):\n  ` + errors.join('\n  ')); process.exit(1); }
 const pub = entities.filter(e => e.doc.status === 'published').length;
-console.log(`✓ ${entities.length} entities valid (${pub} published, ${entities.length - pub} not public)`);
+console.log(`✓ ${entities.length} entities valid (${pub} published, ${entities.length - pub} not public); ${cmpFiles.length} comparisons; ${guideFiles.length} guides with ${guideClaims} claim citations`);
