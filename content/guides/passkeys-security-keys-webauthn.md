@@ -4,7 +4,7 @@ slug: passkeys-security-keys-webauthn
 summary: "WebAuthn is the standard, a passkey is a kind of credential, and a security key is one kind of device that can hold credentials. Synced and device-bound passkeys share the same protocol but differ in assurance and recovery."
 status: draft
 order: 3
-owner: Christian
+owner: Chris War
 last_reviewed_at: null
 ---
 
