@@ -281,10 +281,11 @@ claims:
     scope: "What the service stores for a password plus WebAuthn security key setup; recovery codes and session tokens are not covered."
     assumptions: []
     claim_type: interpretation
-    status: proposed
+    status: approved
+    review_level: internal
     review_tier: C
-    reviewed_by: []
-    reviewed_at: null
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-04"
     evidence:
       - url: https://www.w3.org/TR/webauthn-3/
         title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
