@@ -24,9 +24,15 @@ rows:
   - label: Counts as multi-factor (NIST)
     predicates: [multi_factor_qualification]
   - label: Synced across devices
-    predicates: [synchronised_across_devices]
+    predicates: [synchronised_across_devices, non_exportable_key]
+    labels:
+      claim-synced-passkey-uv-synchronised: Yes (backup-eligible)
+      claim-device-bound-passkey-uv-single-device: No (single-device, BE = 0)
+      claim-sk2f-device-bound: No (single-device, BE = 0)
   - label: Non-exportable key
-    predicates: [non_exportable_key]
+    predicates: [non_exportable_key, max_nist_aal]
+    labels:
+      claim-synced-passkey-uv-max-nist-aal: No (exportable so it can sync)
   - label: Highest NIST AAL
     help: The highest assurance level the setup can reach under NIST SP 800-63B-4.
     predicates: [max_nist_aal]
@@ -41,5 +47,6 @@ rows:
     predicates: [no_shared_secret]
     labels:
       claim-passkey-no-server-side-secret: Public key only
+      claim-sk2f-server-side-secrets: Public key + password hash
   - label: Recovery dependency
     predicates: [recovery_dependency]

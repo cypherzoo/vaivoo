@@ -274,3 +274,32 @@ claims:
         note: A lost authenticator must be assumed stolen or compromised; the CSP SHALL suspend, invalidate or destroy it promptly.
         stance: contextualizes
         retrieved_at: "2026-10-03"
+  - id: claim-sk2f-server-side-secrets
+    predicate: no_shared_secret
+    value: not_supported
+    statement: "This profile does not remove server-side secrets entirely. For the security-key step the website stores only a credential record (credential ID, public key, signature counter and similar metadata), none of which can be used to sign in. The password step still requires the service to store a password verifier, salted and hashed, which attackers can try to crack offline after a database breach."
+    scope: "What the service stores for a password plus WebAuthn security key setup; recovery codes and session tokens are not covered."
+    assumptions: []
+    claim_type: interpretation
+    status: approved
+    review_level: internal
+    review_tier: C
+    reviewed_by: [Chris War]
+    reviewed_at: "2026-10-04"
+    evidence:
+      - url: https://www.w3.org/TR/webauthn-3/
+        title: "Web Authentication: An API for accessing Public Key Credentials - Level 3"
+        publisher: W3C
+        version: "W3C Recommendation, 25 August 2026"
+        locator: "§4 Terminology, 'Credential Record'"
+        note: "The Relying Party must store some properties of each registered credential; the recommended items are the credential type, credential ID, credential public key, signature counter, transports and status flags. None of these is a secret."
+        stance: supports
+        retrieved_at: "2026-10-04"
+      - url: https://pages.nist.gov/800-63-4/sp800-63b/authenticators/
+        title: "NIST SP 800-63B-4: Authenticator and Verifier Requirements"
+        publisher: NIST
+        version: "SP 800-63B-4 (final, July 2025; HTML edition)"
+        locator: "Sec. 3.1.1.2 Password Verifiers (#passwordver), paragraphs on storage and salt"
+        note: "Verifiers SHALL store passwords salted and hashed with a suitable password hashing scheme so that they resist offline attacks."
+        stance: supports
+        retrieved_at: "2026-10-04"
