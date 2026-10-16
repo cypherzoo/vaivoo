@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ReviewTag from '../components/ReviewTag.astro';
+import DownloadButton from '../components/DownloadButton.astro';
 import { allEntities, publicClaims, reviewSummary, LABELS, SECTION_ORDER } from '../lib/content.mjs';
 const items = allEntities();
 const counts = items.reduce((m, e) => (m[e.section] = (m[e.section] || 0) + 1, m), {});
@@ -12,7 +13,7 @@ const pct = n => all.total ? (100 * n / all.total) : 0;
 ---
 <Base wide>
   <section class="hero">
-    <p class="eyebrow">Independent reference · Authentication &amp; cryptography</p>
+    <p class="eyebrow"><span class="eb-accent">The Vaivoo Project</span><span>·</span><span>Independent reference on authentication &amp; cryptography</span></p>
     <h1 class="hero-title">Authentication, explained with evidence.</h1>
     <p class="lede hero-lede">How people and machines prove who they are online: the methods, standards and cryptography behind them, and the Nordic and EU identity systems built on top. Every claim is scoped, sourced and signed by its reviewer.</p>
     <div class="btns"><a class="btn btn-solid" href="/guides/">Read the guides →</a><a class="btn" href="/compare/">Compare setups</a></div>
@@ -36,14 +37,15 @@ const pct = n => all.total ? (100 * n / all.total) : 0;
   </ol>
 
   <div class="sec-head"><h2>Reference</h2><a href="/reference/">Index →</a></div>
+  <DownloadButton href="/datasheet/all/" id="VA-REF-ALL" label={`Download all ${items.length} datasheets`} />
   <ul class="index-grid">
     {sections.map(s => <li><a href={`/${s}/`}><span class="idx-n">{counts[s]}</span><span class="idx-l">{LABELS[s]}</span></a></li>)}
   </ul>
 
   <div class="sec-head"><h2>How to read a claim</h2><a href="/methodology/#review">Methodology →</a></div>
   <ul class="rv-legend">
-    <li><span><ReviewTag level="external" /></span><span>Approved by an independent specialist outside Vaivoo.</span></li>
-    <li><span><ReviewTag level="internal" /></span><span>Approved by the Vaivoo editor, waiting for external review.</span></li>
+    <li><span><ReviewTag level="external" /></span><span>Approved by an independent specialist outside the project.</span></li>
+    <li><span><ReviewTag level="internal" /></span><span>Approved by the project editor, waiting for external review.</span></li>
     <li><span><ReviewTag level="draft" /></span><span>Researched and sourced, not yet reviewed by a person.</span></li>
   </ul>
 </Base>
@@ -74,6 +76,7 @@ const pct = n => all.total ? (100 * n / all.total) : 0;
   .index-grid li { margin:0; border-right:1px solid var(--line); border-bottom:1px solid var(--line); }
   .index-grid a { display:flex; flex-direction:column; gap:14px; padding:20px; text-decoration:none; height:100%; }
   .index-grid a:hover { background:var(--soft); }
+  .index-grid a:hover .idx-n { color:var(--acc); }
   .idx-n { font-size:40px; font-weight:800; letter-spacing:-0.04em; line-height:1; }
   .idx-l { font-weight:600; }
 </style>
