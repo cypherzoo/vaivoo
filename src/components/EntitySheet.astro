@@ -36,7 +36,7 @@ const live = `vaivoo.com${e.url}`;
         <td class="val"><span class="vv">{VALUE_LABEL[c.shown]}</span><span class={`st ${c.review}`}>{REVIEW[c.review]?.short}</span>
           {c.reviewed_by?.length > 0 && c.review !== 'draft' && <span class="who">{c.reviewed_by.join(', ')}{c.reviewed_at && ` · ${rev(c.reviewed_at)}`}</span>}</td>
         <td>{c.statement}{c.assumptions.length > 0 && <ul>{c.assumptions.map(a => <li>{a}</li>)}</ul>}<span class="scope">Scope: {c.scope}{c.claim_type !== 'fact' && ` · ${c.claim_type.replace('_', ' ')}`}</span></td>
-        <td class="ev">{c.evidence.map(ev => <div><span class="r">{refOf(srcIndex(ev.url))}</span> {ev.locator}{ev.stance !== 'supports' && ` (${ev.stance})`}</div>)}</td>
+        <td class="ev" data-label="Evidence">{c.evidence.map(ev => <div><span class="r">{refOf(srcIndex(ev.url))}</span> {ev.locator}{ev.stance !== 'supports' && ` (${ev.stance})`}</div>)}</td>
       </tr>))}
     </tbody>
   </table>

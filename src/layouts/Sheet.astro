@@ -5,6 +5,7 @@ import '@fontsource/ibm-plex-mono/latin-500.css';
 import '@fontsource/ibm-plex-mono/latin-700.css';
 import '@fontsource-variable/schibsted-grotesk/wght.css';
 const { title, id, back, backLabel = 'Back to the page', landscape = false } = Astro.props;
+const pdf = `/pdf/${id}.pdf`;
 ---
 <!doctype html>
 <html lang="en">
@@ -14,7 +15,7 @@ const { title, id, back, backLabel = 'Back to the page', landscape = false } = A
   <title>{`${id} · ${title} · The Vaivoo Project datasheet`}</title>
   <meta name="robots" content="noindex" />
   <link rel="icon" href="/vaivoo-favicon.svg" type="image/svg+xml" />
-  {landscape && <style is:inline>@page { size: A4 landscape; } .sheet { width: 297mm !important; }</style>}
+  {landscape && <style is:inline>@page { size: A4 landscape; } @media screen and (min-width: 1180px) { .sheet { width: 297mm !important; } }</style>}
   <style is:global>
     :root { --ink:#0a0a0a; --mute:#555; --line:#cfcfcc; --acc:#5b2bff; --ext:#15703f; --int:#c2560c;
       --cond:'Archivo Variable', 'Archivo', 'Arial Narrow', sans-serif; --mono:'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace; --sans:'Schibsted Grotesk Variable', system-ui, sans-serif; }
@@ -30,7 +31,9 @@ const { title, id, back, backLabel = 'Back to the page', landscape = false } = A
     .bar a.back { color:#fff; text-decoration:none; opacity:.8; } .bar a.back:hover { opacity:1; }
     .bar .bid { opacity:.6; letter-spacing:.03em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .bar .sp { flex:1; }
-    .save { appearance:none; border:0; cursor:pointer; display:inline-flex; align-items:center; gap:10px; padding:10px 16px; font:700 12px/1 var(--mono); letter-spacing:.06em; text-transform:uppercase; color:#fff; background:var(--acc) linear-gradient(90deg, #fff 0 0) no-repeat 0 100% / 0 2px; transition:background-size .25s ease; }
+    .print { appearance:none; cursor:pointer; background:transparent; color:#fff; border:1px solid #555; padding:9px 12px; font:500 12px/1 var(--mono); letter-spacing:.06em; text-transform:uppercase; }
+    .print:hover { border-color:#fff; }
+    .save { appearance:none; border:0; cursor:pointer; text-decoration:none; white-space:nowrap; display:inline-flex; align-items:center; gap:10px; padding:10px 16px; font:700 12px/1 var(--mono); letter-spacing:.06em; text-transform:uppercase; color:#fff; background:var(--acc) linear-gradient(90deg, #fff 0 0) no-repeat 0 100% / 0 2px; transition:background-size .25s ease; }
     .save:hover { background-size:100% 2px; }
     .save:focus-visible { outline:2px solid #fff; outline-offset:2px; }
     .hint { padding:10px clamp(12px, 3vw, 28px); font:400 12px/1.5 var(--mono); color:var(--mute); text-align:center; }
@@ -99,6 +102,56 @@ const { title, id, back, backLabel = 'Back to the page', landscape = false } = A
     .ft { margin-top:5mm; padding-top:2mm; border-top:1.6pt solid var(--ink); display:flex; justify-content:space-between; gap:6mm; font:400 6.5pt/1.4 var(--mono); color:var(--mute); }
     .ft b { color:var(--ink); font-weight:700; }
     .ft .lic { max-width:110mm; }
+
+    /* phones and tablets: a fluid sheet that reads like a page, not a scaled-down A4 */
+    @media screen and (max-width: 860px) {
+      body { font-size:15px; }
+      .bar { gap:10px; padding:8px 12px; }
+      .bar .bid { display:none; }
+      .print { display:none; }
+      .hint { font-size:11px; padding:8px 12px; }
+      .stage { padding:0 0 32px; display:block; }
+      .sheet { width:100% !important; min-height:0; padding:16px; box-shadow:none; }
+      .hd { grid-template-columns:1fr; }
+      .hd .brand { padding:10px 12px; }
+      .hd .brand img { width:24px; height:24px; }
+      .hd .brand span { font-size:17px; }
+      .hd .ttl { border-right:0; border-top:.8pt solid var(--ink); padding:10px 12px; }
+      .hd .ttl h1 { font-size:clamp(24px, 7vw, 34px); }
+      .hd .ttl .id { font-size:11px; }
+      .hd .kind { flex-direction:row; justify-content:space-between; align-items:center; border-top:.6pt solid var(--ink); padding:8px 12px; font-size:11px; }
+      .dots { grid-template-columns:repeat(3, 6px); gap:3px; } .dots i { width:6px; height:6px; }
+      .acc { height:5px; }
+      .meta { grid-template-columns:1fr 1fr; }
+      .meta > div { padding:8px 10px; border-bottom:.6pt solid var(--ink); }
+      .meta > div:nth-child(2n) { border-right:0; }
+      .meta > div:last-child { grid-column:1 / -1; border-bottom:0; }
+      .k { font-size:10px; } .v { font-size:17px; }
+      .rbar { height:8px; }
+      .sum { font-size:17px; margin-top:14px; padding-bottom:14px; }
+      .sec { margin:20px 0 4px; padding:6px 10px; font-size:11px; }
+      table, tbody, tr, td { display:block; width:auto !important; }
+      thead { display:none; }
+      table { font-size:15px; }
+      tr { display:grid; grid-template-columns:auto 1fr; column-gap:10px; padding:14px 0; border-bottom:1px solid var(--line); }
+      td { border:0; padding:0; }
+      td.n { grid-column:1; font-size:12px; padding-top:2px; }
+      td.p { grid-column:2; font-size:16px; }
+      td:not(.n):not(.p) { grid-column:1 / -1; margin-top:8px; }
+      td.val { display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; }
+      .vv { font-size:12px; } .st { font-size:10px; margin-top:0; padding:2px 6px; } .st::before { width:6px; height:6px; }
+      .who { font-size:11px; margin-top:0; }
+      .scope { font-size:13px; margin-top:4px; }
+      td ul { font-size:14px; padding-left:18px; }
+      td.ev { font-size:12px; line-height:1.5; padding-top:8px; border-top:1px dashed var(--line); }
+      td[data-label]::before { content:attr(data-label); display:block; font:500 10px/1.4 var(--mono); text-transform:uppercase; letter-spacing:.05em; color:var(--mute); margin-bottom:4px; }
+      .src { columns:1; font-size:14px; }
+      .src li { padding:8px 0; }
+      .src .u { font-size:11px; }
+      .ft { flex-direction:column; gap:6px; font-size:11px; }
+      .sheet + .sheet { margin-top:16px; border-top:6px solid var(--ink); }
+    }
+    @media screen and (min-width: 861px) and (max-width: 1180px) { .stage { align-items:stretch; } .sheet.wide { width:100% !important; } }
   </style>
 </head>
 <body>
@@ -106,9 +159,10 @@ const { title, id, back, backLabel = 'Back to the page', landscape = false } = A
     <a class="back" href={back}>← {backLabel}</a>
     <span class="bid">{id}</span>
     <span class="sp"></span>
-    <button class="save" type="button" id="save">Save as PDF ↓</button>
+    <button class="print" type="button" id="save">Print</button>
+    <a class="save" href={pdf} download={`vaivoo-${id}.pdf`} type="application/pdf">Download PDF ↓</a>
   </div>
-  <p class="hint">A4 datasheet. Use "Save as PDF" (or your browser's print dialog) and choose "Save as PDF" as the destination.</p>
+  <p class="hint">A4 datasheet · the PDF is the same sheet, ready to file or forward.</p>
   <div class="stage"><slot /></div>
   <script is:inline>
     document.getElementById('save').addEventListener('click', () => window.print());
