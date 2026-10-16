@@ -1,0 +1,37 @@
+---
+import Sheet from '../../layouts/Sheet.astro';
+import EntitySheet from '../../components/EntitySheet.astro';
+import { allEntities, publicClaims, reviewSummary, monthLabel, LABELS, SECTION_ORDER } from '../../lib/content.mjs';
+import { docId } from '../../lib/sheet.mjs';
+const items = allEntities();
+const order = s => { const i = SECTION_ORDER.indexOf(s); return i < 0 ? 99 : i; };
+const sorted = [...items].sort((a, b) => order(a.section) - order(b.section) || a.name.localeCompare(b.name));
+const all = reviewSummary(items.flatMap(publicClaims));
+const generated = monthLabel(new Date().toISOString());
+const pct = n => (all.total ? (100 * n) / all.total : 0);
+---
+<Sheet title="Full reference" id="VA-REF-ALL" back="/reference/" backLabel="Reference">
+  <article class="sheet cover">
+    <header class="hd">
+      <div class="brand"><img src="/vaivoo-mark.svg" alt="" /><span>VAIVOO</span></div>
+      <div class="ttl"><h1>Full reference</h1><span class="id">VA-REF-ALL · REV {new Date().toISOString().slice(0, 7)}</span></div>
+      <div class="kind"><span class="dots" aria-hidden="true"><i class="o"></i><i></i><i class="o"></i><i class="o"></i><i class="o"></i><i></i><i class="o"></i><i class="o"></i><i></i></span>All sections</div>
+    </header>
+    <div class="acc"></div>
+    <div class="meta">
+      <div><span class="k">Entries</span><span class="v">{items.length}</span></div>
+      <div><span class="k">Claims</span><span class="v">{all.total}</span></div>
+      <div><span class="k">Generated</span><span class="v">{generated}</span></div>
+      <div><span class="k">Editor</span><span class="v">Chris War</span></div>
+      <div><span class="k">Review</span><span class="rbar"><span class="e" style={`width:${pct(all.counts.external)}%`}></span><span class="i" style={`width:${pct(all.counts.internal)}%`}></span></span><span class="k" style="color:var(--ink)">{all.counts.external} ext · {all.counts.internal} int · {all.counts.draft} draft</span></div>
+    </div>
+    <p class="sum">Every entry in The Vaivoo Project, one datasheet per entry. Each claim is scoped, tied to the exact section of a primary source, and carries its review status: green for independent external review, orange for internal review by the editor, dashed for drafts.</p>
+    <div class="sec"><span>Contents</span><span><b>{items.length}</b> entries</span></div>
+    <table>
+      <thead><tr><th>Doc ID</th><th>Entry</th><th>Section</th><th>Claims</th></tr></thead>
+      <tbody>{sorted.map(e => <tr><td class="ev" style="width:auto">{docId(e)}</td><td><b>{e.name}</b></td><td>{LABELS[e.section]}</td><td class="n" style="color:inherit">{publicClaims(e).length}</td></tr>)}</tbody>
+    </table>
+    <footer class="ft"><span class="lic"><b>The Vaivoo Project</b> · vaivoo.com · Snapshot generated {generated}. Check the live pages before relying on a claim.</span><span>VA-REF-ALL</span></footer>
+  </article>
+  {sorted.map(e => <EntitySheet e={e} generated={generated} />)}
+</Sheet>
