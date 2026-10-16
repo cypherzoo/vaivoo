@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import { allEntities, publicClaims, reviewSummary, LABELS, SECTION_ORDER } from '../lib/content.mjs';
+const items = allEntities();
+const present = [...new Set(items.map(e => e.section))];
+const sections = [...SECTION_ORDER.filter(s => present.includes(s)), ...present.filter(s => !SECTION_ORDER.includes(s))];
+const groups = sections.map(s => ({ s, list: items.filter(e => e.section === s).map(e => ({ e, r: reviewSummary(publicClaims(e)) })) }));
+---
+<Base title="Reference" description="Every Vaivoo entry by section: methods, attacks, protocols, standards, cryptography, identity systems and more.">
+  <p class="eyebrow">Reference · {items.length} entries</p>
+  <h1>Reference</h1>
+  <p class="lede">Every entry, by section. Each one is a set of sourced claims you can check line by line.</p>
+  <div class="full">
+    {groups.map(({ s, list }) => (
+      <section class="ref-group">
+        <div class="sec-head"><h2><a href={`/${s}/`}>{LABELS[s]}</a></h2><span class="meta">{list.length}</span></div>
+        <ul class="ref-list">
+          {list.map(({ e, r }) => <li><a href={e.url}>{e.name}</a><span class="meta">{r.total} claims</span></li>)}
+        </ul>
+      </section>))}
+  </div>
+</Base>
+<style>
+  .full { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); column-gap:40px; }
+  .ref-group .sec-head { margin:48px 0 8px; }
+  .ref-group .sec-head h2 a { text-decoration:none; }
+  .ref-list { list-style:none; padding:0; margin:0; }
+  .ref-list li { display:flex; justify-content:space-between; gap:12px; align-items:baseline; padding:9px 0; border-bottom:1px solid var(--line); margin:0; }
+  .ref-list a { font-weight:600; text-decoration:none; }
+  .ref-list a:hover { text-decoration:underline; }
+  .ref-list .meta { white-space:nowrap; }
+</style>
