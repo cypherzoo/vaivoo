@@ -1,7 +1,7 @@
 ---
 title: "When strong keys came from weak randomness"
 slug: strong-keys-weak-randomness
-date: "2026-10-16"
+date: "2026-10-10"
 category: Vulnerability
 summary: "Debian's 2008 OpenSSL flaw showed that a nominally strong key can be selected from a tiny search space. Modern generators address the immediate defect, but key provenance and fleet-wide replacement remain design problems."
 author: Chris War

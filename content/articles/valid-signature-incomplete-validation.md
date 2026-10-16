@@ -1,7 +1,7 @@
 ---
 title: "A valid signature was not complete token validation"
 slug: valid-signature-incomplete-validation
-date: "2026-10-16"
+date: "2026-10-12"
 category: Breach
 summary: "Storm-0558 used a real Microsoft consumer signing key to forge tokens accepted by enterprise mail. The case separates signature verification from issuer, audience, token-type, and key-scope validation."
 author: Chris War
