@@ -1,0 +1,27 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadArticles, dayLabel } from '../../lib/articles.mjs';
+import { byId } from '../../lib/content.mjs';
+export function getStaticPaths() {
+  return loadArticles(import.meta.glob('../../../content/articles/*.md', { eager: true })).map(a => ({ params: { slug: a.slug }, props: { a } }));
+}
+const { a } = Astro.props;
+const Content = a.Content;
+const related = (a.related || []).map(byId).filter(Boolean);
+---
+<Base title={a.title} description={a.summary}>
+  <p class="eyebrow"><a href="/articles/">Articles</a><span>/</span><span class="eb-accent">{a.category}</span><span>·</span><span>{dayLabel(a.date)}</span><span>·</span><span>{a.minutes} min read</span></p>
+  <h1>{a.title}</h1>
+  <p class="lede">{a.summary}</p>
+  <p class="byline"><img src="/vaivoo-mark.svg" alt="" width="22" height="22" /><span>By <strong>{a.author}</strong></span></p>
+  <article class="guide"><Content /></article>
+  {a.sources?.length > 0 && <section class="art-src"><h2>Sources</h2><ol>{a.sources.map(s => <li><a href={s.url} rel="noopener">{s.title}</a><span class="meta"> — {s.publisher}</span></li>)}</ol></section>}
+  {related.length > 0 && <section><h2>In the reference</h2><ul>{related.map(e => <li><a href={e.url}>{e.name}</a></li>)}</ul></section>}
+  <p class="meta art-foot">{a.origin && <>Adapted from an article first published on <a href={a.origin.url} rel="noopener">{a.origin.name}</a>. </>}Articles are analysis, not reference claims: facts are as reported by the sources above on the date shown. <a href="/corrections/">Report a correction</a></p>
+</Base>
+<style>
+  .byline { display:flex; align-items:center; gap:10px; margin:0 0 32px; padding:12px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-size:15px; }
+  .byline img { border-radius:17%; }
+  .art-src ol { padding-left:1.4em; } .art-src li { margin:6px 0; }
+  .art-foot { margin-top:40px; }
+</style>

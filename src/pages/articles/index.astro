@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadArticles, dayLabel } from '../../lib/articles.mjs';
+const articles = loadArticles(import.meta.glob('../../../content/articles/*.md', { eager: true }));
+---
+<Base title="Articles" description="Authentication and identity security in the news: breaches, vulnerabilities, new standards, research and discussion, each with its sources.">
+  <p class="eyebrow"><span class="eb-accent">The Vaivoo Project</span><span>·</span><span>Articles</span></p>
+  <h1>Articles</h1>
+  <p class="lede">Authentication and identity in the news: breaches, vulnerabilities, new standards, research and discussion. Short, sourced, and written for people who have to make decisions.</p>
+  <p class="meta"><a href="/articles/rss.xml">Follow by RSS</a> · no accounts, no tracking</p>
+  {articles.length === 0 ? <p class="meta">No articles yet.</p> :
+  <ul class="rows full art-list">{articles.map(a => <li><a class="row" href={a.url}>
+    <span class="art-meta"><span class="eb-accent">{a.category}</span> · {dayLabel(a.date)} · {a.minutes} min read</span>
+    <span class="row-title">{a.title}</span>
+    <span class="row-sum">{a.summary}</span>
+  </a></li>)}</ul>}
+</Base>
+<style>
+  .art-list a.row { grid-template-columns:1fr; }
+  .art-meta { font:400 12px/1.4 var(--mono); text-transform:uppercase; letter-spacing:0.04em; color:var(--muted); }
+</style>

@@ -7,7 +7,8 @@ export function GET() {
     .filter(m => m.frontmatter.status !== 'archived')
     .filter(m => reviewed([...m.rawContent().matchAll(/#(claim-[a-z0-9-]+)\)/g)].map(x => claimById(x[1])).filter(Boolean).map(x => x.claim)));
   const urls = [
-    '/', '/methodology/', '/about/', '/corrections/', '/privacy/', '/compare/', '/guides/', '/reference/',
+    '/', '/methodology/', '/about/', '/corrections/', '/privacy/', '/compare/', '/guides/', '/reference/', '/articles/',
+    ...Object.values(import.meta.glob('../../content/articles/*.md', { eager: true })).filter(m => m.frontmatter.status === 'published').map(m => `/articles/${m.frontmatter.slug}/`),
     ...allEntities().filter(e => reviewed(publicClaims(e))).map(e => e.url),
     ...allComparisons().filter(c => reviewed(c.rows.flatMap(r => c.columns.map(col => comparisonCell(col, r))).filter(Boolean).map(x => x.claim))).map(c => `/compare/${c.slug}/`),
     ...guides.map(m => `/guides/${m.frontmatter.slug}/`)

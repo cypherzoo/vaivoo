@@ -7,7 +7,7 @@ import '@fontsource/ibm-plex-mono/latin-700.css';
 const { title, description = 'Source-backed reference on digital authentication and the cryptography behind it.', noindex = false, wide = false } = Astro.props;
 const path = Astro.url.pathname;
 const nav = [
-  ['/guides/', 'Guides'], ['/compare/', 'Compare'], ['/reference/', 'Reference'], ['/methodology/', 'Method'], ['/search/', 'Search']
+  ['/guides/', 'Guides'], ['/articles/', 'Articles'], ['/compare/', 'Compare'], ['/reference/', 'Reference'], ['/methodology/', 'Method'], ['/search/', 'Search']
 ];
 const sectionPaths = ['/methods/', '/profiles/', '/attacks/', '/credentials/', '/protocols/', '/standards/', '/crypto/', '/identity-systems/', '/regulations/'];
 const active = href => path.startsWith(href) || (href === '/reference/' && sectionPaths.some(p => path.startsWith(p)));
@@ -21,6 +21,7 @@ const active = href => path.startsWith(href) || (href === '/reference/' && secti
   <meta name="description" content={description} />
   <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
   <link rel="icon" href="/vaivoo-favicon.svg" type="image/svg+xml" />
+  <link rel="alternate" type="application/rss+xml" title="The Vaivoo Project · Articles" href="/articles/rss.xml" />
   <link rel="apple-touch-icon" href="/vaivoo-mark.svg" />
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#0b0b0b" media="(prefers-color-scheme: dark)" />
@@ -214,6 +215,7 @@ const active = href => path.startsWith(href) || (href === '/reference/' && secti
       <nav aria-label="Footer">
         <a href="/about/">About</a><a href="/methodology/">Methodology</a>
         <a href="/corrections/">Corrections</a><a href="/privacy/">Privacy</a>
+        <a href="/articles/">Articles</a><a href="/articles/rss.xml">RSS</a>
         <a href="/reference/">Reference</a><a href="/data/entities.json">Data (JSON)</a>
       </nav>
     </div>
