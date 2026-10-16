@@ -7,10 +7,10 @@ const articles = loadArticles(import.meta.glob('../../../content/articles/*.md',
   <p class="eyebrow"><span class="eb-accent">The Vaivoo Project</span><span>·</span><span>Articles</span></p>
   <h1>Articles</h1>
   <p class="lede">Authentication and identity in the news: breaches, vulnerabilities, new standards, research and discussion. Short, sourced, and written for people who have to make decisions.</p>
-  <p class="meta"><a href="/articles/rss.xml">Follow by RSS</a> · no accounts, no tracking</p>
+  <p class="meta">Written by Chris War. <a href="/articles/rss.xml">Follow by RSS</a> (no accounts, no tracking) or on <a href="https://www.linkedin.com/company/vaivoo/" rel="noopener">LinkedIn</a>.</p>
   {articles.length === 0 ? <p class="meta">No articles yet.</p> :
   <ul class="rows full art-list">{articles.map(a => <li><a class="row" href={a.url}>
-    <span class="art-meta"><span class="eb-accent">{a.category}</span> · {dayLabel(a.date)} · {a.minutes} min read</span>
+    <span class="art-meta"><span class="eb-accent">{a.category}</span> · {dayLabel(a.date)} · {a.author} · {a.minutes} min read</span>
     <span class="row-title">{a.title}</span>
     <span class="row-sum">{a.summary}</span>
   </a></li>)}</ul>}
