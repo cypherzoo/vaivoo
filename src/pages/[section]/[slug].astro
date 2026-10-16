@@ -2,6 +2,8 @@
 import Base from '../../layouts/Base.astro';
 import ReviewTag from '../../components/ReviewTag.astro';
 import ReviewSummary from '../../components/ReviewSummary.astro';
+import DownloadButton from '../../components/DownloadButton.astro';
+import { sheetUrl, docId } from '../../lib/sheet.mjs';
 import { allEntities, byId, publicClaims, reviewSummary, monthLabel, VALUE_LABEL, LABELS } from '../../lib/content.mjs';
 export function getStaticPaths() {
   return allEntities().map(e => ({ params: { section: e.section, slug: e.slug }, props: { e } }));
@@ -18,6 +20,7 @@ const paras = t => t.split(/\n\n+/).map(p => `<p>${p}</p>`).join('');
   {e.aliases?.length > 0 && <p class="meta">Also known as: {e.aliases.join(', ')}</p>}
   <p class="lede">{e.summary}</p>
   <ReviewSummary summary={summary} />
+  <DownloadButton href={sheetUrl(e)} id={docId(e)} />
   {e.body && <section><h2>How it works</h2><div set:html={paras(e.body)} /></section>}
 
   <section class="full">
