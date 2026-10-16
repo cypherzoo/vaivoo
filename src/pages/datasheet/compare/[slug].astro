@@ -13,7 +13,7 @@ const generated = monthLabel(new Date().toISOString());
 const id = cmpDocId(cmp);
 ---
 <Sheet title={cmp.title} id={id} back={`/compare/${cmp.slug}/`} backLabel="Comparison" landscape>
-  <article class="sheet">
+  <article class="sheet wide">
     <header class="hd">
       <div class="brand"><img src="/vaivoo-mark.svg" alt="" /><span>VAIVOO</span></div>
       <div class="ttl"><h1>{cmp.title}</h1><span class="id">{id} · REV {new Date().toISOString().slice(0, 7)}</span></div>
@@ -34,13 +34,13 @@ const id = cmpDocId(cmp);
       <tbody>{cmp.rows.map((row, i) => (
         <tr><td class="n">{num(i, 'R')}</td><td class="p">{row.label}</td>
           {cmp.columns.map(col => { const cell = comparisonCell(col, row); return cell ? (
-            <td><span class="vv">{row.labels?.[cell.claim.id] ?? VALUE_LABEL[cell.claim.shown]}</span><span class={`st ${cell.claim.review}`}>{REVIEW[cell.claim.review]?.short}</span>
+            <td data-label={col.label}><span class="vv">{row.labels?.[cell.claim.id] ?? VALUE_LABEL[cell.claim.shown]}</span><span class={`st ${cell.claim.review}`}>{REVIEW[cell.claim.review]?.short}</span>
               <span class="scope">{cell.claim.statement}</span>
-              {cell.claim.assumptions.length > 0 && <ul>{cell.claim.assumptions.map(a => <li>{a}</li>)}</ul>}</td>) : <td><span class="vv" style="color:#777">No claim yet</span></td>; })}
+              {cell.claim.assumptions.length > 0 && <ul>{cell.claim.assumptions.map(a => <li>{a}</li>)}</ul>}</td>) : <td data-label={col.label}><span class="vv" style="color:#777">No claim yet</span></td>; })}
         </tr>))}
       </tbody>
     </table>
     <footer class="ft"><span class="lic"><b>The Vaivoo Project</b> · Snapshot of vaivoo.com/compare/{cmp.slug}/, generated {generated}. "No claim yet" means not researched, not "no". Evidence for every cell is on the linked entry pages.</span><span>{id}</span></footer>
   </article>
 </Sheet>
-<style is:global>.cmpt td { font-size:7.6pt; } .cmpt td .scope { color:#333; }</style>
+<style is:global>.cmpt td { font-size:7.6pt; } .cmpt td .scope { color:#333; } @media screen and (max-width: 860px) { .cmpt td { font-size:15px; } .cmpt td.p { font-size:16px; } }</style>
