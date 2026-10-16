@@ -48,7 +48,7 @@ Every setup is only as strong as its fallback. If a security key is lost, the us
 
 ## Questions to ask about any "MFA" setup
 
-*Vaivoo's checklist, derived from the claims above:*
+*The project's checklist, derived from the claims above:*
 
 1. Which factor categories are actually combined, and is user verification required?
 2. Is the step that matters bound to the website's domain, or can it be relayed?

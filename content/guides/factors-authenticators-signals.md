@@ -28,7 +28,7 @@ National schemes make this concrete. Denmark's MitID operator describes its app 
 
 A signal is something the service observes about the situation. NIST tells verifiers to consider signals such as a recent SIM change, number porting or a device swap before sending a code over the phone network [↗](/methods/sms-otp/#claim-sms-otp-sim-swap-porting-risk).
 
-*Vaivoo's reading:* signals help a service decide how much to trust a sign-in, or whether to ask for more. They are not themselves something the user knows, has or is, so they do not add a factor.
+*The project's reading:* signals help a service decide how much to trust a sign-in, or whether to ask for more. They are not themselves something the user knows, has or is, so they do not add a factor.
 
 ## Protocols carry the result
 
