@@ -10,34 +10,42 @@ const { e } = Astro.props;
 const claims = publicClaims(e);
 const summary = reviewSummary(claims);
 const rels = (e.relations || []).map(r => ({ ...r, target: byId(r.object_id) })).filter(r => r.target);
+const paras = t => t.split(/\n\n+/).map(p => `<p>${p}</p>`).join('');
 ---
 <Base title={e.name} description={e.summary} noindex={summary.approved === 0}>
-  <p class="meta"><a href={`/${e.section}/`}>{LABELS[e.section]}</a> · Last verified: {monthLabel(e.last_verified_at) ?? 'not yet verified'}</p>
+  <p class="eyebrow"><a href="/reference/">Reference</a><span>/</span><a href={`/${e.section}/`}>{LABELS[e.section]}</a><span>·</span><span>Verified {monthLabel(e.last_verified_at) ?? 'not yet'}</span></p>
   <h1>{e.name}</h1>
   {e.aliases?.length > 0 && <p class="meta">Also known as: {e.aliases.join(', ')}</p>}
+  <p class="lede">{e.summary}</p>
   <ReviewSummary summary={summary} />
-  <p><strong>{e.summary}</strong></p>
-  {e.body && <section><h2>How it works</h2><div set:html={e.body.split(/\n\n+/).map(p => `<p>${p}</p>`).join('')} /></section>}
+  {e.body && <section><h2>How it works</h2><div set:html={paras(e.body)} /></section>}
 
-  <section>
-    <h2>Properties</h2>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Property</th><th>Value</th><th>Conditions and scope</th><th>Evidence</th></tr></thead>
+  <section class="full">
+    <h2>Claims</h2>
+    <div class="table-wrap"><table class="claims">
+      <thead><tr><th>Property</th><th>Value</th><th>Claim and scope</th><th>Evidence</th></tr></thead>
       <tbody>{claims.map(c => (
         <tr id={c.id}>
           <td>{c.predicate.replaceAll('_', ' ')}</td>
-          <td><span class={`v-${c.shown}`}>{VALUE_LABEL[c.shown]}</span>
+          <td data-label="Value"><span class={`val val-${c.shown}`}>{VALUE_LABEL[c.shown]}</span>
             <div><ReviewTag level={c.review} short /></div>
             {c.reviewed_by?.length > 0 && c.review !== 'draft' && <div class="meta">{c.reviewed_by.join(', ')}{c.reviewed_at && `, ${monthLabel(c.reviewed_at)}`}</div>}
           </td>
-          <td>{c.statement}{c.assumptions.length > 0 && <ul>{c.assumptions.map(a => <li>{a}</li>)}</ul>}<div class="meta">Scope: {c.scope}{c.claim_type !== 'fact' && ` · ${c.claim_type.replace('_', ' ')}`}</div></td>
-          <td>{c.evidence.map(ev => <div><a href={ev.url} rel="noopener">{ev.title}</a><div class="meta">{ev.publisher}{ev.version && `, ${ev.version}`} — {ev.locator} (retrieved {monthLabel(ev.retrieved_at)}){ev.stance !== 'supports' && ` · ${ev.stance}`}</div></div>)}</td>
+          <td data-label="Claim">{c.statement}{c.assumptions.length > 0 && <ul>{c.assumptions.map(a => <li>{a}</li>)}</ul>}<div class="note">Scope: {c.scope}{c.claim_type !== 'fact' && ` · ${c.claim_type.replace('_', ' ')}`}</div></td>
+          <td data-label="Evidence">{c.evidence.map(ev => <div class="ev"><a href={ev.url} rel="noopener">{ev.title}</a><div class="note">{ev.publisher}{ev.version && `, ${ev.version}`} — {ev.locator} · retrieved {monthLabel(ev.retrieved_at)}{ev.stance !== 'supports' && ` · ${ev.stance}`}</div></div>)}</td>
         </tr>))}
       </tbody>
     </table></div>
   </section>
 
-  {e.crypto && <section><h2>Cryptography under the hood</h2><div set:html={e.crypto.split(/\n\n+/).map(p => `<p>${p}</p>`).join('')} /></section>}
-  {rels.length > 0 && <section><h2>Related</h2><ul>{rels.map(r => <li>{r.predicate.replaceAll('_', ' ')}: <a href={r.target.url}>{r.target.name}</a></li>)}</ul></section>}
-  <p class="meta">Owner: {e.owner} · Next review: {monthLabel(e.next_review_at) ?? '—'} · <a href="/corrections/">Report a correction</a></p>
+  {e.crypto && <section><h2>Cryptography under the hood</h2><div set:html={paras(e.crypto)} /></section>}
+  {rels.length > 0 && <section><h2>Related</h2><ul class="rel">{rels.map(r => <li><span class="meta">{r.predicate.replaceAll('_', ' ')}</span><a href={r.target.url}>{r.target.name}</a></li>)}</ul></section>}
+  <p class="meta foot-meta">Owner: {e.owner} · Next review: {monthLabel(e.next_review_at) ?? '—'} · <a href="/corrections/">Report a correction</a></p>
 </Base>
+<style>
+  .rel { list-style:none; padding:0; border-top:1px solid var(--line); }
+  .rel li { display:grid; grid-template-columns:200px 1fr; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); margin:0; align-items:baseline; }
+  .rel a { font-weight:600; }
+  @media (max-width: 560px) { .rel li { grid-template-columns:1fr; gap:2px; } }
+  .foot-meta { margin-top:48px; }
+</style>
