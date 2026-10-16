@@ -198,7 +198,7 @@ const active = href => path.startsWith(href) || (href === '/reference/' && secti
   {isPreview && <div class="banner">Preview build — includes unpublished drafts</div>}
   <header class="site-head">
     <div class="wrap">
-      <a class="brand" href="/" aria-label="Vaivoo home"><img src="/vaivoo-mark.svg" alt="" width="28" height="28" /><span>vaivoo</span></a>
+      <a class="brand" href="/" aria-label="The Vaivoo Project, home"><img src="/vaivoo-mark-pulse.svg" alt="" width="28" height="28" /><span>vaivoo</span></a>
       <nav class="site-nav" aria-label="Main">
         {nav.map(([href, label]) => <a href={href} aria-current={active(href) ? 'page' : undefined}>{label}</a>)}
       </nav>
