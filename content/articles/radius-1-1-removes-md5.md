@@ -1,7 +1,7 @@
 ---
 title: "How RADIUS/1.1 removes the MD5 dependency"
 slug: radius-1-1-removes-md5
-date: "2026-10-16"
+date: "2026-10-14"
 category: Vulnerability
 summary: "Blast-RADIUS exploited the legacy RADIUS response authenticator. RADIUS/1.1, an Experimental RFC, removes the MD5-dependent fields and delegates packet authentication, integrity, and confidentiality to TLS or DTLS."
 author: Chris War
