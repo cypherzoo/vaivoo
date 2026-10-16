@@ -11,26 +11,26 @@ const cells = cmp.rows.flatMap(row => cmp.columns.map(col => comparisonCell(col,
 const summary = reviewSummary(cells.map(c => c.claim));
 ---
 <Base title={cmp.title} description={cmp.summary} noindex={summary.approved === 0}>
-  <p class="meta"><a href="/compare/">Compare</a> {cmp.status !== 'published' && <span class="pill">{cmp.status}</span>}</p>
+  <p class="eyebrow"><a href="/compare/">Compare</a>{cmp.status !== 'published' && <span class="pill">{cmp.status}</span>}<span>·</span><span>{cmp.columns.length} setups × {cmp.rows.length} properties</span></p>
   <h1>{cmp.title}</h1>
-  <p>{cmp.summary}</p>
+  <p class="lede">{cmp.summary}</p>
   <ReviewSummary summary={summary} what="cells in this table" />
   {cmp.intro && <div set:html={cmp.intro.split(/\n\n+/).map(p => `<p>${p}</p>`).join('')} />}
-  <div class="table-wrap"><table class="cmp">
-    <thead><tr><th>Property</th>{cmp.columns.map(col => <th>{col.label}{col.note && <div class="meta">{col.note}</div>}</th>)}</tr></thead>
+  <div class="table-wrap full"><table class="cmp">
+    <thead><tr><th>Property</th>{cmp.columns.map(col => <th>{col.label}{col.note && <div class="note">{col.note}</div>}</th>)}</tr></thead>
     <tbody>{cmp.rows.map(row => (
-      <tr><th scope="row">{row.label}{row.help && <div class="meta">{row.help}</div>}</th>
+      <tr><th scope="row">{row.label}{row.help && <div class="note">{row.help}</div>}</th>
         {cmp.columns.map(col => { const cell = comparisonCell(col, row); return cell ? (
           <td>
-            {row.labels?.[cell.claim.id]
-              ? <strong>{row.labels[cell.claim.id]}</strong>
-              : <strong class={`v-${cell.claim.shown}`}>{VALUE_LABEL[cell.claim.shown]}</strong>} <ReviewTag level={cell.claim.review} short />
-            <div class="meta">{cell.claim.statement}</div>
-            {cell.claim.assumptions.length > 0 && <div class="meta"><em>Only if:</em><ul class="cond">{cell.claim.assumptions.map(a => <li>{a}</li>)}</ul></div>}
-            <div><a href={`${cell.entity.url}#${cell.claim.id}`}>Evidence →</a></div>
-          </td>) : <td class="v-unknown"><span class="meta">No claim yet</span></td>; })}
+            <div class="cell-head">{row.labels?.[cell.claim.id]
+              ? <span class="val">{row.labels[cell.claim.id]}</span>
+              : <span class={`val val-${cell.claim.shown}`}>{VALUE_LABEL[cell.claim.shown]}</span>} <ReviewTag level={cell.claim.review} short /></div>
+            <div class="note cell-text">{cell.claim.statement}</div>
+            {cell.claim.assumptions.length > 0 && <div class="note"><em>Only if:</em><ul class="cond">{cell.claim.assumptions.map(a => <li>{a}</li>)}</ul></div>}
+            <div class="meta"><a href={`${cell.entity.url}#${cell.claim.id}`}>Evidence →</a></div>
+          </td>) : <td><span class="val val-unknown">No claim yet</span></td>; })}
       </tr>))}
     </tbody>
   </table></div>
-  <p class="meta">Values come from scoped claims. "Conditional" cells hold only under the conditions listed in the cell; where a row shows plain text (such as "AAL2" or "Public key only") it restates the linked claim. A cell reading "No claim yet" means Vaivoo has not researched it, not that the answer is no. Read the evidence before relying on a cell.</p>
+  <p class="meta">Values come from scoped claims. "Conditional" cells hold only under the conditions listed in the cell; where a row shows plain text (such as "AAL2" or "Public key only") it restates the linked claim. "No claim yet" means Vaivoo has not researched it, not that the answer is no. Read the evidence before relying on a cell.</p>
 </Base>

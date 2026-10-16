@@ -1,25 +1,79 @@
 ---
 import Base from '../layouts/Base.astro';
 import ReviewTag from '../components/ReviewTag.astro';
-import { allEntities, publicClaims, reviewSummary, LABELS } from '../lib/content.mjs';
+import { allEntities, publicClaims, reviewSummary, LABELS, SECTION_ORDER } from '../lib/content.mjs';
 const items = allEntities();
 const counts = items.reduce((m, e) => (m[e.section] = (m[e.section] || 0) + 1, m), {});
 const all = reviewSummary(items.flatMap(publicClaims));
-const order = ['methods', 'profiles', 'attacks', 'credentials', 'protocols', 'standards', 'crypto', 'identity-systems', 'regulations'];
-const sections = [...order.filter(s => counts[s]), ...Object.keys(counts).filter(s => !order.includes(s))];
+const sections = [...SECTION_ORDER.filter(s => counts[s]), ...Object.keys(counts).filter(s => !SECTION_ORDER.includes(s))];
+const guides = Object.values(import.meta.glob('../../content/guides/*.md', { eager: true }))
+  .map(m => m.frontmatter).filter(f => f.status !== 'archived').sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
+const pct = n => all.total ? (100 * n / all.total) : 0;
 ---
-<Base>
-  <h1>Authentication, explained with evidence</h1>
-  <p>How people and machines prove who they are online — the methods, standards and cryptography behind them, and the Nordic and EU identity systems built on top. Every security claim is scoped, sourced and dated.</p>
-  <p>Start with the <a href="/guides/">guides</a>, or <a href="/compare/">compare setups side by side</a>.</p>
-  <h2>Reference</h2>
-  <ul>{sections.map(s => <li><a href={`/${s}/`}>{LABELS[s]}</a> <span class="meta">({counts[s]})</span></li>)}</ul>
-  <h2>Review status</h2>
-  <p>Every claim shows how far it has been checked:</p>
-  <ul class="rv-legend">
-    <li><ReviewTag level="external" /> <span class="meta">approved by an independent specialist outside Vaivoo</span></li>
-    <li><ReviewTag level="internal" /> <span class="meta">approved by the Vaivoo editor, awaiting external review</span></li>
-    <li><ReviewTag level="draft" /> <span class="meta">researched and sourced, not yet reviewed by a person</span></li>
+<Base wide>
+  <section class="hero">
+    <p class="eyebrow">Independent reference · Authentication &amp; cryptography</p>
+    <h1 class="hero-title">Authentication, explained with evidence.</h1>
+    <p class="lede hero-lede">How people and machines prove who they are online: the methods, standards and cryptography behind them, and the Nordic and EU identity systems built on top. Every claim is scoped, sourced and signed by its reviewer.</p>
+    <div class="btns"><a class="btn btn-solid" href="/guides/">Read the guides →</a><a class="btn" href="/compare/">Compare setups</a></div>
+  </section>
+
+  <section class="stats" aria-label="Current numbers">
+    <div><span class="stat">{all.total}</span><span class="meta">claims</span></div>
+    <div><span class="stat">{items.length}</span><span class="meta">entries in {sections.length} sections</span></div>
+    <div class="stat-review">
+      <span class="meta">Review status</span>
+      <div class="bar" role="img" aria-label={`${all.counts.external} externally reviewed, ${all.counts.internal} internally reviewed, ${all.counts.draft} drafts`}>
+        <span class="bar-ext" style={`width:${pct(all.counts.external)}%`}></span><span class="bar-int" style={`width:${pct(all.counts.internal)}%`}></span>
+      </div>
+      <div class="meta">{all.counts.external} external · {all.counts.internal} internal · {all.counts.draft} draft</div>
+    </div>
+  </section>
+
+  <div class="sec-head"><h2>Guides</h2><a href="/guides/">All guides →</a></div>
+  <ol class="cards">
+    {guides.map((g, i) => <li><a href={`/guides/${g.slug}/`}><span class="row-num">{String(i + 1).padStart(2, '0')}</span><span class="card-title">{g.title}</span><span class="card-sum">{g.summary}</span></a></li>)}
+  </ol>
+
+  <div class="sec-head"><h2>Reference</h2><a href="/reference/">Index →</a></div>
+  <ul class="index-grid">
+    {sections.map(s => <li><a href={`/${s}/`}><span class="idx-n">{counts[s]}</span><span class="idx-l">{LABELS[s]}</span></a></li>)}
   </ul>
-  <p class="meta">Right now: {all.counts.external} externally reviewed · {all.counts.internal} internally reviewed · {all.counts.draft} drafts, across {items.length} entries. <a href="/methodology/#review">How review works</a></p>
+
+  <div class="sec-head"><h2>How to read a claim</h2><a href="/methodology/#review">Methodology →</a></div>
+  <ul class="rv-legend">
+    <li><span><ReviewTag level="external" /></span><span>Approved by an independent specialist outside Vaivoo.</span></li>
+    <li><span><ReviewTag level="internal" /></span><span>Approved by the Vaivoo editor, waiting for external review.</span></li>
+    <li><span><ReviewTag level="draft" /></span><span>Researched and sourced, not yet reviewed by a person.</span></li>
+  </ul>
 </Base>
+
+<style>
+  .hero { padding:clamp(8px, 3vw, 32px) 0 clamp(40px, 6vw, 72px); }
+  .hero-title { font-size:clamp(44px, 9vw, 112px); line-height:0.94; letter-spacing:-0.045em; font-weight:800; max-width:11ch; margin:0 0 28px; }
+  .hero-lede { max-width:640px; }
+  .stats { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); border-top:2px solid var(--rule); border-bottom:1px solid var(--line); }
+  .stats > div { padding:22px 24px 22px 0; display:flex; flex-direction:column; gap:6px; }
+  .stats > div + div { padding-left:24px; border-left:1px solid var(--line); }
+  .stat { font-size:clamp(44px, 6vw, 72px); font-weight:800; letter-spacing:-0.04em; line-height:1; }
+  .stat-review { justify-content:flex-end; }
+  .bar { display:flex; height:14px; border:1.5px solid var(--fg); margin:4px 0; }
+  .bar-ext { background:var(--ext); } .bar-int { background:var(--int); }
+  @media (max-width: 760px) {
+    .stats { grid-template-columns:1fr 1fr; }
+    .stat-review { grid-column:1 / -1; border-left:0 !important; padding-left:0 !important; border-top:1px solid var(--line); }
+  }
+  .cards { list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:32px; }
+  .cards li { margin:0; }
+  .cards a { display:flex; flex-direction:column; gap:12px; text-decoration:none; border-top:3px solid var(--rule); padding-top:16px; height:100%; }
+  .cards a:hover .card-title { text-decoration:underline; text-decoration-thickness:2px; }
+  .card-title { font-size:23px; font-weight:750; line-height:1.18; letter-spacing:-0.02em; }
+  .card-sum { color:var(--muted); font-size:15.5px; line-height:1.5; }
+  @media (max-width: 860px) { .cards { grid-template-columns:1fr; gap:28px; } }
+  .index-grid { list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); border-top:1px solid var(--line); border-left:1px solid var(--line); }
+  .index-grid li { margin:0; border-right:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .index-grid a { display:flex; flex-direction:column; gap:14px; padding:20px; text-decoration:none; height:100%; }
+  .index-grid a:hover { background:var(--soft); }
+  .idx-n { font-size:40px; font-weight:800; letter-spacing:-0.04em; line-height:1; }
+  .idx-l { font-weight:600; }
+</style>

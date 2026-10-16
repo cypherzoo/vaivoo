@@ -15,10 +15,10 @@ const cited = ids.map(claimById).filter(Boolean).map(x => x.claim);
 const summary = reviewSummary(cited);
 ---
 <Base title={f.title} description={f.summary} noindex={summary.approved === 0}>
-  <p class="meta"><a href="/guides/">Guide</a> {f.status !== 'published' && <span class="pill">{f.status}</span>} · Last reviewed: {monthLabel(f.last_reviewed_at) ?? 'not yet reviewed'}</p>
+  <p class="eyebrow"><a href="/guides/">Guide</a>{f.status !== 'published' && <span class="pill">{f.status}</span>}<span>·</span><span>Reviewed {monthLabel(f.last_reviewed_at) ?? 'not yet'}</span></p>
   <h1>{f.title}</h1>
-  <p><strong>{f.summary}</strong></p>
+  <p class="lede">{f.summary}</p>
   <ReviewSummary summary={summary} what="claims this guide cites" />
   <article class="guide"><Content /></article>
-  <p class="meta">Every factual statement links to a sourced claim (↗). Each claim's review status is shown on its entity page. <a href="/corrections/">Report a correction</a></p>
+  <p class="meta">Every factual statement links to a sourced claim (↗). Each claim's review status is shown on its entry page. <a href="/corrections/">Report a correction</a></p>
 </Base>

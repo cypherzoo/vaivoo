@@ -9,8 +9,12 @@ const { section } = Astro.params;
 const items = allEntities().filter(e => e.section === section).map(e => ({ e, s: reviewSummary(publicClaims(e)) }));
 ---
 <Base title={LABELS[section]} noindex={items.length === 0}>
+  <p class="eyebrow"><a href="/reference/">Reference</a><span>/</span><span>{items.length} {items.length === 1 ? 'entry' : 'entries'}</span></p>
   <h1>{LABELS[section]}</h1>
   {items.length === 0 ? <p class="meta">No entries yet.</p> :
-  <ul class="entries">{items.map(({ e, s }) => <li><a href={e.url}>{e.name}</a> — {e.summary}
-    <div>{['external', 'internal', 'draft', 'disputed'].filter(l => s.counts[l] > 0).map(l => <ReviewTag level={l} count={s.counts[l]} short />)}</div></li>)}</ul>}
+  <ul class="rows full">{items.map(({ e, s }) => <li><a class="row" href={e.url}>
+    <span class="row-title">{e.name}</span>
+    <span class="row-sum">{e.summary}</span>
+    <span class="row-tags">{['external', 'internal', 'draft', 'disputed'].filter(l => s.counts[l] > 0).map(l => <ReviewTag level={l} count={s.counts[l]} short />)}</span>
+  </a></li>)}</ul>}
 </Base>

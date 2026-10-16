@@ -26,6 +26,7 @@ export const LABELS = {
   'identity-systems': 'Identity systems', attacks: 'Attacks', providers: 'Providers', products: 'Products',
   'use-cases': 'Use cases', crypto: 'Cryptography', 'key-protection': 'Key protection', regulations: 'Regulations'
 };
+export const SECTION_ORDER = ['methods', 'profiles', 'attacks', 'credentials', 'protocols', 'standards', 'crypto', 'identity-systems', 'regulations'];
 export const VALUE_LABEL = { supported: 'Supported', not_supported: 'Not supported', conditional: 'Conditional', unknown: 'Unknown', not_applicable: 'N/A' };
 
 export const REVIEW = {

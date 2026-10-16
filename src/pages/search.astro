@@ -2,9 +2,13 @@
 import Base from '../layouts/Base.astro';
 ---
 <Base title="Search">
+  <p class="eyebrow">Search · runs in your browser</p>
   <h1>Search</h1>
   <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
   <script is:inline src="/pagefind/pagefind-ui.js"></script>
   <div id="search"></div>
   <script is:inline>window.addEventListener('DOMContentLoaded', () => new PagefindUI({ element: '#search', showSubResults: true }));</script>
 </Base>
+<style is:global>
+  #search { --pagefind-ui-scale:0.95; --pagefind-ui-primary:var(--fg); --pagefind-ui-text:var(--fg); --pagefind-ui-background:var(--bg); --pagefind-ui-border:var(--fg); --pagefind-ui-tag:var(--soft); --pagefind-ui-border-width:2px; --pagefind-ui-border-radius:0; --pagefind-ui-font:var(--sans); }
+</style>
