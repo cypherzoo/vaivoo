@@ -41,7 +41,7 @@ const pct = n => all.total ? (100 * n / all.total) : 0;
   {latest.length > 0 && <>
   <div class="sec-head"><h2>Latest articles</h2><a href="/articles/">All articles →</a></div>
   <ul class="rows full latest">{latest.map(a => <li><a class="row" href={a.url}>
-    <span class="art-meta"><span class="eb-accent">{a.category}</span> · {dayLabel(a.date)} · Team Vaivoo</span>
+    <span class="art-meta"><span class="eb-accent">{a.category}</span> · {dayLabel(a.date)} · {a.author}</span>
     <span class="row-title">{a.title}</span>
     <span class="row-sum">{a.summary}</span>
   </a></li>)}</ul>
