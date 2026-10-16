@@ -1,0 +1,14 @@
+---
+import Sheet from '../../../layouts/Sheet.astro';
+import EntitySheet from '../../../components/EntitySheet.astro';
+import { allEntities, monthLabel } from '../../../lib/content.mjs';
+import { docId } from '../../../lib/sheet.mjs';
+export function getStaticPaths() {
+  return allEntities().map(e => ({ params: { section: e.section, slug: e.slug }, props: { e } }));
+}
+const { e } = Astro.props;
+const generated = monthLabel(new Date().toISOString());
+---
+<Sheet title={e.name} id={docId(e)} back={e.url} backLabel={e.name}>
+  <EntitySheet e={e} generated={generated} />
+</Sheet>
