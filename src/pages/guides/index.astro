@@ -4,7 +4,12 @@ const mods = Object.values(import.meta.glob('../../../content/guides/*.md', { ea
 const guides = mods.map(m => m.frontmatter).filter(f => f.status !== 'archived').sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
 ---
 <Base title="Guides" description="Plain-language guides to digital authentication, with every claim linked to its source.">
+  <p class="eyebrow">Guides · {guides.length}</p>
   <h1>Guides</h1>
+  <p class="lede">Short, plain-language explanations. Every factual sentence links to the sourced claim behind it.</p>
   {guides.length === 0 ? <p class="meta">No guides yet.</p> :
-  <ul>{guides.map(g => <li><a href={`/guides/${g.slug}/`}>{g.title}</a> — {g.summary} {g.status !== 'published' && <span class="pill">{g.status}</span>}</li>)}</ul>}
+  <ul class="rows full">{guides.map((g, i) => <li><a class="row" href={`/guides/${g.slug}/`}>
+    <span class="row-title"><span class="row-num">{String(i + 1).padStart(2, '0')}</span> {g.title} {g.status !== 'published' && <span class="pill">{g.status}</span>}</span>
+    <span class="row-sum">{g.summary}</span>
+  </a></li>)}</ul>}
 </Base>
