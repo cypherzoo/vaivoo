@@ -1,0 +1,11 @@
+---
+const { href, label = 'Download datasheet', id } = Astro.props;
+---
+<div class="dl-row">
+  <a class="dl" href={`${href}?print=1`} data-pagefind-ignore>
+    <span class="dl-dot" aria-hidden="true"></span>
+    <span class="dl-t">{label}</span>
+    <span class="dl-f">PDF <span class="dl-arrow" aria-hidden="true">↓</span></span>
+  </a>
+  <a class="dl-view" href={href}>View sheet{id && <span> · {id}</span>}</a>
+</div>

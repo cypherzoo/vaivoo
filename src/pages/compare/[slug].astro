@@ -2,6 +2,8 @@
 import Base from '../../layouts/Base.astro';
 import ReviewTag from '../../components/ReviewTag.astro';
 import ReviewSummary from '../../components/ReviewSummary.astro';
+import DownloadButton from '../../components/DownloadButton.astro';
+import { cmpSheetUrl, cmpDocId } from '../../lib/sheet.mjs';
 import { allComparisons, comparisonCell, reviewSummary, VALUE_LABEL } from '../../lib/content.mjs';
 export function getStaticPaths() {
   return allComparisons().map(c => ({ params: { slug: c.slug }, props: { cmp: c } }));
@@ -15,6 +17,7 @@ const summary = reviewSummary(cells.map(c => c.claim));
   <h1>{cmp.title}</h1>
   <p class="lede">{cmp.summary}</p>
   <ReviewSummary summary={summary} what="cells in this table" />
+  <DownloadButton href={cmpSheetUrl(cmp)} id={cmpDocId(cmp)} label="Download comparison sheet" />
   {cmp.intro && <div set:html={cmp.intro.split(/\n\n+/).map(p => `<p>${p}</p>`).join('')} />}
   <div class="table-wrap full"><table class="cmp">
     <thead><tr><th>Property</th>{cmp.columns.map(col => <th>{col.label}{col.note && <div class="note">{col.note}</div>}</th>)}</tr></thead>
@@ -32,5 +35,5 @@ const summary = reviewSummary(cells.map(c => c.claim));
       </tr>))}
     </tbody>
   </table></div>
-  <p class="meta">Values come from scoped claims. "Conditional" cells hold only under the conditions listed in the cell; where a row shows plain text (such as "AAL2" or "Public key only") it restates the linked claim. "No claim yet" means Vaivoo has not researched it, not that the answer is no. Read the evidence before relying on a cell.</p>
+  <p class="meta">Values come from scoped claims. "Conditional" cells hold only under the conditions listed in the cell; where a row shows plain text (such as "AAL2" or "Public key only") it restates the linked claim. "No claim yet" means the project has not researched it, not that the answer is no. Read the evidence before relying on a cell.</p>
 </Base>

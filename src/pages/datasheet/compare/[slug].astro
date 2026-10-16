@@ -1,0 +1,46 @@
+---
+import Sheet from '../../../layouts/Sheet.astro';
+import { allComparisons, comparisonCell, reviewSummary, monthLabel, VALUE_LABEL, REVIEW } from '../../../lib/content.mjs';
+import { cmpDocId, num } from '../../../lib/sheet.mjs';
+export function getStaticPaths() {
+  return allComparisons().map(c => ({ params: { slug: c.slug }, props: { cmp: c } }));
+}
+const { cmp } = Astro.props;
+const cells = cmp.rows.flatMap(row => cmp.columns.map(col => comparisonCell(col, row))).filter(Boolean);
+const s = reviewSummary(cells.map(c => c.claim));
+const pct = n => (s.total ? (100 * n) / s.total : 0);
+const generated = monthLabel(new Date().toISOString());
+const id = cmpDocId(cmp);
+---
+<Sheet title={cmp.title} id={id} back={`/compare/${cmp.slug}/`} backLabel="Comparison" landscape>
+  <article class="sheet">
+    <header class="hd">
+      <div class="brand"><img src="/vaivoo-mark.svg" alt="" /><span>VAIVOO</span></div>
+      <div class="ttl"><h1>{cmp.title}</h1><span class="id">{id} · REV {new Date().toISOString().slice(0, 7)}</span></div>
+      <div class="kind"><span class="dots" aria-hidden="true"><i class="o"></i><i></i><i class="o"></i><i class="o"></i><i class="o"></i><i></i><i class="o"></i><i class="o"></i><i></i></span>Comparison</div>
+    </header>
+    <div class="acc"></div>
+    <div class="meta">
+      <div><span class="k">Setups</span><span class="v">{cmp.columns.length}</span></div>
+      <div><span class="k">Properties</span><span class="v">{cmp.rows.length}</span></div>
+      <div><span class="k">Generated</span><span class="v">{generated}</span></div>
+      <div><span class="k">Editor</span><span class="v">{cmp.owner}</span></div>
+      <div><span class="k">Review</span><span class="rbar"><span class="e" style={`width:${pct(s.counts.external)}%`}></span><span class="i" style={`width:${pct(s.counts.internal)}%`}></span></span><span class="k" style="color:var(--ink)">{s.counts.external} ext · {s.counts.internal} int · {s.counts.draft} draft</span></div>
+    </div>
+    <p class="sum">{cmp.summary}</p>
+    <div class="sec"><span>Side by side</span><span><b>{cells.length}</b> cells from scoped claims</span></div>
+    <table class="cmpt">
+      <thead><tr><th>#</th><th>Property</th>{cmp.columns.map(col => <th>{col.label}</th>)}</tr></thead>
+      <tbody>{cmp.rows.map((row, i) => (
+        <tr><td class="n">{num(i, 'R')}</td><td class="p">{row.label}</td>
+          {cmp.columns.map(col => { const cell = comparisonCell(col, row); return cell ? (
+            <td><span class="vv">{row.labels?.[cell.claim.id] ?? VALUE_LABEL[cell.claim.shown]}</span><span class={`st ${cell.claim.review}`}>{REVIEW[cell.claim.review]?.short}</span>
+              <span class="scope">{cell.claim.statement}</span>
+              {cell.claim.assumptions.length > 0 && <ul>{cell.claim.assumptions.map(a => <li>{a}</li>)}</ul>}</td>) : <td><span class="vv" style="color:#777">No claim yet</span></td>; })}
+        </tr>))}
+      </tbody>
+    </table>
+    <footer class="ft"><span class="lic"><b>The Vaivoo Project</b> · Snapshot of vaivoo.com/compare/{cmp.slug}/, generated {generated}. "No claim yet" means not researched, not "no". Evidence for every cell is on the linked entry pages.</span><span>{id}</span></footer>
+  </article>
+</Sheet>
+<style is:global>.cmpt td { font-size:7.6pt; } .cmpt td .scope { color:#333; }</style>

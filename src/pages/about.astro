@@ -1,13 +1,49 @@
 ---
 import Base from '../layouts/Base.astro';
+import ReviewTag from '../components/ReviewTag.astro';
+import { allEntities, publicClaims, reviewSummary } from '../lib/content.mjs';
+const items = allEntities();
+const all = reviewSummary(items.flatMap(publicClaims));
 ---
-<Base title="About and disclosures">
-  <h1>About Vaivoo</h1>
-  <p>Vaivoo is an independent, source-backed reference on digital authentication: methods, standards, the cryptography beneath them, and Nordic and EU identity systems.</p>
+<Base title="About" description="The Vaivoo Project is an independent, evidence-first reference on authentication and cryptography, led by Chris War with a network of independent specialists.">
+  <p class="eyebrow"><span class="eb-accent">The Vaivoo Project</span><span>·</span><span>About</span></p>
+  <h1>About the project</h1>
+  <p class="lede">The Vaivoo Project is an independent reference on digital authentication: the methods, the standards, the cryptography underneath, and the Nordic and EU identity systems built on top. It exists because most writing on the subject comes from vendors. Here, every statement is a scoped claim, tied to the exact section of a primary source and signed by the person who checked it.</p>
+
+  <section class="person full">
+    <div class="person-head">
+      <img src="/vaivoo-mark.svg" alt="" width="56" height="56" />
+      <div><p class="eyebrow" style="margin:0 0 6px">Founder &amp; editor</p><h2>Chris War</h2></div>
+    </div>
+    <div class="person-body">
+      <p>Chris War leads the project and sets its editorial method. He has been granted patents for authentication solutions worldwide, so he comes to this subject as someone who has designed authentication systems, not only written about them. That practical background shapes how the project works: claims are scoped to how a method is actually deployed, conditions are spelled out, and "it depends" is never left unexplained.</p>
+      <p>As editor he researches and approves every claim against its sources before it is published, and he decides which claims need independent review. He also publishes <a href="https://cypherzoo.com" rel="noopener">Cypherzoo</a>.</p>
+      <ul class="facts">
+        <li><span class="meta">Role</span><span>Founder and editor; approves every claim internally</span></li>
+        <li><span class="meta">Background</span><span>Granted patents for authentication solutions worldwide</span></li>
+        <li><span class="meta">Also publishes</span><span>Cypherzoo</span></li>
+        <li><span class="meta">Signed so far</span><span><ReviewTag level="internal" count={all.counts.internal} short /> across {items.length} entries</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <h2>The network</h2>
+  <p>The editor works with a network of independent specialists in cryptography, identity systems and security engineering. They review claims from outside the project, and their approval is what turns a claim green: <ReviewTag level="external" short />. Security properties, assurance levels and regulatory status always need an independent technical reviewer in addition to the editor.</p>
+  <p>Reviewers are named on the claims they approve, and listed here once each has agreed to be named. The project does not show logos or titles of people who have not signed anything.</p>
+
   <h2>Ownership and interests</h2>
-  <p>Vaivoo is run by Chris War, who has previously been granted worldwide patents for authentication solutions and also publishes Cypherzoo. Products in which the owner has a commercial interest are not included in Vaivoo comparisons unless reviewed independently, and any such entry is labelled.</p>
-  <h2>Review</h2>
-  <p>Sensitive technical claims are reviewed by independent specialists. [List reviewers once confirmed.]</p>
+  <p>The Vaivoo Project is owned and run by Chris War. Products in which the owner has a commercial interest are not included in comparisons unless they have been reviewed independently, and any such entry is labelled. The project carries no advertising and takes no payment for inclusion or placement.</p>
+
   <h2>AI use</h2>
-  <p>AI assists research and drafting. Every published claim is checked against its sources and approved by a named person.</p>
+  <p>AI assists research and drafting. It does not approve anything: every published claim is checked against its sources and approved by a named person. <a href="/methodology/">How the method works</a></p>
 </Base>
+<style>
+  .person { margin:48px 0 8px; border-top:3px solid var(--rule); padding-top:24px; display:grid; grid-template-columns:260px minmax(0, 1fr); gap:24px 48px; max-width:none; }
+  .person-head { display:flex; flex-direction:column; gap:16px; }
+  .person-head img { width:56px; height:56px; border-radius:17%; }
+  .person-head h2 { margin:0; font-size:clamp(30px, 4vw, 44px); }
+  .person-body { max-width:720px; }
+  .facts { list-style:none; padding:0; margin:24px 0 0; border-top:1px solid var(--line); }
+  .facts li { display:grid; grid-template-columns:160px 1fr; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); margin:0; align-items:baseline; }
+  @media (max-width: 760px) { .person { grid-template-columns:1fr; } .facts li { grid-template-columns:1fr; gap:2px; } }
+</style>

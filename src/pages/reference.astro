@@ -1,15 +1,17 @@
 ---
 import Base from '../layouts/Base.astro';
+import DownloadButton from '../components/DownloadButton.astro';
 import { allEntities, publicClaims, reviewSummary, LABELS, SECTION_ORDER } from '../lib/content.mjs';
 const items = allEntities();
 const present = [...new Set(items.map(e => e.section))];
 const sections = [...SECTION_ORDER.filter(s => present.includes(s)), ...present.filter(s => !SECTION_ORDER.includes(s))];
 const groups = sections.map(s => ({ s, list: items.filter(e => e.section === s).map(e => ({ e, r: reviewSummary(publicClaims(e)) })) }));
 ---
-<Base title="Reference" description="Every Vaivoo entry by section: methods, attacks, protocols, standards, cryptography, identity systems and more.">
+<Base title="Reference" description="Every entry in The Vaivoo Project, by section: methods, attacks, protocols, standards, cryptography, identity systems and more.">
   <p class="eyebrow">Reference · {items.length} entries</p>
   <h1>Reference</h1>
   <p class="lede">Every entry, by section. Each one is a set of sourced claims you can check line by line.</p>
+  <DownloadButton href="/datasheet/all/" id="VA-REF-ALL" label="Download full reference" />
   <div class="full">
     {groups.map(({ s, list }) => (
       <section class="ref-group">
