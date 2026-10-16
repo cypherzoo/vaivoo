@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Vaivoo">
+<style>
+  .d { fill: #7a7a7a; }
+  .b { animation: b 4.8s infinite; }
+  .m { animation: m 4.8s infinite; }
+  .t { animation: t 4.8s infinite; }
+  @keyframes b { 0%, 10% { fill: #7a7a7a; } 12% { fill: #fff; } 14% { fill: #7a7a7a; } 16%, 82% { fill: #fff; } 92%, 100% { fill: #7a7a7a; } }
+  @keyframes m { 0%, 28% { fill: #7a7a7a; } 30% { fill: #fff; } 32% { fill: #7a7a7a; } 34%, 82% { fill: #fff; } 92%, 100% { fill: #7a7a7a; } }
+  @keyframes t { 0%, 46% { fill: #7a7a7a; } 48% { fill: #fff; } 50% { fill: #7a7a7a; } 52%, 82% { fill: #fff; } 92%, 100% { fill: #7a7a7a; } }
+  @media (prefers-reduced-motion: reduce) { .b, .m, .t { animation: none; fill: #fff; } }
+</style>
+<rect width="64" height="64" rx="11" fill="#0a0a0a"/>
+<circle class="d" cx="17" cy="17" r="5.2"/><circle class="d t" cx="32" cy="17" r="5.2"/><circle class="d" cx="47" cy="17" r="5.2"/>
+<circle class="d" cx="17" cy="32" r="5.2"/><circle class="d" cx="32" cy="32" r="5.2"/><circle class="d m" cx="47" cy="32" r="5.2"/>
+<circle class="d" cx="17" cy="47" r="5.2"/><circle class="d" cx="32" cy="47" r="5.2"/><circle class="d b" cx="47" cy="47" r="5.2"/>
+</svg>
